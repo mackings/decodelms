@@ -3,13 +3,14 @@ import 'dart:async';
 import 'package:decodelms/apis/authclass.dart';
 import 'package:decodelms/models/user.dart';
 import 'package:decodelms/views/Homepage/home.dart';
-import 'package:decodelms/widgets/Dialogs.dart';
 import 'package:decodelms/widgets/appbar.dart';
+import 'package:decodelms/widgets/authdialog.dart';
 import 'package:decodelms/widgets/buttons.dart';
 import 'package:decodelms/widgets/formfields.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sizer/sizer.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
@@ -34,27 +35,33 @@ class _SigninState extends ConsumerState<Signin> {
     return Login(email: email.text, password: password.text);
   }
 
-  Future signin(Login login) async {
-    dynamic payload =
-        jsonEncode({"email": login.email, "password": login.password});
-    final response = await http.post(
-        Uri.parse("https://decode-mnjh.onrender.com/api/user/login"),
-        body: payload,
-        headers: {
-          "Content-Type": "application/json",
-        });
+Future signin(Login login) async {
+  dynamic payload = jsonEncode({"email": login.email, "password": login.password});
+  final response = await http.post(
+      Uri.parse("https://decode-mnjh.onrender.com/api/user/login"),
+      body: payload,
+      headers: {
+        "Content-Type": "application/json",
+      });
 
-    if (response.statusCode == 200) {
-      dynamic data = jsonDecode(response.body);
-      print(data);
-      print("success");
-      return data; // You may want to return data or handle it as needed
-    } else {
-      print("failed");
-      print(payload);
-      throw Exception(response.body);
-    }
+  if (response.statusCode == 200) {
+    
+    dynamic data = jsonDecode(response.body);
+    String token = data['token'];
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setString('token', token);
+
+    print("Token: $token");
+    print("Token saved in shared preferences.");
+
+    print("success");
+    return data;
+  } else {
+    print("failed");
+    print(payload);
+    throw Exception(response.body);
   }
+}
 
   @override
   Widget build(BuildContext context) {
@@ -133,9 +140,12 @@ class _SigninState extends ConsumerState<Signin> {
               padding: const EdgeInsets.all(8.0),
               child: loading
                   ? Apidialog(
-                      message: "Loading",
-                      dialog: CircularProgressIndicator(),
-                    )
+  message: "Login successful",
+  isSuccess: true, // Set to false for a failed login
+  onClose: () {
+    Navigator.of(context).pop(); // Close the dialog
+  },
+)
                   : Mybuttons(
               callback: () async {
                 setState(() {

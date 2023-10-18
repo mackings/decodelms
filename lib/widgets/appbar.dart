@@ -72,35 +72,33 @@ class _ThetextState extends State<Thetext> {
 
 
 
-class TheBars extends ConsumerStatefulWidget {
-  var arrowback;
-  var arrowforward;
+
+class TheBars extends StatefulWidget {
+  final Widget thebody;
   final VoidCallback callback;
-  Column thebody;
-  
-  TheBars(
-      {this.arrowback,
-      this.arrowforward,
-      required this.callback,
-      required this.thebody,
-      });
+
+  TheBars({
+    required this.thebody,
+    required this.callback,
+  });
 
   @override
-  ConsumerState<ConsumerStatefulWidget> createState() => _TheBarsState();
+  _TheBarsState createState() => _TheBarsState();
 }
 
-class _TheBarsState extends ConsumerState<TheBars> {
-
+class _TheBarsState extends State<TheBars> {
   @override
   Widget build(BuildContext context) {
     return Sizer(
       builder: (context, orientation, deviceType) {
         return Scaffold(
           body: Padding(
-            padding: const EdgeInsets.fromLTRB(12.0,60.0,12.0,0.0),
-            child: SingleChildScrollView(child: widget.thebody),
+            padding: const EdgeInsets.fromLTRB(12.0, 60.0, 12.0, 0.0),
+            child: SingleChildScrollView(
+              physics: BouncingScrollPhysics(),
+              child: widget.thebody,
+            ),
           ),
-
         );
       },
     );

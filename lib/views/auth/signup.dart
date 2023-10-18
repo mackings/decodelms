@@ -2,8 +2,8 @@ import 'dart:async';
 
 import 'package:decodelms/apis/authclass.dart';
 import 'package:decodelms/views/auth/signin.dart';
-import 'package:decodelms/widgets/Dialogs.dart';
 import 'package:decodelms/widgets/appbar.dart';
+import 'package:decodelms/widgets/authdialog.dart';
 import 'package:decodelms/widgets/buttons.dart';
 import 'package:decodelms/widgets/formfields.dart';
 import 'package:flutter/material.dart';
@@ -104,9 +104,12 @@ class _SignupState extends ConsumerState<Signup> {
             ),
             loading
                 ? Apidialog(
-                    message: "Loading",
-                    dialog: CircularProgressIndicator(),
-                  )
+  message: "Login successful",
+  isSuccess: true, 
+  onClose: () {
+    Navigator.of(context).pop(); // Close the dialog
+  },
+)
                 : Mybuttons(
                     callback: () {
                       print("Yoo");
