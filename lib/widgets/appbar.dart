@@ -35,7 +35,7 @@ class _TheBarState extends ConsumerState<TheBar> {
       builder: (context, orientation, deviceType) {
         return Scaffold(
           body: Padding(
-            padding: const EdgeInsets.fromLTRB(12.0,60.0,12.0,0.0),
+            padding: const EdgeInsets.fromLTRB(12.0,40.0,12.0,0.0),
             child: SingleChildScrollView(child: widget.thebody),
           ),
 

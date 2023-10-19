@@ -1,4 +1,5 @@
 import 'package:decodelms/views/course/enrolledcourses.dart';
+import 'package:decodelms/views/course/search.dart';
 import 'package:decodelms/widgets/appbar.dart';
 import 'package:decodelms/widgets/course/courseslider.dart';
 import 'package:flutter/material.dart';
@@ -92,6 +93,12 @@ class _HomepageState extends ConsumerState<Homepage> {
                         left: 20,
                       ),
                       child: TextFormField(
+                        onTap: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => CourseSearchPage()));
+                        },
                         onChanged: (value) {
                           setState(() {
                             print(value);
@@ -166,27 +173,220 @@ class _HomepageState extends ConsumerState<Homepage> {
                 padding: const EdgeInsets.all(8.0),
                 child: AllCourseCarouselSlider(),
               ),
+              SizedBox(
+                height: 2.h,
+              ),
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Thetext(
-                        thetext: "Most browsed through",
+                        thetext: "Live lessons",
                         style: GoogleFonts.poppins()),
                     Thetext(
-                        thetext: "See more",
+                        thetext: "",
                         style: GoogleFonts.poppins(color: Colors.blue)),
                   ],
                 ),
               ),
+
+
+//dummy 
+
+Padding(
+  padding: const EdgeInsets.only(top: 20,left: 20,right: 20,bottom: 20),
+  child:   Container(
+  
+       // margin: EdgeInsets.symmetric(horizontal: 5.0),
+  
+       width: MediaQuery.of(context).size.width -20.w,
+  
+        child: SingleChildScrollView(
+  
+          child: Column(
+  
+            children: [
+  
+  GestureDetector(
+  
+    onTap: () {
+  
+  
+  
+    },
+  
+    child: Stack(
+  
+      children: [
+  
+        ClipRRect(
+  
+          borderRadius: BorderRadius.only(
+  
+           // bottomLeft: Radius.circular(10),
+  
+           // bottomRight: Radius.circular(10),
+  
+            topLeft: Radius.circular(10),
+  
+            topRight: Radius.circular(10),
+  
+          ),
+  
+          child:Image.network("https://decodeanalytical.com/wp-content/uploads/2023/10/wepik-export-20231012130233revP.png"
+  
+          ,fit: BoxFit.cover,
+  
+          width: double.infinity,
+  
+          height: 15.h,)
+  
+          
+  
+        //   child: Image.network(
+  
+        //     widget.allCourse.imageUrl.isNotEmpty
+  
+        //         ? widget.allCourse.imageUrl
+  
+        //         : '',
+  
+        //     fit: BoxFit.cover,
+  
+        //     width: double.infinity,
+  
+        //     height: 15.h, // Adjust the height as needed
+  
+        //   ),
+  
+        ),
+  
+        Padding(
+  
+          padding: const EdgeInsets.only(top: 30,bottom: 30),
+  
+          child: Center(
+  
+            child: GestureDetector(
+  
+              onTap: () {
+              },
+  
+              child: Icon(
+  
+                Icons.play_circle_outline,
+  
+                color: Colors.white,
+  
+                size: 50.0,
+  
+              ),
+  
+            ),
+  
+          ),
+  
+        ),
+  
+      ],
+  
+    ),
+  
+  ),
+  
+  
+  
               Container(
-                height: 10.h,
+  
+                padding: EdgeInsets.all(8.0),
+  
                 decoration: BoxDecoration(
-                    image: DecorationImage(
-                        image: NetworkImage(
-                            "https://www.google.com/url?sa=i&url=https%3A%2F%2Fwww.vecteezy.com%2Fvector-art%2F2779579-man-working-on-a-computer-people-on-computer-screen-speaking-with-colleague-or-friends-illustrations-concept-video-conference-online-meeting-or-work-from-home-vector-illustration&psig=AOvVaw3w2QAc3QXj6k4HErFMN7HP&ust=1697682559696000&source=images&cd=vfe&opi=89978449&ved=0CBEQjRxqFwoTCNj4v8LG_oEDFQAAAAAdAAAAABAJ"))),
-              )
+  
+                  border: Border.all(width: 0.5, color: Colors.black),
+  
+                  color: Colors.white,
+  
+                  borderRadius: BorderRadius.only(
+  
+                    bottomLeft: Radius.circular(10),
+  
+                    bottomRight: Radius.circular(10),
+  
+                  ),
+  
+                ),
+  
+                child: Column(
+  
+                  crossAxisAlignment: CrossAxisAlignment.start,
+  
+                  children: [
+  
+                    Padding(
+  
+                      padding: const EdgeInsets.all(8.0),
+  
+                      child: Thetext(
+  
+                        thetext: "Live Lesson",
+  
+                        style: GoogleFonts.poppins(
+  
+                          fontWeight: FontWeight.bold,
+  
+                        ),
+  
+                      ),
+  
+                    ),
+  
+                    GestureDetector(
+  
+                      onTap: () {
+  
+  
+  
+                      },
+  
+                      child: Padding(
+  
+                        padding: const EdgeInsets.all(8.0),
+  
+                        child: Thetext(
+  
+                          thetext: "Explore Live lessons by simply enrolling in a course and have acccess to unlimited live instructor led lessons.",
+  
+                          style: GoogleFonts.poppins(
+  
+                            color: Colors.black,
+  
+                          ),
+  
+                        ),
+  
+                      ),
+  
+                    ),
+  
+        
+  
+  
+  
+                  ],
+  
+                ),
+  
+              ),
+  
+            ],
+  
+          ),
+  
+        ),
+  
+      ),
+)
             ],
           ));
     }));

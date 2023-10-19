@@ -24,6 +24,10 @@ class _CourseCardState extends State<CourseCard> {
   Widget build(BuildContext context) {
     return Container(
       margin: EdgeInsets.symmetric(horizontal: 5.0),
+      decoration: BoxDecoration(
+        border: Border.all(width: 0.5,color: Colors.black),
+        borderRadius: BorderRadius.circular(10)
+      ),
       child: Stack(
         alignment: Alignment.topLeft,
         children: [
@@ -61,96 +65,7 @@ class _CourseCardState extends State<CourseCard> {
   }
 }
 
-// class AllCourseCard extends StatefulWidget {
-//   final AllCourse allCourse;
 
-//   AllCourseCard({required this.allCourse});
-
-//   @override
-//   State<AllCourseCard> createState() => _AllCourseCardState();
-// }
-
-// class _AllCourseCardState extends State<AllCourseCard> {
-//   @override
-//   Widget build(BuildContext context) {
-//     return Padding(
-//       padding: const EdgeInsets.all(8.0),
-//       child: Container(
-//         constraints: BoxConstraints(
-//           maxWidth: 150,
-//         ),
-//         child: Padding(
-//           padding: const EdgeInsets.all(8.0),
-//           child: Stack(
-//             alignment: Alignment.topLeft,
-//             children: [
-//               GestureDetector(
-//                 onTap: () {
-//                   Navigator.of(context).push(
-//                     MaterialPageRoute(
-//                       builder: (context) => CourseDetailsPage(
-//                         allCourses: widget.allCourse,
-//                       ),
-//                     ),
-//                   );
-//                 },
-//                 child: ClipRRect(
-//                   borderRadius: BorderRadius.circular(10),
-//                   child: Image.network(
-//                     widget.allCourse.imageUrl.isNotEmpty
-//                         ? widget.allCourse.imageUrl // Access the image URL directly
-//                         : '', // Handle empty URL
-//                     fit: BoxFit.cover,
-//                     width: double.infinity,
-//                   ),
-//                 ),
-//               ),
-//               Container(
-//                 padding: EdgeInsets.all(8.0),
-//                 decoration: BoxDecoration(
-//                   borderRadius: BorderRadius.circular(10),
-//                   color: Colors.black.withOpacity(0.6),
-//                 ),
-//                 child: Column(
-//                   crossAxisAlignment: CrossAxisAlignment.start,
-//                   children: [
-//                     Text(
-//                       widget.allCourse.title,
-//                       style: TextStyle(
-//                         color: Colors.white,
-//                         fontWeight: FontWeight.bold,
-//                       ),
-//                     ),
-//                     Padding(
-//                       padding: const EdgeInsets.all(8.0),
-//                       child: GestureDetector(
-//                         onTap: () {
-//                           Navigator.of(context).push(
-//                             MaterialPageRoute(
-//                               builder: (context) =>
-//                                   CourseDetailsPage(allCourses: widget.allCourse),
-//                             ),
-//                           );
-//                         },
-//                         child: Text(
-//                           widget.allCourse.description,
-//                           style: TextStyle(
-//                             color: Colors.yellow,
-//                             fontSize: 12,
-//                           ),
-//                         ),
-//                       ),
-//                     ),
-//                   ],
-//                 ),
-//               ),
-//             ],
-//           ),
-//         ),
-//       ),
-//     );
-//   }
-// }
 
 class AllCourseCard extends StatefulWidget {
   final AllCourse allCourse;
@@ -164,157 +79,123 @@ class AllCourseCard extends StatefulWidget {
 class _AllCourseCardState extends State<AllCourseCard> {
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: Container(
-        constraints: BoxConstraints(
-          maxWidth: 150,
+    return Container(
+      margin: EdgeInsets.symmetric(horizontal: 5.0),
+      child: SingleChildScrollView(
+        child: Column(
+          children: [
+GestureDetector(
+  onTap: () {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) => CourseDetailsPage(
+          allCourses: widget.allCourse,
         ),
-        child: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Column(
-            children: [
-              GestureDetector(
-                onTap: () {
-                  Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (context) => CourseDetailsPage(
-                        allCourses: widget.allCourse,
-                      ),
-                    ),
-                  );
-                },
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(10),
-                  child: Image.network(
-                    widget.allCourse.imageUrl.isNotEmpty
-                        ? widget.allCourse.imageUrl
-                        : '',
-                    fit: BoxFit.cover,
-                    width: double.infinity,
-                    height: 200, // Set the image height
-                  ),
+      ),
+    );
+  },
+  child: Stack(
+    children: [
+      ClipRRect(
+        borderRadius: BorderRadius.only(
+         // bottomLeft: Radius.circular(10),
+         // bottomRight: Radius.circular(10),
+          topLeft: Radius.circular(10),
+          topRight: Radius.circular(10),
+        ),
+        child: Image.network(
+          widget.allCourse.imageUrl.isNotEmpty
+              ? widget.allCourse.imageUrl
+              : '',
+          fit: BoxFit.cover,
+          width: double.infinity,
+          height: 15.h, // Adjust the height as needed
+        ),
+      ),
+      Padding(
+        padding: const EdgeInsets.only(top: 30,bottom: 30),
+        child: Center(
+          child: GestureDetector(
+            onTap: () {
+              // Handle play button tap action
+              // You can add your navigation logic here
+            },
+            child: Icon(
+              Icons.play_circle_outline,
+              color: Colors.white,
+              size: 50.0,
+            ),
+          ),
+        ),
+      ),
+    ],
+  ),
+),
+
+            Container(
+              padding: EdgeInsets.all(8.0),
+              decoration: BoxDecoration(
+                border: Border.all(width: 0.5, color: Colors.black),
+                color: Colors.white,
+                borderRadius: BorderRadius.only(
+                  bottomLeft: Radius.circular(10),
+                  bottomRight: Radius.circular(10),
                 ),
               ),
-              Container(
-                padding: EdgeInsets.all(8.0),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10),
-                  color: Colors.blue, // Blue background color for details
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      widget.allCourse.title,
-                      style: TextStyle(
-                        color: Colors.white,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Thetext(
+                      thetext: widget.allCourse.title,
+                      style: GoogleFonts.poppins(
                         fontWeight: FontWeight.bold,
                       ),
                     ),
-                    Padding(
+                  ),
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (context) =>
+                              CourseDetailsPage(allCourses: widget.allCourse),
+                        ),
+                      );
+                    },
+                    child: Padding(
                       padding: const EdgeInsets.all(8.0),
-                      child: GestureDetector(
-                        onTap: () {
-                          Navigator.of(context).push(
-                            MaterialPageRoute(
-                              builder: (context) => CourseDetailsPage(
-                                  allCourses: widget.allCourse),
-                            ),
-                          );
-                        },
-                        child: Text(
-                          widget.allCourse.description,
-                          style: TextStyle(
-                            color: Colors.yellow,
-                            fontSize: 12,
-                          ),
+                      child: Thetext(
+                        thetext: widget.allCourse.description,
+                        style: GoogleFonts.poppins(
+                          color: Colors.black,
                         ),
                       ),
                     ),
-                  ],
-                ),
+                  ),
+      
+
+                  // Padding(
+                  //   padding: const EdgeInsets.all(8.0),
+                  //   child: Icon(
+                  //     Icons.play_circle_outline,
+                  //     color: Colors.black,
+                  //     size: 48.0,
+                  //   ),
+                  // ),
+                ],
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
   }
 }
 
+
+
 //Course enrolled card
-
-// class CourseEnrolledCard extends StatefulWidget {
-//   final Course course;
-
-//   CourseEnrolledCard({required this.course});
-
-//   @override
-//   State<CourseEnrolledCard> createState() => _CourseEnrolledCardState();
-// }
-
-// class _CourseEnrolledCardState extends State<CourseEnrolledCard> {
-//   @override
-//   Widget build(BuildContext context) {
-//     return Padding(
-//       padding: EdgeInsets.all(8.sp),
-//       child: Container(
-//         height: 50.h,
-//         width: MediaQuery.of(context).size.width -
-//             20.w, // Adjust the width as needed
-//         margin: EdgeInsets.all(8.sp),
-//         decoration: BoxDecoration(
-//           borderRadius: BorderRadius.circular(10.sp),
-//           border: Border.all(
-//             color: Colors.black, // Border color
-//             width: 0.5.sp, // Border width
-//           ),
-//         ),
-//         child: Center(
-//           child: Column(
-//             crossAxisAlignment: CrossAxisAlignment.start,
-//             children: [
-//         GestureDetector(
-//           onTap: () {
-//             print(widget.course.id);
-//           },
-//           child: Container(
-//             width: double.infinity,
-//             height: 95.sp, // Adjust the height as needed
-//             decoration: BoxDecoration(
-//               image: DecorationImage(
-//           image: NetworkImage(widget.course.imageUrl),
-//           fit: BoxFit.cover, // Fit the image within the container
-//           alignment: Alignment.center,
-//           colorFilter: ColorFilter.mode(
-//             Colors.black.withOpacity(0.6), // Adjust the opacity to control the darkening effect
-//             BlendMode.darken,
-//           ),
-//               ),
-//             ),
-//             child: Icon(
-//               Icons.play_circle_outline, // Play button icon
-//               color: Colors.white,
-//               size: 58.sp, // Adjust the size as needed
-//             ),
-//           ),
-//         ),
-
-//               Padding(
-//                 padding: EdgeInsets.all(8.sp),
-//                 child: Thetext(
-//                     thetext: widget.course.title,
-//                     style: GoogleFonts.poppins(
-//                         fontWeight: FontWeight.bold, fontSize: 12.sp)),
-//               ),
-//             ],
-//           ),
-//         ),
-//       ),
-//     );
-//   }
-// }
 
 class CourseEnrolledCard extends StatefulWidget {
   final Course course;

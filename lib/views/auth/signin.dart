@@ -35,33 +35,33 @@ class _SigninState extends ConsumerState<Signin> {
     return Login(email: email.text, password: password.text);
   }
 
-Future signin(Login login) async {
-  dynamic payload = jsonEncode({"email": login.email, "password": login.password});
-  final response = await http.post(
-      Uri.parse("https://decode-mnjh.onrender.com/api/user/login"),
-      body: payload,
-      headers: {
-        "Content-Type": "application/json",
-      });
+  Future signin(Login login) async {
+    dynamic payload =
+        jsonEncode({"email": login.email, "password": login.password});
+    final response = await http.post(
+        Uri.parse("https://decode-mnjh.onrender.com/api/user/login"),
+        body: payload,
+        headers: {
+          "Content-Type": "application/json",
+        });
 
-  if (response.statusCode == 200) {
-    
-    dynamic data = jsonDecode(response.body);
-    String token = data['token'];
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    await prefs.setString('token', token);
+    if (response.statusCode == 200) {
+      dynamic data = jsonDecode(response.body);
+      String token = data['token'];
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      await prefs.setString('token', token);
 
-    print("Token: $token");
-    print("Token saved in shared preferences.");
+      print("Token: $token");
+      print("Token saved in shared preferences.");
 
-    print("success");
-    return data;
-  } else {
-    print("failed");
-    print(payload);
-    throw Exception(response.body);
+      print("success");
+      return data;
+    } else {
+      print("failed");
+      print(payload);
+      throw Exception(response.body);
+    }
   }
-}
 
   @override
   Widget build(BuildContext context) {
@@ -139,52 +139,40 @@ Future signin(Login login) async {
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: loading
-                  ? Apidialog(
-  message: "Login successful",
-  isSuccess: true, // Set to false for a failed login
-  onClose: () {
-    Navigator.of(context).pop(); // Close the dialog
-  },
-)
+                  ? CircularProgressIndicator()
                   : Mybuttons(
-              callback: () async {
-                setState(() {
-                  loading = true;
-                });
-            
-                try {
-                  dynamic response = await signin(Userlogin());
-            
-                  if (response != null) {
-                    showDialog(
-                      context: context,
-                      builder: (context) {
-              return Text("Login Successful");
-                      });
-                     Navigator.push(context, MaterialPageRoute(builder: (context) => Homepage()));
-                  } else {
-                    showDialog(
-                      context: context,
-                      builder: (context) {
-              return Text("Login Failed");
-                      });
-                  }
-                } catch (e) {
-                  print(e);
-                  showDialog(
-                    context: context,
-                    builder: (context) {
-                      return Text("An error occurred during sign-in");
-                    });
-                } finally {
-                  setState(() {
-                    loading = false;
-                  });
-                }
-              },
-              buttontxt: "Login",
-              btncolor: Colors.blue,
-            ),
+                      callback: () async {
+                        setState(() {
+                          loading = true;
+                        });
+
+                        try {
+                          dynamic response = await signin(Userlogin());
+
+                          if (response != null) {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => Homepage()));
+                          } else {
+                            showDialog(
+                                context: context,
+                                builder: (context) {
+                                  return Text("Login Failed");
+                                });
+                          }
+                        } catch (e) {
+                          print(e);
+                          showDialog(
+                              context: context,
+                              builder: (context) {
+                                return Text("An error occurred during sign-in");
+                              });
+                        }
+                      },
+                      buttontxt: "Login",
+                      btncolor: Colors.blue,
+                    ),
             ),
             SizedBox(
               height: 2.h,
