@@ -21,6 +21,7 @@ class _VideostreamState extends ConsumerState<Videostream> {
   late VideoPlayerController videoPlayerController;
   late CustomVideoPlayerController _customVideoPlayerController;
   @override
+  
   void initState() {
     videoPlayerController =
         VideoPlayerController.networkUrl(Uri.parse(videoUrl))

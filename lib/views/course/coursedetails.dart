@@ -212,6 +212,7 @@ showDialog(
                 Padding(
                   padding: const EdgeInsets.only(left: 20, right: 20),
                   child: TabBar(
+                    indicatorColor: Colors.black,
                     tabs: [
                       Tab(
                           child: Thetext(
@@ -237,6 +238,7 @@ showDialog(
                 Container(
                   height: 30.h,
                   child: TabBarView(
+                    
                     children: [
                       // Description tab content
                       Padding(

@@ -34,6 +34,7 @@ class _TheBarState extends ConsumerState<TheBar> {
     return Sizer(
       builder: (context, orientation, deviceType) {
         return Scaffold(
+          backgroundColor: Colors.white,
           body: Padding(
             padding: const EdgeInsets.fromLTRB(12.0,40.0,12.0,0.0),
             child: SingleChildScrollView(child: widget.thebody),

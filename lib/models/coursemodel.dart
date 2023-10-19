@@ -19,13 +19,17 @@ class Course {
         : '';
 
     return Course(
-      id: json['_id'],
+      id: json['courseId'],
       title: json['title'],
       description: json['description'],
       imageUrl: imageUrl,
     );
   }
 }
+
+
+
+
 
 class AllCourseResponse {
   final String message;

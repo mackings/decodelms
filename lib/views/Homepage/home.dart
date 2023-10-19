@@ -1,5 +1,6 @@
 import 'package:decodelms/views/course/enrolledcourses.dart';
 import 'package:decodelms/views/course/search.dart';
+import 'package:decodelms/views/course/stream.dart';
 import 'package:decodelms/widgets/appbar.dart';
 import 'package:decodelms/widgets/course/courseslider.dart';
 import 'package:flutter/material.dart';
@@ -97,7 +98,7 @@ class _HomepageState extends ConsumerState<Homepage> {
                           Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) => CourseSearchPage()));
+                                  builder: (context) => StreamPage(courseId: "")));
                         },
                         onChanged: (value) {
                           setState(() {
@@ -153,7 +154,11 @@ class _HomepageState extends ConsumerState<Homepage> {
               ),
               Padding(
                 padding: const EdgeInsets.all(8.0),
-                child: CourseCarouselSlider(),
+                child: GestureDetector(
+                  onTap: () {
+                    
+                  },
+                  child: CourseCarouselSlider()),
               ),
               Padding(
                 padding: const EdgeInsets.all(8.0),

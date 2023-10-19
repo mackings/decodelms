@@ -297,7 +297,8 @@ class _CourseCarouselSlider2State extends State<CourseCarouselSlider2> {
                   final course = courses[index];
                   return Padding(
                     padding: EdgeInsets.only(bottom: 20), // Adjust this spacing
-                    child: CourseEnrolledCard(course: course),
+                    child: CourseEnrolledCard2(course: course),
+                  // child: AllCourseCard(allCourse: null),
                   );
                 },
               ),
@@ -325,14 +326,14 @@ class AllCourseCardShimmer extends StatelessWidget {
     return Container(
       margin: EdgeInsets.all(5.0),
       child: Shimmer.fromColors(
-        baseColor: Colors.grey[300]!,
-        highlightColor: Colors.grey[100]!,
+        baseColor: Colors.grey[400]!,
+        highlightColor: Colors.grey[200]!,
         child: ClipRRect(
           borderRadius: BorderRadius.circular(10),
           child: Container(
             color: Colors.white, // Placeholder color
             width: double.infinity,
-            height: 180.0, // Adjust the height as needed
+            height: 150.0, // Adjust the height as needed
           ),
         ),
       ),
