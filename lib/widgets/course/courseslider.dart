@@ -346,18 +346,21 @@ class _CourseCarouselSlider2State extends State<CourseCarouselSlider2> {
           return Text('Error: ${snapshot.error}');
         } else {
           final courses = snapshot.data;
-    
+
           if (courses != null && courses.isNotEmpty) {
             // Courses are found, display them in a ListView
-            return ListView.builder(
-              //scrollDirection: Axis.vertical,
-              itemCount: courses.length,
-              itemBuilder: (context, index) {
-                final course = courses[index];
-                return Container(
-                  height: 30.h,
-                  child: Center(child: CourseEnrolledCard(course: course)));
-              },
+            return Padding(
+              padding: const EdgeInsets.only(top: 30),
+              child: ListView.builder(
+                itemCount: courses.length,
+                itemBuilder: (context, index) {
+                  final course = courses[index];
+                  return Padding(
+                    padding: EdgeInsets.only(bottom: 20), // Adjust this spacing
+                    child: CourseEnrolledCard(course: course),
+                  );
+                },
+              ),
             );
           } else {
             // No courses found, display a message
