@@ -1,21 +1,27 @@
 class CourseDetailResponse {
   final String message;
   final List<CourseModuleResponse> result;
+  final List<CommentResponse> comments;
 
   CourseDetailResponse({
     required this.message,
     required this.result,
+    required this.comments,
   });
 
   factory CourseDetailResponse.fromJson(Map<String, dynamic> json) {
     final List<dynamic> resultData = json['result'];
+    final List<dynamic> commentData = json['comments'];
     final List<CourseModuleResponse> result = resultData
         .map((moduleData) => CourseModuleResponse.fromJson(moduleData))
         .toList();
+    final List<CommentResponse> comments =
+        commentData.map((comment) => CommentResponse.fromJson(comment)).toList();
 
     return CourseDetailResponse(
       message: json['message'],
       result: result,
+      comments: comments,
     );
   }
 }
@@ -163,3 +169,54 @@ class QuestionResponse {
     );
   }
 }
+
+class CommentResponse {
+  final String commentBody;
+  final String moduleId;
+  final String commentBy;
+  final List<dynamic> commentReplies;
+  final List<dynamic> likeBy;
+  final List<dynamic> dislikeBy;
+  final int likeCount;
+  final int dislikeCount;
+  final int replyCount;
+  final bool edited;
+  final String id;
+  final String createdAt;
+  final String updatedAt;
+
+  CommentResponse({
+    required this.commentBody,
+    required this.moduleId,
+    required this.commentBy,
+    required this.commentReplies,
+    required this.likeBy,
+    required this.dislikeBy,
+    required this.likeCount,
+    required this.dislikeCount,
+    required this.replyCount,
+    required this.edited,
+    required this.id,
+    required this.createdAt,
+    required this.updatedAt,
+  });
+
+  factory CommentResponse.fromJson(Map<String, dynamic> json) {
+    return CommentResponse(
+      commentBody: json['commentBody'],
+      moduleId: json['moduleId'],
+      commentBy: json['commentBy'],
+      commentReplies: json['commentReplies'],
+      likeBy: json['likeBy'],
+      dislikeBy: json['dislikeBy'],
+      likeCount: json['like_count'],
+      dislikeCount: json['dislike_count'],
+      replyCount: json['reply_count'],
+      edited: json['edited'],
+      id: json['_id'],
+      createdAt: json['createdAt'],
+      updatedAt: json['updatedAt'],
+    );
+  }
+}
+
