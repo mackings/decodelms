@@ -107,6 +107,7 @@ class _AllCourseCardState extends State<AllCourseCard> {
           children: [
             GestureDetector(
               onTap: () {
+                print(widget.allCourse.imageUrl);
                 Navigator.of(context).push(
                   MaterialPageRoute(
                     builder: (context) => CourseDetailsPage(
@@ -193,6 +194,8 @@ class _AllCourseCardState extends State<AllCourseCard> {
                       ),
                     ),
                   ),
+
+                  //widget.allCourse.description
 
                   // Padding(
                   //   padding: const EdgeInsets.all(8.0),

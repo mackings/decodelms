@@ -100,7 +100,7 @@ class _CourseCarouselSliderState extends State<CourseCarouselSlider> {
             return Center(
                 child: Thetext(
                     thetext:
-                        "You have not Enrolled Yet\nCheck out our free courses today",
+                        "You have not Enrolled Yet",
                     style: GoogleFonts.poppins()));
           }
         }
@@ -150,6 +150,7 @@ class _AllCourseCarouselSliderState extends State<AllCourseCarouselSlider> {
       List<AllCourse> allCourses = responseData
           .map((courseData) => AllCourse.fromJson(courseData))
           .toList();
+      print(allCourses);
 
       return allCourses;
     } else {
@@ -157,6 +158,8 @@ class _AllCourseCarouselSliderState extends State<AllCourseCarouselSlider> {
     }
   }
 
+
+//AllCourse
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<List<AllCourse>>(
@@ -298,7 +301,7 @@ class _CourseCarouselSlider2State extends State<CourseCarouselSlider2> {
                   return Padding(
                     padding: EdgeInsets.only(bottom: 20), // Adjust this spacing
                     child: CourseEnrolledCard2(course: course),
-                  // child: AllCourseCard(allCourse: null),
+                    // child: AllCourseCard(allCourse: null),
                   );
                 },
               ),
@@ -308,7 +311,7 @@ class _CourseCarouselSlider2State extends State<CourseCarouselSlider2> {
             return Center(
               child: Thetext(
                 thetext:
-                    "You have not Enrolled Yet\nCheck out our free courses today",
+                    "You are not Enrolled Yet",
                 style: GoogleFonts.poppins(),
               ),
             );

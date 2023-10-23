@@ -3,8 +3,11 @@ import 'dart:convert';
 import 'package:appinio_video_player/appinio_video_player.dart';
 import 'package:decodelms/models/coursemodel.dart';
 import 'package:decodelms/models/streammodel.dart';
+import 'package:decodelms/views/quiz/quiz.dart';
+import 'package:decodelms/widgets/appbar.dart';
 import 'package:decodelms/widgets/course/courseslider.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sizer/sizer.dart';
@@ -19,12 +22,12 @@ class StreamPage extends StatefulWidget {
 }
 
 class _StreamPageState extends State<StreamPage> {
-
   Future<CourseDetailResponse>? futureCourseDetail;
   String? token;
   late VideoPlayerController videoPlayerController;
   late CustomVideoPlayerController _customVideoPlayerController;
   int currentModuleIndex = 0;
+    var quizId = '6528640d0d54e1fd2cab0950';
 
   Future<void> getToken() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -181,20 +184,19 @@ class _StreamPageState extends State<StreamPage> {
         }
       });
 
-
       print(widget.courseId);
       print(token);
     });
   }
 
-
-    void loadVideo(String videoUrl) {
-    videoPlayerController = VideoPlayerController.networkUrl(Uri.parse(videoUrl))
-      ..initialize().then((_) {
-        // Initialize and play the video
-        videoPlayerController.play();
-        setState(() {});
-      });
+  void loadVideo(String videoUrl) {
+    videoPlayerController =
+        VideoPlayerController.networkUrl(Uri.parse(videoUrl))
+          ..initialize().then((_) {
+            // Initialize and play the video
+            videoPlayerController.play();
+            setState(() {});
+          });
 
     _customVideoPlayerController = CustomVideoPlayerController(
       context: context,
@@ -202,18 +204,18 @@ class _StreamPageState extends State<StreamPage> {
     );
   }
 
-void loadNextVideo() async {
-  final courseDetail = await futureCourseDetail;
+  void loadNextVideo() async {
+    final courseDetail = await futureCourseDetail;
 
-  if (courseDetail != null && currentModuleIndex < courseDetail.result.length - 1) {
-    currentModuleIndex++;
-    final nextModule = courseDetail.result[currentModuleIndex];
-    if (nextModule.video.isNotEmpty) {
-      loadVideo(nextModule.video.first.path);
+    if (courseDetail != null &&
+        currentModuleIndex < courseDetail.result.length - 1) {
+      currentModuleIndex++;
+      final nextModule = courseDetail.result[currentModuleIndex];
+      if (nextModule.video.isNotEmpty) {
+        loadVideo(nextModule.video.first.path);
+      }
     }
   }
-}
-
 
   List<VideoPlayerController> videoControllers = [];
   dynamic MID;
@@ -263,11 +265,16 @@ void loadNextVideo() async {
 
                   return Column(
                     children: [
+                      Center(child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Thetext(thetext: module.moduleTitle, style: GoogleFonts.poppins()),
+                      )),
                       Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: SafeArea(
                           child: CustomVideoPlayer(
-                            customVideoPlayerController: _customVideoPlayerController,
+                            customVideoPlayerController:
+                                _customVideoPlayerController,
                           ),
                         ),
                       ),
@@ -275,6 +282,17 @@ void loadNextVideo() async {
                       ElevatedButton(
                         onPressed: loadNextVideo,
                         child: Text('Next Module'),
+                      ),
+
+                      ElevatedButton(
+                        onPressed: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) =>
+                                      QuizPage(quizId: quizId)));
+                        },
+                        child: Text('Attempt Quiz'),
                       ),
                     ],
                   );
@@ -284,4 +302,3 @@ void loadNextVideo() async {
     );
   }
 }
-    

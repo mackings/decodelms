@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:decodelms/models/coursemodel.dart';
 import 'package:decodelms/views/course/coursestream.dart';
+import 'package:decodelms/views/course/enrolledcourses.dart';
 import 'package:decodelms/widgets/appbar.dart';
 import 'package:decodelms/widgets/course/coursenav.dart';
 import 'package:decodelms/widgets/course/dialogs.dart';
@@ -39,6 +40,8 @@ class _CourseDetailsPageState extends State<CourseDetailsPage> {
     }
   }
 
+  dynamic res;
+
   @override
   void initState() {
     GetToken();
@@ -54,6 +57,8 @@ class _CourseDetailsPageState extends State<CourseDetailsPage> {
       isEnrolling = true;
     });
 
+    String errorMessage = ''; // Initialize the error message variable
+
     try {
       final response = await http.post(
         Uri.parse(
@@ -65,57 +70,73 @@ class _CourseDetailsPageState extends State<CourseDetailsPage> {
       );
 
       if (response.statusCode == 200) {
-        print(response.body);
+        var data = jsonDecode(response.body);
 
         setState(() {
+          res = data['message'];
+          print('res is $res');
           isEnrolling = false;
         });
 
-showDialog(
-  context: context,
-  builder: (BuildContext context) {
-    return EnrollmentDialog(
-      title: "Enrollment Successful",
-      message: "You have successfully enrolled in this course.",
-      onClose: () {
-        Navigator.of(context).pop(); 
-      },
-      onAction: () {
-        Navigator.of(context).pop();
-      },
-      actionText: "Go to Course",
-    );
-  },
-);
+        // Show a success dialog
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return EnrollmentDialog(
+              press1: () {
+                Navigator.pop(context);
+              },
+              press2: () {
+                Navigator.pushReplacement(context,
+                    MaterialPageRoute(builder: (context) => Enrolledcourses()));
+              },
+              theicon: Icon(
+                Icons.check_circle,
+                color: Colors.blue,
+                size: 60,
+              ),
+              title: "Enrollment Successful",
+              message: "Successfully Enrolled for this course",
+              message2: 'Go to Course',
+            );
+          },
+        );
+      } else if (response.statusCode == 400) {
+        var data = jsonDecode(response.body);
+        errorMessage = data['message']; // Set the error message
 
-      } else {
-        print(response.body);
         throw Exception(response.body);
       }
     } catch (error) {
-      // Enrollment failed
+      print('Error is $error');
       setState(() {
         isEnrolling = false;
       });
 
-showDialog(
-  context: context,
-  builder: (BuildContext context) {
-    return EnrollmentDialog(
-      title: "Enrollment Failed",
-      message: "You have already enrolled .",
-      onClose: () {
-        Navigator.of(context).pop(); 
-      },
-      onAction: () {
-        Navigator.of(context).pop(); 
-
-      },
-      actionText: "Go to Course",
-    );
-  },
-);
-
+      // Show an error dialog with the stored error message
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return EnrollmentDialog(
+            press1: () {
+              Navigator.pop(context);
+            },
+            press2: () {
+              Navigator.pop(context);
+            },
+            theicon: Icon(
+              Icons.error,
+              color: Colors.red,
+              size: 60,
+            ),
+            title: "Enrollment Failed",
+            message: errorMessage.isNotEmpty
+                ? errorMessage
+                : "Enrollment failed. Please try again later.",
+                message2: "Take me Home",
+          );
+        },
+      );
     }
   }
 
@@ -238,7 +259,6 @@ showDialog(
                 Container(
                   height: 30.h,
                   child: TabBarView(
-                    
                     children: [
                       // Description tab content
                       Padding(
@@ -248,7 +268,9 @@ showDialog(
                           physics: BouncingScrollPhysics(),
                           child: Column(
                             children: [
-                              Text(widget.allCourses.description),
+                              Thetext(
+                                  thetext: widget.allCourses.description,
+                                  style: GoogleFonts.poppins()),
                               Padding(
                                 padding: const EdgeInsets.only(top: 30),
                                 child: Row(

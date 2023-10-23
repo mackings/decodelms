@@ -3,21 +3,21 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:sizer/sizer.dart';
 
-import 'package:flutter/material.dart';
-
 class EnrollmentDialog extends StatefulWidget {
   final String title;
   final String message;
-  final VoidCallback onClose;
-  final VoidCallback onAction;
-  final String actionText;
+  final String message2;
+  final VoidCallback press1;
+  final VoidCallback press2;
+  final Icon theicon;
 
   EnrollmentDialog({
     required this.title,
     required this.message,
-    required this.onClose,
-    required this.onAction,
-    required this.actionText,
+     required this.message2,
+    required this.press1,
+    required this.press2,
+    required this.theicon
   });
 
   @override
@@ -25,8 +25,6 @@ class EnrollmentDialog extends StatefulWidget {
 }
 
 class _EnrollmentDialogState extends State<EnrollmentDialog> {
-  bool _dismissable = false; // A flag to control dismissibility
-
   @override
   Widget build(BuildContext context) {
     return Dialog(
@@ -35,51 +33,53 @@ class _EnrollmentDialogState extends State<EnrollmentDialog> {
         decoration: BoxDecoration(borderRadius: BorderRadius.circular(10)),
         width: double.infinity,
         child: Column(
-          children: [
-            // Icon for success or failure
-                   Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                // Exit icon
-                IconButton(
-                  icon: Icon(Icons.close),
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                ),
-                if (!_dismissable)
-                  // Action icon (e.g., retry)
-                  IconButton(
-                    icon: Icon(Icons.refresh),
-                    onPressed: () {
-                      widget.onAction();
 
-                      setState(() {
-                        _dismissable = true;
-                      });
-                    },
-                  ),
-              ],
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(15.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  GestureDetector(
+                    onTap:widget.press1, 
+                    child: Icon(Icons.close))
+            
+                ],
+              ),
             ),
-            Icon(
-              _dismissable ? Icons.check : Icons.error,
-              size: 100,
-              color: _dismissable ? Colors.green : Colors.red,
-            ),
+            widget.theicon,
+
             Thetext(
-              thetext:widget.title,
+              thetext: widget.title,
               style: GoogleFonts.poppins(
                 fontWeight: FontWeight.bold,
-                fontSize: 18.sp
-
-              )
+                fontSize: 18.sp,
+              ),
             ),
-            Thetext(thetext:widget.message,style: GoogleFonts.poppins(),),
+            Thetext(
+              thetext: widget.message,
+              style: GoogleFonts.poppins(),
+            ),
 
+            SizedBox(height: 35,),
+
+            GestureDetector(
+              onTap: widget.press2,
+              child: Container(
+                height: 7.h,
+                width: 40.w,
+                decoration: BoxDecoration(
+                  color: Colors.blue,
+                  borderRadius: BorderRadius.circular(10)
+                ),
+                child: Center(child: Thetext(thetext: widget.message2, style: GoogleFonts.poppins(
+                  color: Colors.white
+                ))),
+              ),
+            )
           ],
         ),
       ),
     );
   }
 }
-
