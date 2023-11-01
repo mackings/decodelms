@@ -53,12 +53,14 @@ class _EnrollmentDialogState extends State<EnrollmentDialog> {
               thetext: widget.title,
               style: GoogleFonts.poppins(
                 fontWeight: FontWeight.bold,
-                fontSize: 18.sp,
+                fontSize: 15.sp,
               ),
             ),
             Thetext(
               thetext: widget.message,
-              style: GoogleFonts.poppins(),
+              style: GoogleFonts.poppins(
+                fontSize: 9.sp
+              ),
             ),
 
             SizedBox(height: 35,),

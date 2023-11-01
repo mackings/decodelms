@@ -1,11 +1,7 @@
 import 'dart:convert';
 
-import 'package:decodelms/models/coursemodel.dart';
-import 'package:decodelms/models/searchcourse.dart';
-import 'package:decodelms/views/course/coursestream.dart';
 import 'package:decodelms/views/course/enrolledcourses.dart';
 import 'package:decodelms/widgets/appbar.dart';
-import 'package:decodelms/widgets/course/coursenav.dart';
 import 'package:decodelms/widgets/course/dialogs.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -13,20 +9,37 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sizer/sizer.dart';
 import 'package:http/http.dart' as http;
 
-class CourseDetailsPage extends StatefulWidget {
-  final AllCourse allCourses;
-  //final List<Courseresults> searchCourses; // Corrected variable name
+class CourseDetailsBottomSheet extends StatefulWidget {
+  final String courseImage;
+  final String title;
+  final String description;
+  final double amount;
+  final VoidCallback onEnrollPressed;
+  final String themodules;
+  final String theid;
+  final String theenrolled;
 
-  const CourseDetailsPage({required this.allCourses});
+  CourseDetailsBottomSheet({
+    required this.courseImage,
+    required this.title,
+    required this.description,
+    required this.amount,
+    required this.onEnrollPressed,
+    required this.themodules,
+    required this.theid,
+    required this.theenrolled,
+  });
 
   @override
-  State<CourseDetailsPage> createState() => _CourseDetailsPageState();
+  State<CourseDetailsBottomSheet> createState() =>
+      _CourseDetailsBottomSheetState();
 }
 
-class _CourseDetailsPageState extends State<CourseDetailsPage> {
+class _CourseDetailsBottomSheetState extends State<CourseDetailsBottomSheet> {
   String? id;
 
   dynamic Token;
+
   bool isEnrolling = false;
 
   Future GetToken() async {
@@ -40,18 +53,6 @@ class _CourseDetailsPageState extends State<CourseDetailsPage> {
     } else {
       print("Token not found in shared preferences.");
     }
-  }
-
-  dynamic res;
-
-  @override
-  void initState() {
-    GetToken();
-    setState(() {
-      id = widget.allCourses.id;
-      print("ID is $id");
-    });
-    super.initState();
   }
 
   Future enroll() async {
@@ -204,28 +205,31 @@ class _CourseDetailsPageState extends State<CourseDetailsPage> {
     }
   }
 
+  dynamic res;
+
+  @override
+  void initState() {
+    GetToken();
+
+    setState(() {
+      id = widget.theid.toString();
+      print("ID is $id");
+    });
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
       length: 3,
       child: Scaffold(
         body: Padding(
-          padding: const EdgeInsets.only(left: 5, right: 5, top: 10),
+          padding: const EdgeInsets.only(left: 10, right: 10, top: 10),
           child: SingleChildScrollView(
             physics: BouncingScrollPhysics(),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                // Padding(
-                //   padding: const EdgeInsets.all(8.0),
-                //   child: ButtonRow(
-                //     title: "About Course",
-                //     leftButtonCallback: () {
-                //       Navigator.pop(context);
-                //     },
-                //     rightButtonCallback: () {},
-                //   ),
-                // ),
                 Padding(
                   padding: const EdgeInsets.only(
                     top: 40,
@@ -238,12 +242,11 @@ class _CourseDetailsPageState extends State<CourseDetailsPage> {
                             Navigator.pop(context);
                           },
                           child: Icon(Icons.arrow_back)),
-
-                          Thetext(thetext: "About Course", style: GoogleFonts.poppins(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 14.sp
-                          )),
-                          Text("")
+                      Thetext(
+                          thetext: "About Course",
+                          style: GoogleFonts.poppins(
+                              fontWeight: FontWeight.bold, fontSize: 14.sp)),
+                      Text("")
                     ],
                   ),
                 ),
@@ -258,7 +261,7 @@ class _CourseDetailsPageState extends State<CourseDetailsPage> {
                           height: 25.h,
                           decoration: BoxDecoration(
                             image: DecorationImage(
-                              image: NetworkImage(widget.allCourses.imageUrl),
+                              image: NetworkImage(widget.courseImage),
                               fit: BoxFit.cover,
                             ),
                           ),
@@ -272,7 +275,7 @@ class _CourseDetailsPageState extends State<CourseDetailsPage> {
                   child: Row(
                     children: [
                       Thetext(
-                          thetext: widget.allCourses.title,
+                          thetext: widget.title,
                           style: GoogleFonts.poppins(
                             fontWeight: FontWeight.bold,
                             fontSize: 15.sp,
@@ -298,7 +301,7 @@ class _CourseDetailsPageState extends State<CourseDetailsPage> {
                               children: [
                                 CircleAvatar(
                                   backgroundImage:
-                                      NetworkImage(widget.allCourses.imageUrl),
+                                      NetworkImage(widget.courseImage),
                                 ),
                                 Padding(
                                   padding: const EdgeInsets.all(8.0),
@@ -354,7 +357,7 @@ class _CourseDetailsPageState extends State<CourseDetailsPage> {
                           child: Column(
                             children: [
                               Thetext(
-                                  thetext: widget.allCourses.description,
+                                  thetext: widget.description,
                                   style: GoogleFonts.poppins()),
                               Padding(
                                 padding: const EdgeInsets.only(top: 30),
@@ -379,7 +382,7 @@ class _CourseDetailsPageState extends State<CourseDetailsPage> {
                                                 thetext: "Price",
                                                 style: GoogleFonts.poppins()),
                                             Thetext(
-                                                thetext: '0.0',
+                                                thetext: "N ${widget.amount.toString()}",
                                                 style: GoogleFonts.poppins()),
                                           ],
                                         ),
@@ -423,9 +426,10 @@ class _CourseDetailsPageState extends State<CourseDetailsPage> {
                                           children: [
                                             Thetext(
                                                 thetext: widget
-                                                    .allCourses.enrolled
+                                                    .theenrolled
                                                     .toString(),
                                                 style: GoogleFonts.poppins()),
+
                                             Thetext(
                                                 thetext: "Enrolled",
                                                 style: GoogleFonts.poppins()),
@@ -441,36 +445,34 @@ class _CourseDetailsPageState extends State<CourseDetailsPage> {
                         ),
                       ),
 
-                      // Modules tab content
+                      //Modules tab content
                       ListView.builder(
-                        itemCount: widget.allCourses.modules.length,
+                        itemCount: widget.themodules.length,
                         itemBuilder: (context, index) {
-                          final module = widget.allCourses.modules[index];
+                          final module = widget.themodules;
                           return Padding(
-                            padding: const EdgeInsets.only(left: 30, right: 30,bottom: 10),
+                            padding: const EdgeInsets.only(left: 30, right: 30),
                             child: GestureDetector(
                               onTap: () {
-                                print(module.videoUrl);
-
+                                print(module.toString());
                               },
                               child: Container(
                                 height: 10.h,
                                 width: 5.w,
                                 decoration: BoxDecoration(
                                    // color: Colors.blue,
-                                   border: Border.all(width: 0.5,color: Colors.black),
+                                    border: Border.all(width: 0.5,color: Colors.black),
                                     borderRadius: BorderRadius.circular(10)),
-                                    
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.center,
                                   children: [
                                     ListTile(
                                       title: Thetext(
-                                          thetext: module.title,
+                                          thetext: widget.themodules,
                                           style: GoogleFonts.poppins()),
                                       leading: Icon(Icons.play_circle,color: Colors.blue,),
                                       subtitle: Thetext(
-                                          thetext: module.description,
+                                          thetext: 'Learning Resources',
                                           style: GoogleFonts.poppins()),
                                     ),
                                   ],

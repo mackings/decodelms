@@ -52,11 +52,12 @@ class _RequestresetState extends State<Requestreset> {
   Future Update() async {
     String errorMessage = '';
     dynamic payload =
-        jsonEncode({"token": Thetoken.text, "passord": Thepassword.text});
+        jsonEncode({"token": Thetoken.text, "password": Thepassword.text});
     try {
       final response = await http.post(
           Uri.parse("https://decode-mnjh.onrender.com/api/user/resetpassword"),
           headers: {
+            
             "Content-Type": "application/json",
             'Authorization': 'Bearer $Token',
           },

@@ -46,6 +46,7 @@ dependencies:
   state_notifier: ^1.0.0
   http: ^1.1.0
   google_fonts: ^5.1.0
+  modal_bottom_sheet: ^3.0.0-pre
   flutter_webrtc: ^0.9.45
   flutter_background: ^1.2.0
   permission_handler: ^11.0.1

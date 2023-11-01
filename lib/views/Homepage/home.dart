@@ -118,7 +118,7 @@ class _HomepageState extends ConsumerState<Homepage> {
                               context,
                               MaterialPageRoute(
                                   builder: (context) =>
-                                      StreamPage(courseId: "")));
+                                      SearchScreen()));
                         },
                         onChanged: (value) {
                           setState(() {
