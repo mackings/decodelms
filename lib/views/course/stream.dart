@@ -27,7 +27,7 @@ class _StreamPageState extends State<StreamPage> {
   late VideoPlayerController videoPlayerController;
   late CustomVideoPlayerController _customVideoPlayerController;
   int currentModuleIndex = 0;
-    var quizId = '6528640d0d54e1fd2cab0950';
+  var quizId = '6528640d0d54e1fd2cab0950';
 
   Future<void> getToken() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -294,6 +294,7 @@ class _StreamPageState extends State<StreamPage> {
                         },
                         child: Text('Attempt Quiz'),
                       ),
+                      
                     ],
                   );
                 }

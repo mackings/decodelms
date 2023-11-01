@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:decodelms/views/videocalls/videocall.dart';
+import 'package:decodelms/views/videocalls/joincall.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart' as http;

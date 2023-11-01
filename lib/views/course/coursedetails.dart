@@ -101,11 +101,72 @@ class _CourseDetailsPageState extends State<CourseDetailsPage> {
             );
           },
         );
-      } else if (response.statusCode == 400) {
+      } else if (response.statusCode == 409) {
         var data = jsonDecode(response.body);
-        errorMessage = data['message']; // Set the error message
+        print(data);
 
-        throw Exception(response.body);
+        setState(() {
+          errorMessage = data['message'];
+        });
+
+        setState(() {
+          isEnrolling = false;
+        });
+
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return EnrollmentDialog(
+              press1: () {
+                Navigator.pop(context);
+              },
+              press2: () {
+                Navigator.pop(context);
+              },
+              theicon: Icon(
+                Icons.error,
+                color: Colors.red,
+                size: 60,
+              ),
+              title: "Enrollment Failed",
+              message: errorMessage.isNotEmpty
+                  ? errorMessage
+                  : "Enrollment failed. Please try again later.",
+              message2: "Take me Home",
+            );
+          },
+        );
+
+        // throw Exception(response.body);
+      } else {
+        setState(() {
+          isEnrolling = false;
+        });
+
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return EnrollmentDialog(
+              press1: () {
+                Navigator.pop(context);
+              },
+              press2: () {
+                Navigator.pop(context);
+              },
+              theicon: Icon(
+                Icons.error,
+                color: Colors.red,
+                size: 60,
+              ),
+              title: "Enrollment Failed",
+              message: errorMessage.isNotEmpty
+                  ? errorMessage
+                  : "Enrollment failed. Please try again later.",
+              message2: "Take me Home",
+            );
+          },
+        );
+        print(response.body);
       }
     } catch (error) {
       print('Error is $error');
@@ -113,7 +174,8 @@ class _CourseDetailsPageState extends State<CourseDetailsPage> {
         isEnrolling = false;
       });
 
-      // Show an error dialog with the stored error message
+      print(res);
+
       showDialog(
         context: context,
         builder: (BuildContext context) {
@@ -133,7 +195,7 @@ class _CourseDetailsPageState extends State<CourseDetailsPage> {
             message: errorMessage.isNotEmpty
                 ? errorMessage
                 : "Enrollment failed. Please try again later.",
-                message2: "Take me Home",
+            message2: "Take me Home",
           );
         },
       );
@@ -152,14 +214,35 @@ class _CourseDetailsPageState extends State<CourseDetailsPage> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
+                // Padding(
+                //   padding: const EdgeInsets.all(8.0),
+                //   child: ButtonRow(
+                //     title: "About Course",
+                //     leftButtonCallback: () {
+                //       Navigator.pop(context);
+                //     },
+                //     rightButtonCallback: () {},
+                //   ),
+                // ),
                 Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: ButtonRow(
-                    title: "About Course",
-                    leftButtonCallback: () {
-                      Navigator.pop(context);
-                    },
-                    rightButtonCallback: () {},
+                  padding: const EdgeInsets.only(
+                    top: 40,
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      GestureDetector(
+                          onTap: () {
+                            Navigator.pop(context);
+                          },
+                          child: Icon(Icons.arrow_back)),
+
+                          Thetext(thetext: "About Course", style: GoogleFonts.poppins(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 14.sp
+                          )),
+                          Text("")
+                    ],
                   ),
                 ),
                 Padding(

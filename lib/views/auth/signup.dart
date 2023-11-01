@@ -1,15 +1,20 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:decodelms/apis/authclass.dart';
+import 'package:decodelms/models/user.dart';
 import 'package:decodelms/views/auth/signin.dart';
 import 'package:decodelms/widgets/appbar.dart';
 import 'package:decodelms/widgets/authdialog.dart';
 import 'package:decodelms/widgets/buttons.dart';
+import 'package:decodelms/widgets/course/dialogs.dart';
 import 'package:decodelms/widgets/formfields.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sizer/sizer.dart';
+import 'package:http/http.dart' as http;
 
 class Signup extends ConsumerStatefulWidget {
   const Signup({super.key});
@@ -23,11 +28,94 @@ class _SignupState extends ConsumerState<Signup> {
   bool isuncheked = false;
   bool loading = false;
   final api = Api();
+  dynamic err;
+
+  Register UserRegister() {
+    return Register(
+      firstname: firstname.text,
+      lastname: lastname.text,
+      email: email.text,
+      phone: phone.text,
+      password: password.text,
+    );
+  }
+
+  TextEditingController firstname = TextEditingController();
+  TextEditingController lastname = TextEditingController();
+  TextEditingController email = TextEditingController();
+  TextEditingController phone = TextEditingController();
+  TextEditingController password = TextEditingController();
+
+  Future signup(Register register) async {
+    dynamic payload = jsonEncode({
+      "firstName": register.firstname,
+      "lastName": register.lastname,
+      "email": register.email,
+      "phoneNumber": register.phone,
+      "password": register.password
+    });
+    final response = await http.post(
+        Uri.parse("https://decode-mnjh.onrender.com/api/user/signup"),
+        body: payload,
+        headers: {
+          "Content-Type": "application/json",
+        });
+
+    if (response.statusCode == 201) {
+      Map<String, dynamic> theres = jsonDecode(response.body);
+      setState(() {
+        err = theres['message'];
+      });
+
+      print("success");
+      print(theres);
+      setState(() {
+        loading = false;
+      });
+
+      showDialog(
+          context: context,
+          builder: (context) {
+            return EnrollmentDialog(
+                title: "Registered Successfully",
+                message: "Welcome to Decode LMS",
+                message2: 'Procced',
+                press1: () {
+                  Navigator.pop(context);
+                },
+                press2: () {
+                  Navigator.pop(context);
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) {
+                        return Signin(); // Replace with the widget for the new screen
+                      },
+                    ),
+                  );
+                },
+                theicon: Icon(
+                  Icons.check_circle,
+                  size: 60,
+                  color: Colors.blue,
+                ));
+          });
+    } else {
+      Map<String, dynamic> theres = jsonDecode(response.body);
+      setState(() {
+        err = theres['message'];
+      });
+      print("failed");
+      print(payload);
+      throw Exception(response.body);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final thetheme = ref.watch(api.themeprovider.notifier);
 
-    return TheBar(
+    return TheBars(
         callback: () {},
         thebody: Column(
           children: [
@@ -37,10 +125,17 @@ class _SignupState extends ConsumerState<Signup> {
                 children: [
                   Column(
                     children: [
-                      Thetext(
-                        thetext: "Create your account",
-                        style: GoogleFonts.poppins(
-                            fontSize: 20.sp, fontWeight: FontWeight.bold),
+                      GestureDetector(
+                        onTap: () {
+                          setState(() {
+                            loading = false;
+                          });
+                        },
+                        child: Thetext(
+                          thetext: "Create your account",
+                          style: GoogleFonts.poppins(
+                              fontSize: 20.sp, fontWeight: FontWeight.bold),
+                        ),
                       ),
                       Thetext(
                         thetext:
@@ -55,81 +150,121 @@ class _SignupState extends ConsumerState<Signup> {
               ),
             ),
             SizedBox(
-              height: 6.h,
-            ),
-            TheFormfield(
-              value: "Enter Email",
-              prefix: Icon(Icons.email),
-            ),
-            SizedBox(
-              height: 5.h,
-            ),
-            TheFormfield(
-              value: "Enter Phone Number",
-              prefix: Icon(Icons.phone),
-            ),
-            SizedBox(
-              height: 5.h,
-            ),
-            TheFormfield(
-              value: "Enter Password",
-              prefix: Icon(Icons.lock),
-              suffix: Icon(Icons.visibility),
-            ),
-            SizedBox(
               height: 2.h,
             ),
             Padding(
-              padding: const EdgeInsets.fromLTRB(120.0, 0.0, 120.0, 5.0),
-              child: Row(
-                children: [
-                  Checkbox(
-                      value: isuncheked,
-                      onChanged: (value) {
-                        ref.read(api.themeprovider.notifier).state = 1;
-
-                        setState(() {
-                          isuncheked = value!;
-
-                          print(value);
-                          print(thetheme.state);
-                        });
-                      }),
-                  Thetext(
-                    thetext: "Remember Me",
-                    style: GoogleFonts.poppins(),
-                  )
-                ],
+              padding: const EdgeInsets.only(bottom: 20, top: 5),
+              child: TheFormfield(
+                controller: firstname,
+                value: "Enter First Name",
+                prefix: Icon(Icons.person),
               ),
             ),
+            Padding(
+              padding: const EdgeInsets.only(bottom: 20, top: 5),
+              child: TheFormfield(
+                controller: lastname,
+                value: "Enter Last Name",
+                prefix: Icon(Icons.person),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(bottom: 20, top: 5),
+              child: TheFormfield(
+                controller: email,
+                value: "Enter Email",
+                prefix: Icon(Icons.email),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(bottom: 20, top: 5),
+              child: TheFormfield(
+                controller: phone,
+                value: "Enter Phone Number",
+                prefix: Icon(Icons.phone),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(bottom: 20, top: 5),
+              child: TheFormfield(
+                controller: password,
+                value: "Enter Password",
+                prefix: Icon(Icons.lock),
+                suffix: Icon(Icons.visibility),
+              ),
+            ),
+            SizedBox(
+              height: 4.h,
+            ),
             loading
-                ? Apidialog(
-  message: "Login successful",
-  isSuccess: true, 
-  onClose: () {
-    Navigator.of(context).pop(); // Close the dialog
-  },
-)
+                ? CircularProgressIndicator()
                 : Mybuttons(
-                    callback: () {
-                      print("Yoo");
+                    callback: () async {
                       setState(() {
                         loading = true;
-
-                        Timer(Duration(seconds: 2), () {
-                          setState(() {
-                            loading = false;
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => Signin()));
-                          });
-                        });
                       });
+
+                      try {
+                        dynamic response = await signup(UserRegister());
+
+                        if (response != null) {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => Signin()));
+                        } else {}
+                      } catch (e) {
+                        print(e);
+                        setState(() {
+                          loading = false;
+                        });
+                        showDialog(
+                            context: context,
+                            builder: (context) {
+                              return EnrollmentDialog(
+                                  title: "Error Registering User",
+                                  message: "$err",
+                                  message2: 'Close',
+                                  press1: () {
+                                    Navigator.pop(context);
+                                  },
+                                  press2: () {
+                                    Navigator.pop(context);
+                                  },
+                                  theicon: Icon(
+                                    Icons.error,
+                                    size: 60,
+                                    color: Colors.red,
+                                  ));
+                            });
+                      }
                     },
                     buttontxt: "Register",
                     btncolor: Colors.blue,
                   ),
+            Padding(
+              padding: const EdgeInsets.only(left: 30, right: 30, top: 12),
+              child: Row(
+                //mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Thetext(
+                      thetext: "Existing User?", style: GoogleFonts.poppins()),
+                  SizedBox(
+                    width: 3.w,
+                  ),
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.push(context,
+                          MaterialPageRoute(builder: (context) => Signin()));
+                    },
+                    child: Thetext(
+                        thetext: "Sign In",
+                        style: GoogleFonts.poppins(
+                            fontWeight: FontWeight.bold, color: Colors.blue)),
+                  )
+                ],
+              ),
+            )
           ],
         ));
   }

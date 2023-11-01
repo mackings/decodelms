@@ -10,7 +10,15 @@ class Enrolledcourses extends StatefulWidget {
   State<Enrolledcourses> createState() => _EnrolledcoursesState();
 }
 
+
 class _EnrolledcoursesState extends State<Enrolledcourses> {
+
+  @override
+  void dispose() {
+    
+    // TODO: implement dispose
+    super.dispose();
+  }
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
@@ -50,7 +58,8 @@ class _EnrolledcoursesState extends State<Enrolledcourses> {
           child: TabBarView(
             children: [
               Column(
-                children: [Expanded(child: CourseCarouselSlider2())],
+                children: [
+                  Expanded(child: GestureDetector(child: CourseCarouselSlider2()))],
               ),
               Center(child: Text('Other Tab Content')),
             ],

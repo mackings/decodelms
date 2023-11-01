@@ -2,8 +2,8 @@
     package="com.example.decodelms">
    <application
         android:label="decodelms"
+         android:usesCleartextTraffic="true"
         android:name="${applicationName}"
-        android:usesCleartextTraffic="true">
         android:icon="@mipmap/ic_launcher">
 
         

@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:decodelms/models/coursemodel.dart';
 import 'package:decodelms/views/course/coursedetails.dart';
+import 'package:decodelms/views/course/stream.dart';
 import 'package:decodelms/widgets/appbar.dart';
 import 'package:decodelms/widgets/course/coursecard.dart';
 import 'package:flutter/material.dart';
@@ -99,8 +100,7 @@ class _CourseCarouselSliderState extends State<CourseCarouselSlider> {
             // No courses found, display a message
             return Center(
                 child: Thetext(
-                    thetext:
-                        "You have not Enrolled Yet",
+                    thetext: "You have not Enrolled Yet",
                     style: GoogleFonts.poppins()));
           }
         }
@@ -157,7 +157,6 @@ class _AllCourseCarouselSliderState extends State<AllCourseCarouselSlider> {
       throw Exception('Failed to load courses');
     }
   }
-
 
 //AllCourse
   @override
@@ -297,10 +296,19 @@ class _CourseCarouselSlider2State extends State<CourseCarouselSlider2> {
               child: ListView.builder(
                 itemCount: courses.length,
                 itemBuilder: (context, index) {
-                  final course = courses[index];
+
+                  final course = courses[index];                 
                   return Padding(
                     padding: EdgeInsets.only(bottom: 20), // Adjust this spacing
-                    child: CourseEnrolledCard2(course: course),
+                    child: GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) =>
+                                      StreamPage(courseId: course.id)));
+                        },
+                        child: CourseEnrolledCard2(course: course)),
                     // child: AllCourseCard(allCourse: null),
                   );
                 },
@@ -310,8 +318,7 @@ class _CourseCarouselSlider2State extends State<CourseCarouselSlider2> {
             // No courses found, display a message
             return Center(
               child: Thetext(
-                thetext:
-                    "You are not Enrolled Yet",
+                thetext: "You are not Enrolled Yet",
                 style: GoogleFonts.poppins(),
               ),
             );

@@ -3,9 +3,12 @@ import 'dart:async';
 import 'package:decodelms/apis/authclass.dart';
 import 'package:decodelms/models/user.dart';
 import 'package:decodelms/views/Homepage/home.dart';
+import 'package:decodelms/views/auth/reqpassrest.dart';
+import 'package:decodelms/views/videocalls/joincall.dart';
 import 'package:decodelms/widgets/appbar.dart';
 import 'package:decodelms/widgets/authdialog.dart';
 import 'package:decodelms/widgets/buttons.dart';
+import 'package:decodelms/widgets/course/dialogs.dart';
 import 'package:decodelms/widgets/formfields.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -28,6 +31,7 @@ class _SigninState extends ConsumerState<Signin> {
   bool loading = false;
 
   final api = Api();
+  dynamic err;
   TextEditingController email = TextEditingController();
   TextEditingController password = TextEditingController();
 
@@ -57,6 +61,10 @@ class _SigninState extends ConsumerState<Signin> {
       print("success");
       return data;
     } else {
+      Map<String, dynamic> theres = jsonDecode(response.body);
+      setState(() {
+        err = theres['message'];
+      });
       print("failed");
       print(payload);
       throw Exception(response.body);
@@ -75,6 +83,7 @@ class _SigninState extends ConsumerState<Signin> {
               child: Row(
                 children: [
                   Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Thetext(
                         thetext: "Login to your account",
@@ -155,18 +164,33 @@ class _SigninState extends ConsumerState<Signin> {
                                 MaterialPageRoute(
                                     builder: (context) => Homepage()));
                           } else {
-                            showDialog(
-                                context: context,
-                                builder: (context) {
-                                  return Text("Login Failed");
-                                });
+                            setState(() {
+                              loading = false;
+                            });
                           }
                         } catch (e) {
                           print(e);
+                          setState(() {
+                            loading = false;
+                          });
                           showDialog(
                               context: context,
                               builder: (context) {
-                                return Text("An error occurred during sign-in");
+                                return EnrollmentDialog(
+                                    title: "Error Logging in",
+                                    message: "$err",
+                                    message2: 'Close',
+                                    press1: () {
+                                      Navigator.pop(context);
+                                    },
+                                    press2: () {
+                                      Navigator.pop(context);
+                                    },
+                                    theicon: Icon(
+                                      Icons.error,
+                                      size: 60,
+                                      color: Colors.red,
+                                    ));
                               });
                         }
                       },
@@ -177,9 +201,18 @@ class _SigninState extends ConsumerState<Signin> {
             SizedBox(
               height: 2.h,
             ),
-            Thetext(
-              thetext: "Forgot password?",
-              style: GoogleFonts.poppins(color: Colors.blue),
+            GestureDetector(
+              onTap: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) =>
+                            Requestreset()));
+              },
+              child: Thetext(
+                thetext: "Forgot password?",
+                style: GoogleFonts.poppins(color: Colors.blue),
+              ),
             )
           ],
         ));
