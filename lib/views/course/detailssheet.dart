@@ -319,7 +319,7 @@ class _CourseDetailsBottomSheetState extends State<CourseDetailsBottomSheet> {
                   ),
                 ),
                 Padding(
-                  padding: const EdgeInsets.only(left: 20, right: 20),
+                  padding: const EdgeInsets.only(left: 10, right: 10),
                   child: TabBar(
                     indicatorColor: Colors.black,
                     tabs: [
@@ -351,23 +351,23 @@ class _CourseDetailsBottomSheetState extends State<CourseDetailsBottomSheet> {
                       // Description tab content
                       Padding(
                         padding:
-                            const EdgeInsets.only(left: 25, right: 25, top: 30),
+                            const EdgeInsets.only(left: 10, right: 10, top: 15,bottom: 15),
                         child: SingleChildScrollView(
                           physics: BouncingScrollPhysics(),
                           child: Column(
-                            children: [
+                            children: [ 
                               Thetext(
                                   thetext: widget.description,
                                   style: GoogleFonts.poppins()),
                               Padding(
-                                padding: const EdgeInsets.only(top: 30),
+                                padding: const EdgeInsets.only(top: 20),
                                 child: Row(
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceBetween,
                                   children: [
                                     Container(
-                                      width: 25.w,
-                                      height: 8.h,
+                                      width: 29.w,
+                                      height: 9.h,
                                       decoration: BoxDecoration(
                                           border: Border.all(width: 1.0),
                                           borderRadius:
@@ -490,31 +490,34 @@ class _CourseDetailsBottomSheetState extends State<CourseDetailsBottomSheet> {
                     ],
                   ),
                 ),
-                GestureDetector(
-                  onTap: isEnrolling
-                      ? null
-                      : enroll, // Disable the button when enrolling
-                  child: Padding(
-                    padding:
-                        const EdgeInsets.only(left: 20, right: 20, bottom: 10),
-                    child: Container(
-                      height: 7.h,
-                      width: MediaQuery.of(context).size.width - 20,
-                      decoration: BoxDecoration(
-                        color: isEnrolling ? Colors.grey : Colors.blue,
-                        borderRadius: BorderRadius.circular(25),
-                      ),
-                      child: Center(
-                        child: isEnrolling
-                            ? CircularProgressIndicator(
-                                valueColor:
-                                    AlwaysStoppedAnimation<Color>(Colors.white))
-                            : Thetext(
-                                thetext: "Enroll",
-                                style: GoogleFonts.poppins(
-                                  color: Colors.white,
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: GestureDetector(
+                    onTap: isEnrolling
+                        ? null
+                        : enroll, // Disable the button when enrolling
+                    child: Padding(
+                      padding:
+                          const EdgeInsets.only(left: 20, right: 20, bottom: 10),
+                      child: Container(
+                        height: 7.h,
+                        width: MediaQuery.of(context).size.width - 20,
+                        decoration: BoxDecoration(
+                          color: isEnrolling ? Colors.grey : Colors.blue,
+                          borderRadius: BorderRadius.circular(25),
+                        ),
+                        child: Center(
+                          child: isEnrolling
+                              ? CircularProgressIndicator(
+                                  valueColor:
+                                      AlwaysStoppedAnimation<Color>(Colors.white))
+                              : Thetext(
+                                  thetext: "Enroll",
+                                  style: GoogleFonts.poppins(
+                                    color: Colors.white,
+                                  ),
                                 ),
-                              ),
+                        ),
                       ),
                     ),
                   ),

@@ -172,14 +172,7 @@ class _StreamPageState extends State<StreamPage> {
           final firstModule = courseDetail.result.first;
           if (firstModule.video.isNotEmpty) {
             loadVideo(firstModule.video.first.path);
-            // vidurl = firstModule.video.first.path;
-            // videoPlayerController =
-            //     VideoPlayerController.networkUrl(Uri.parse(vidurl))
-            //       ..initialize().then((value) => setState(() {}));
-            // _customVideoPlayerController = CustomVideoPlayerController(
-            //   context: context,
-            //   videoPlayerController: videoPlayerController,
-            // );
+
           }
         }
       });
@@ -189,20 +182,34 @@ class _StreamPageState extends State<StreamPage> {
     });
   }
 
-  void loadVideo(String videoUrl) {
-    videoPlayerController =
-        VideoPlayerController.networkUrl(Uri.parse(videoUrl))
-          ..initialize().then((_) {
-            // Initialize and play the video
-            videoPlayerController.play();
-            setState(() {});
-          });
 
-    _customVideoPlayerController = CustomVideoPlayerController(
-      context: context,
-      videoPlayerController: videoPlayerController,
-    );
-  }
+  void loadVideo(String videoUrl) {
+  videoPlayerController =
+      VideoPlayerController.networkUrl(Uri.parse(videoUrl))
+        ..initialize().then((_) {
+          // Initialize and play the video
+          videoPlayerController.play();
+          Duration totalDuration = videoPlayerController.value.duration;
+          String totalDurationString = formatDuration(totalDuration);
+
+          print('Total Video Duration: $totalDurationString');
+          
+          setState(() {});
+        });
+
+  _customVideoPlayerController = CustomVideoPlayerController(
+    context: context,
+    videoPlayerController: videoPlayerController,
+  );
+}
+
+String formatDuration(Duration duration) {
+  String twoDigits(int n) => n.toString().padLeft(2, '0');
+  String twoDigitMinutes = twoDigits(duration.inMinutes.remainder(60));
+  String twoDigitSeconds = twoDigits(duration.inSeconds.remainder(60));
+  return '${twoDigits(duration.inHours)}:$twoDigitMinutes:$twoDigitSeconds';
+}
+
 
   void loadNextVideo() async {
     final courseDetail = await futureCourseDetail;

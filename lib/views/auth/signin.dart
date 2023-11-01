@@ -122,28 +122,28 @@ class _SigninState extends ConsumerState<Signin> {
             SizedBox(
               height: 2.h,
             ),
-            Padding(
-              padding: const EdgeInsets.fromLTRB(100.0, 0.0, 100.0, 5.0),
-              child: Row(
-                children: [
-                  Checkbox(
-                      value: isuncheked,
-                      onChanged: (value) {
-                        ref.read(api.themeprovider.notifier).state = 1;
+            Row(
+              children: [
+                Checkbox(
+                    value: isuncheked,
+                    onChanged: (value) {
+                      ref.read(api.themeprovider.notifier).state = 1;
 
-                        setState(() {
-                          isuncheked = value!;
+                      setState(() {
+                        isuncheked = value!;
 
-                          print(value);
-                          print(thetheme.state);
-                        });
-                      }),
-                  Thetext(
-                    thetext: "Remember Me",
-                    style: GoogleFonts.poppins(),
-                  )
-                ],
-              ),
+                        print(value);
+                        print(thetheme.state);
+                      });
+                    }),
+                Thetext(
+                  thetext: "Remember Me",
+                  style: GoogleFonts.poppins(),
+                )
+              ],
+            ),
+               SizedBox(
+              height: 2.h,
             ),
             Padding(
               padding: const EdgeInsets.all(8.0),

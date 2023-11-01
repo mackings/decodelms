@@ -348,7 +348,7 @@ class _CourseDetailsPageState extends State<CourseDetailsPage> {
                       // Description tab content
                       Padding(
                         padding:
-                            const EdgeInsets.only(left: 25, right: 25, top: 30),
+                            const EdgeInsets.only(left: 20, right: 20, top: 30),
                         child: SingleChildScrollView(
                           physics: BouncingScrollPhysics(),
                           child: Column(
@@ -357,11 +357,12 @@ class _CourseDetailsPageState extends State<CourseDetailsPage> {
                                   thetext: widget.allCourses.description,
                                   style: GoogleFonts.poppins()),
                               Padding(
-                                padding: const EdgeInsets.only(top: 30),
+                                padding: const EdgeInsets.only(top: 10,bottom: 10),
                                 child: Row(
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceBetween,
                                   children: [
+
                                     Container(
                                       width: 25.w,
                                       height: 8.h,
@@ -385,6 +386,8 @@ class _CourseDetailsPageState extends State<CourseDetailsPage> {
                                         ),
                                       ),
                                     ),
+
+
                                     Container(
                                       width: 25.w,
                                       height: 8.h,
@@ -408,6 +411,7 @@ class _CourseDetailsPageState extends State<CourseDetailsPage> {
                                         ),
                                       ),
                                     ),
+
                                     Container(
                                       width: 25.w,
                                       height: 8.h,
@@ -457,7 +461,6 @@ class _CourseDetailsPageState extends State<CourseDetailsPage> {
                                 height: 10.h,
                                 width: 5.w,
                                 decoration: BoxDecoration(
-                                   // color: Colors.blue,
                                    border: Border.all(width: 0.5,color: Colors.black),
                                     borderRadius: BorderRadius.circular(10)),
                                     
@@ -469,9 +472,6 @@ class _CourseDetailsPageState extends State<CourseDetailsPage> {
                                           thetext: module.title,
                                           style: GoogleFonts.poppins()),
                                       leading: Icon(Icons.play_circle,color: Colors.blue,),
-                                      subtitle: Thetext(
-                                          thetext: module.description,
-                                          style: GoogleFonts.poppins()),
                                     ),
                                   ],
                                 ),

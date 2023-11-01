@@ -4,6 +4,7 @@ import 'package:decodelms/views/course/coursedetails.dart';
 import 'package:decodelms/views/course/detailssheet.dart';
 import 'package:decodelms/views/course/results.dart';
 import 'package:decodelms/views/course/searchresults.dart';
+import 'package:decodelms/widgets/appbar.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
@@ -137,35 +138,50 @@ class _SearchScreenState extends State<SearchScreen> {
                   child: ListView.builder(
                     itemCount: searchResults.length,
                     itemBuilder: (context, index) {
-                      return ListTile(
-                        title: Text(searchResults[index].courseTitle),
-                        subtitle: GestureDetector(
-                            onTap: () {
-                              print(searchResults[index].id);
-                              print(searchResults[index].modules.length);
-                              
-                              showMaterialModalBottomSheet(
-                                enableDrag: true,
-                                context: context,
-                                builder: (context) => CourseDetailsBottomSheet(
-                                  courseImage: searchResults[index]
-                                      .courseImages[index]
-                                      .path,
-                                  title: searchResults[index].courseTitle,
-                                  description:
-                                      searchResults[index].courseDescription,
-                                  amount: searchResults[index]
-                                      .isPriceCourse
-                                      .toDouble(),
-                                  themodules: searchResults[index].modules.length.toString(),
-                                  theid:searchResults[index].id.toString(),
-                                  theenrolled:searchResults[index].totalRegisteredByStudent.toString(),
-                                  onEnrollPressed: () {},
-                                ),
-                              );
-                            },
-                            child:
-                                Text(searchResults[index].courseDescription)),
+                      return Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Container(
+                          decoration: BoxDecoration(
+                            border: Border.all(width: 0.5,color: Colors.black),
+                            borderRadius: BorderRadius.circular(10)
+                          ),
+                          child: Padding(
+                            padding: const EdgeInsets.all(10.0),
+                            child: ListTile(
+                              title: Thetext(thetext: searchResults[index].courseTitle, style: GoogleFonts.poppins(
+                                fontWeight: FontWeight.bold
+                              )),
+                              trailing: Icon(Icons.check_circle,color: Colors.blue,),
+                              subtitle: GestureDetector(
+                                  onTap: () {
+                                    print(searchResults[index].id);
+                                    print(searchResults[index].modules.length);
+                                    
+                                    showMaterialModalBottomSheet(
+                                      enableDrag: true,
+                                      context: context,
+                                      builder: (context) => CourseDetailsBottomSheet(
+                                        courseImage: searchResults[index]
+                                            .courseImages[index]
+                                            .path,
+                                        title: searchResults[index].courseTitle,
+                                        description:
+                                            searchResults[index].courseDescription,
+                                        amount: searchResults[index]
+                                            .isPriceCourse
+                                            .toDouble(),
+                                        themodules: searchResults[index].modules.length.toString(),
+                                        theid:searchResults[index].id.toString(),
+                                        theenrolled:searchResults[index].totalRegisteredByStudent.toString(),
+                                        onEnrollPressed: () {},
+                                      ),
+                                    );
+                                  },
+                                  child:
+                                      Thetext(thetext: searchResults[index].courseDescription, style: GoogleFonts.poppins())),
+                            ),
+                          ),
+                        ),
                       );
                     },
                   ),

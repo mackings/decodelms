@@ -16,7 +16,8 @@ class QuizPage extends StatefulWidget {
 }
 
 class _QuizPageState extends State<QuizPage> {
-  final String baseUrl = 'https://decode-mnjh.onrender.com/api/quizes';
+
+  final String baseUrl = 'https://decode-mnjh.onrender.com/api/quizes/';
   late String? token;
   late Quiz _quiz;
   List<int?> selectedAnswers = [];
@@ -28,7 +29,7 @@ class _QuizPageState extends State<QuizPage> {
     _fetchToken();
     // Load the quiz after a delay
     Timer(Duration(seconds: 2), () {
-     // _loadQuiz();
+     _loadQuiz();
     });
   }
 
@@ -47,40 +48,40 @@ class _QuizPageState extends State<QuizPage> {
     }
   }
 
-  // Future<Quiz?> _loadQuiz() async {
-  //   try {
-  //     final response = await http.get(
-  //       Uri.parse('$baseUrl/${widget.quizId}'),
-  //       headers: {
-  //         'Authorization': 'Bearer $token',
-  //         'Content-Type': 'application/json',
-  //       },
-  //     );
+  Future<Quiz?> _loadQuiz() async {
+    try {
+      final response = await http.get(
+        Uri.parse('$baseUrl/${widget.quizId}'),
+        headers: {
+          'Authorization': 'Bearer $token',
+          'Content-Type': 'application/json',
+        },
+      );
 
-  //     if (response.statusCode == 200) {
-  //       final json = jsonDecode(response.body);
-  //       final quiz = Quiz.fromJson(json); // Parse the entire response
+      if (response.statusCode == 200) {
+        final json = jsonDecode(response.body);
+        final quiz = Quiz.fromJson(json); // Parse the entire response
 
-  //       // Initialize selectedAnswers with the correct size and default values
-  //       selectedAnswers =
-  //           List<int?>.generate(quiz.questions.length, (index) => -1);
+        // Initialize selectedAnswers with the correct size and default values
+        selectedAnswers =
+            List<int?>.generate(quiz.questions.length, (index) => -1);
 
-  //       setState(() {
-  //         _quiz = quiz;
-  //       });
+        setState(() {
+          _quiz = quiz;
+        });
 
-  //       return quiz;
-  //     } else {
-  //       // Handle the case when the quiz is not loaded
-  //       print('Failed to load quiz: ${response.statusCode}');
-  //       return null; // Return null to indicate that the quiz wasn't loaded
-  //     }
-  //   } catch (e) {
-  //     // Handle network errors here
-  //     print('Error loading quiz: $e');
-  //     return null; // Return null in case of errors
-  //   }
-  // }
+        return quiz;
+      } else {
+      
+        print('Failed to load quiz: ${response.statusCode}');
+        return null; 
+      }
+    } catch (e) {
+      // Handle network errors here
+      print('Error loading quiz: $e');
+      return null; // Return null in case of errors
+    }
+  }
 
   Future<int> _submitQuiz(
       String quizId, QuizSubmission submission, String token) async {

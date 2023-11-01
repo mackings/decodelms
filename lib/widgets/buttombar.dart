@@ -22,93 +22,21 @@ class _MyBottomNavigationBarState extends State<MyBottomNavigationBar> {
       type: BottomNavigationBarType.fixed,
       items: [
         BottomNavigationBarItem(
-          icon: Container(
-            width: 40.0,
-            height: 40.0,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              color: Colors.blue,
-            ),
-            child: CircleAvatar(
-              backgroundColor: Colors.transparent,
-              child: Icon(
-                Icons.home,
-                color: Colors.white,
-              ),
-            ),
-          ),
+          icon: Icon(Icons.home),
           label: 'Home',
         ),
         BottomNavigationBarItem(
-          icon: Container(
-            width: 40.0,
-            height: 40.0,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              color: Colors.blue,
-            ),
-            child: CircleAvatar(
-              backgroundColor: Colors.transparent,
-              child: Icon(
-                Icons.search,
-                color: Colors.white,
-              ),
-            ),
-          ),
+          icon: Icon(Icons.search),
           label: 'Search',
+          
         ),
+
         BottomNavigationBarItem(
-          icon: Container(
-            width: 40.0,
-            height: 40.0,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              color: Colors.blue,
-            ),
-            child: CircleAvatar(
-              backgroundColor: Colors.transparent,
-              child: Icon(
-                Icons.library_books,
-                color: Colors.white,
-              ),
-            ),
-          ),
-          label: 'Library',
-        ),
-        BottomNavigationBarItem(
-          icon: Container(
-            width: 40.0,
-            height: 40.0,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              color: Colors.blue,
-            ),
-            child: CircleAvatar(
-              backgroundColor: Colors.transparent,
-              child: Icon(
-                Icons.notifications,
-                color: Colors.white,
-              ),
-            ),
-          ),
+          icon: Icon(Icons.notifications),
           label: 'Notifications',
         ),
         BottomNavigationBarItem(
-          icon: Container(
-            width: 40.0,
-            height: 40.0,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              color: Colors.blue,
-            ),
-            child: CircleAvatar(
-              backgroundColor: Colors.transparent,
-              child: Icon(
-                Icons.person,
-                color: Colors.white,
-              ),
-            ),
-          ),
+          icon: Icon(Icons.person),
           label: 'Profile',
         ),
       ],

@@ -59,7 +59,7 @@ class _EnrollmentDialogState extends State<EnrollmentDialog> {
             Thetext(
               thetext: widget.message,
               style: GoogleFonts.poppins(
-                fontSize: 9.sp
+                fontSize: 10.sp
               ),
             ),
 

@@ -12,6 +12,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sizer/sizer.dart';
 import 'package:shimmer/shimmer.dart';
+import 'package:badges/badges.dart' as badges;
 
 class Homepage extends ConsumerStatefulWidget {
   const Homepage({super.key});
@@ -58,30 +59,20 @@ class _HomepageState extends ConsumerState<Homepage> {
                   Column(
                     children: [
                       Thetext(
-                          thetext: "Hello Macs", style: GoogleFonts.poppins()),
+                          thetext: "Welcome back", style: GoogleFonts.poppins()),
                     ],
                   ),
                   Row(
                     children: [
-                      CircleAvatar(
-                        radius: 15,
-                      ),
+      badges.Badge(
+        badgeStyle: badges.BadgeStyle(badgeColor: Colors.blue),
+      badgeContent: Text('0',style: GoogleFonts.poppins(color: Colors.white),),
+      child: Icon(Icons.local_activity),
+    ),
                       SizedBox(
                         width: 3.w,
                       ),
-                      GestureDetector(
-                          onTap: () {
-                            // Navigator.push(
-                            //     context,
-                            //     MaterialPageRoute(
-                            //         builder: (context) => JoinScreen(
-                            //             selfCallerId: selfCallerID)));
-                      Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => JoinCallPage(roomId: 'loom', selfCallerId:"123456")));
-                          },
-                          child: Icon(Icons.notifications))
+
                     ],
                   ),
                 ],
@@ -91,7 +82,7 @@ class _HomepageState extends ConsumerState<Homepage> {
                   Column(
                     children: [
                       Thetext(
-                          thetext: "Let's learn\ntogether",
+                          thetext: "Let's learn\ntogether.",
                           style: GoogleFonts.poppins(
                               fontWeight: FontWeight.bold, fontSize: 20.sp)),
                     ],
@@ -156,7 +147,7 @@ class _HomepageState extends ConsumerState<Homepage> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Thetext(
-                        thetext: "Continue to course",
+                        thetext: "Continue to Course",
                         style: GoogleFonts.poppins()),
                     GestureDetector(
                       onTap: () {

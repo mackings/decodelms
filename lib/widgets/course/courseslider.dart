@@ -71,7 +71,7 @@ class _CourseCarouselSliderState extends State<CourseCarouselSlider> {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return AllCourseCardShimmer();
         } else if (snapshot.hasError) {
-          return Text('Error: ${snapshot.error}');
+          return AllCourseCardShimmer();
         } else {
           final courses = snapshot.data;
 
@@ -192,7 +192,7 @@ class _AllCourseCarouselSliderState extends State<AllCourseCarouselSlider> {
             ),
           );
         } else if (snapshot.hasError) {
-          return Text('Error: ${snapshot.error}');
+          return AllCourseCardShimmer();
         } else if (snapshot.hasData) {
           final allCourses = snapshot.data;
           return Padding(
@@ -296,8 +296,7 @@ class _CourseCarouselSlider2State extends State<CourseCarouselSlider2> {
               child: ListView.builder(
                 itemCount: courses.length,
                 itemBuilder: (context, index) {
-
-                  final course = courses[index];                 
+                  final course = courses[index];
                   return Padding(
                     padding: EdgeInsets.only(bottom: 20), // Adjust this spacing
                     child: GestureDetector(
