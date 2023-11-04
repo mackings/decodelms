@@ -49,7 +49,7 @@ class _SignupState extends ConsumerState<Signup> {
   Future signup(Register register) async {
     dynamic payload = jsonEncode({
       "firstName": register.firstname,
-      "lastName": register.lastname,
+      "lastName": "User",
       "email": register.email,
       "phoneNumber": register.phone,
       "password": register.password
@@ -156,18 +156,18 @@ class _SignupState extends ConsumerState<Signup> {
               padding: const EdgeInsets.only(bottom: 20, top: 5),
               child: TheFormfield(
                 controller: firstname,
-                value: "Enter First Name",
+                value: "Enter Username",
                 prefix: Icon(Icons.person),
               ),
             ),
-            Padding(
-              padding: const EdgeInsets.only(bottom: 20, top: 5),
-              child: TheFormfield(
-                controller: lastname,
-                value: "Enter Last Name",
-                prefix: Icon(Icons.person),
-              ),
-            ),
+            // Padding(
+            //   padding: const EdgeInsets.only(bottom: 20, top: 5),
+            //   child: TheFormfield(
+            //     controller: lastname,
+            //     value: "Enter Last Name",
+            //     prefix: Icon(Icons.person),
+            //   ),
+            // ),
             Padding(
               padding: const EdgeInsets.only(bottom: 20, top: 5),
               child: TheFormfield(
@@ -243,7 +243,7 @@ class _SignupState extends ConsumerState<Signup> {
                     btncolor: Colors.blue,
                   ),
             Padding(
-              padding: const EdgeInsets.only(left: 30, right: 30, top: 12),
+              padding: const EdgeInsets.only(left: 30, right: 30, top: 30),
               child: Row(
                 //mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [

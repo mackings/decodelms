@@ -5,6 +5,7 @@ import 'package:decodelms/views/course/detailssheet.dart';
 import 'package:decodelms/views/course/results.dart';
 import 'package:decodelms/views/course/searchresults.dart';
 import 'package:decodelms/widgets/appbar.dart';
+import 'package:decodelms/widgets/buttombar.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
@@ -36,6 +37,13 @@ class _SearchScreenState extends State<SearchScreen> {
     }
   }
 
+  void _onTabTapped(int index) {
+    // setState(() {
+    //   0 = index;
+    // });
+  }
+void call(){}
+
   TextEditingController searchController = TextEditingController();
   List<Courseresults> searchResults = [];
 
@@ -45,7 +53,8 @@ class _SearchScreenState extends State<SearchScreen> {
         headers: {
           "Content-Type": "application/json",
           'Authorization': 'Bearer $Token',
-        });
+        }
+        );
 
     if (response.statusCode == 200) {
       final jsonResponse = json.decode(response.body);
@@ -84,7 +93,11 @@ class _SearchScreenState extends State<SearchScreen> {
                           onTap: () {
                             Navigator.pop(context);
                           },
-                          child: Icon(Icons.arrow_back)),
+                          child: Thetext(thetext: "Search", style:GoogleFonts.poppins(
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black,
+                            fontSize: 15.sp
+                          ))),
                     ],
                   ),
                 ),
@@ -92,6 +105,7 @@ class _SearchScreenState extends State<SearchScreen> {
                   padding: const EdgeInsets.only(top: 30, left: 10, right: 10),
                   child: Container(
                     height: 40.sp,
+
                     width: MediaQuery.of(context).size.width - 1.w,
                     decoration: BoxDecoration(
                       color: const Color.fromARGB(255, 211, 218, 224),
@@ -138,7 +152,8 @@ class _SearchScreenState extends State<SearchScreen> {
                   child: ListView.builder(
                     itemCount: searchResults.length,
                     itemBuilder: (context, index) {
-                      return Padding(
+                      return searchResults.isEmpty? const CircularProgressIndicator():
+                      Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: Container(
                           decoration: BoxDecoration(
@@ -189,8 +204,16 @@ class _SearchScreenState extends State<SearchScreen> {
               ],
             ),
           ),
+
+          bottomNavigationBar: MyBottomNavigationBar(currentIndex: 0, onTabTapped:_onTabTapped ),
         );
+
+        
       },
     );
+
+    
   }
 }
+
+

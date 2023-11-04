@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:decodelms/views/course/allcourse.dart';
 import 'package:decodelms/views/course/enrolledcourses.dart';
 import 'package:decodelms/views/course/search.dart';
 import 'package:decodelms/views/course/stream.dart';
@@ -59,20 +60,23 @@ class _HomepageState extends ConsumerState<Homepage> {
                   Column(
                     children: [
                       Thetext(
-                          thetext: "Welcome back", style: GoogleFonts.poppins()),
+                          thetext: "Welcome back",
+                          style: GoogleFonts.poppins()),
                     ],
                   ),
                   Row(
                     children: [
-      badges.Badge(
-        badgeStyle: badges.BadgeStyle(badgeColor: Colors.blue),
-      badgeContent: Text('0',style: GoogleFonts.poppins(color: Colors.white),),
-      child: Icon(Icons.local_activity),
-    ),
+                      badges.Badge(
+                        badgeStyle: badges.BadgeStyle(badgeColor: Colors.blue),
+                        badgeContent: Text(
+                          '0',
+                          style: GoogleFonts.poppins(color: Colors.white),
+                        ),
+                        child: Icon(Icons.local_activity),
+                      ),
                       SizedBox(
                         width: 3.w,
                       ),
-
                     ],
                   ),
                 ],
@@ -108,8 +112,7 @@ class _HomepageState extends ConsumerState<Homepage> {
                           Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) =>
-                                      SearchScreen()));
+                                  builder: (context) => SearchScreen()));
                         },
                         onChanged: (value) {
                           setState(() {
@@ -176,9 +179,17 @@ class _HomepageState extends ConsumerState<Homepage> {
                     Thetext(
                         thetext: "Most browsed through",
                         style: GoogleFonts.poppins()),
-                    Thetext(
-                        thetext: "See more",
-                        style: GoogleFonts.poppins(color: Colors.blue)),
+                    GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => allCoursesPage()));
+                      },
+                      child: Thetext(
+                          thetext: "See more",
+                          style: GoogleFonts.poppins(color: Colors.blue)),
+                    ),
                   ],
                 ),
               ),

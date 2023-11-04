@@ -59,6 +59,7 @@ class _SigninState extends ConsumerState<Signin> {
       print("Token saved in shared preferences.");
 
       print("success");
+      print(data);
       return data;
     } else {
       Map<String, dynamic> theres = jsonDecode(response.body);
@@ -142,7 +143,7 @@ class _SigninState extends ConsumerState<Signin> {
                 )
               ],
             ),
-               SizedBox(
+            SizedBox(
               height: 2.h,
             ),
             Padding(
@@ -203,11 +204,8 @@ class _SigninState extends ConsumerState<Signin> {
             ),
             GestureDetector(
               onTap: () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) =>
-                            Requestreset()));
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => Requestreset()));
               },
               child: Thetext(
                 thetext: "Forgot password?",

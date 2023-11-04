@@ -1,3 +1,9 @@
+import 'package:decodelms/views/Homepage/home.dart';
+import 'package:decodelms/views/course/allcourse.dart';
+import 'package:decodelms/views/course/calls.dart';
+import 'package:decodelms/views/course/search.dart';
+import 'package:flutter/material.dart';
+
 import 'package:flutter/material.dart';
 
 class MyBottomNavigationBar extends StatefulWidget {
@@ -14,6 +20,7 @@ class MyBottomNavigationBar extends StatefulWidget {
 }
 
 class _MyBottomNavigationBarState extends State<MyBottomNavigationBar> {
+
   @override
   Widget build(BuildContext context) {
     return BottomNavigationBar(
@@ -22,22 +29,45 @@ class _MyBottomNavigationBarState extends State<MyBottomNavigationBar> {
       type: BottomNavigationBarType.fixed,
       items: [
         BottomNavigationBarItem(
-          icon: Icon(Icons.home),
+          icon: GestureDetector(
+            onTap: () {
+                       Navigator.pushReplacement(context,
+                  MaterialPageRoute(builder: (context) => Homepage()));
+            },
+            child: Icon(Icons.home),
+          ),
           label: 'Home',
         ),
         BottomNavigationBarItem(
-          icon: Icon(Icons.search),
+          icon: GestureDetector(
+            onTap: () {
+          Navigator.pushReplacement(context,
+                  MaterialPageRoute(builder: (context) => SearchScreen()));
+            },
+            child: Icon(Icons.search),
+          ),
           label: 'Search',
-          
-        ),
-
-        BottomNavigationBarItem(
-          icon: Icon(Icons.notifications),
-          label: 'Notifications',
         ),
         BottomNavigationBarItem(
-          icon: Icon(Icons.person),
-          label: 'Profile',
+          icon: GestureDetector(
+            onTap: () {
+                            Navigator.pushReplacement(context,
+                  MaterialPageRoute(builder: (context) => allCoursesPage()));
+            },
+            child: Icon(Icons.play_circle),
+          ),
+          label: 'Courses',
+        ),
+        BottomNavigationBarItem(
+          icon: GestureDetector(
+            onTap: () {
+                            Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => Calls()));
+             
+            },
+            child: Icon(Icons.video_chat),
+          ),
+          label: 'Live lessons',
         ),
       ],
     );

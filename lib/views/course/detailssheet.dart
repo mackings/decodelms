@@ -366,8 +366,8 @@ class _CourseDetailsBottomSheetState extends State<CourseDetailsBottomSheet> {
                                       MainAxisAlignment.spaceBetween,
                                   children: [
                                     Container(
-                                      width: 29.w,
-                                      height: 9.h,
+                                      width: 25.w,
+                                      height: 8.h,
                                       decoration: BoxDecoration(
                                           border: Border.all(width: 1.0),
                                           borderRadius:
