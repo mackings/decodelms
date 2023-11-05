@@ -89,8 +89,8 @@ class _CourseDetailsPageState extends State<CourseDetailsPage> {
                 Navigator.pop(context);
               },
               press2: () {
-                Navigator.pushReplacement(context,
-                    MaterialPageRoute(builder: (context) => Enrolledcourses()));
+                Navigator.pop(context);
+                Navigator.pop(context);
               },
               theicon: Icon(
                 Icons.check_circle,
@@ -238,12 +238,11 @@ class _CourseDetailsPageState extends State<CourseDetailsPage> {
                             Navigator.pop(context);
                           },
                           child: Icon(Icons.arrow_back)),
-
-                          Thetext(thetext: "About Course", style: GoogleFonts.poppins(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 14.sp
-                          )),
-                          Text("")
+                      Thetext(
+                          thetext: "About Course",
+                          style: GoogleFonts.poppins(
+                              fontWeight: FontWeight.bold, fontSize: 14.sp)),
+                      Text("")
                     ],
                   ),
                 ),
@@ -357,12 +356,12 @@ class _CourseDetailsPageState extends State<CourseDetailsPage> {
                                   thetext: widget.allCourses.description,
                                   style: GoogleFonts.poppins()),
                               Padding(
-                                padding: const EdgeInsets.only(top: 10,bottom: 10),
+                                padding:
+                                    const EdgeInsets.only(top: 30, bottom: 10),
                                 child: Row(
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceBetween,
                                   children: [
-
                                     Container(
                                       width: 25.w,
                                       height: 8.h,
@@ -386,8 +385,6 @@ class _CourseDetailsPageState extends State<CourseDetailsPage> {
                                         ),
                                       ),
                                     ),
-
-
                                     Container(
                                       width: 25.w,
                                       height: 8.h,
@@ -411,7 +408,6 @@ class _CourseDetailsPageState extends State<CourseDetailsPage> {
                                         ),
                                       ),
                                     ),
-
                                     Container(
                                       width: 25.w,
                                       height: 8.h,
@@ -451,19 +447,19 @@ class _CourseDetailsPageState extends State<CourseDetailsPage> {
                         itemBuilder: (context, index) {
                           final module = widget.allCourses.modules[index];
                           return Padding(
-                            padding: const EdgeInsets.only(left: 30, right: 30,bottom: 10),
+                            padding: const EdgeInsets.only(
+                                left: 30, right: 30, bottom: 10),
                             child: GestureDetector(
                               onTap: () {
                                 print(module.videoUrl);
-
                               },
                               child: Container(
                                 height: 10.h,
                                 width: 5.w,
                                 decoration: BoxDecoration(
-                                   border: Border.all(width: 0.5,color: Colors.black),
+                                    border: Border.all(
+                                        width: 0.5, color: Colors.black),
                                     borderRadius: BorderRadius.circular(10)),
-                                    
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.center,
                                   children: [
@@ -471,7 +467,10 @@ class _CourseDetailsPageState extends State<CourseDetailsPage> {
                                       title: Thetext(
                                           thetext: module.title,
                                           style: GoogleFonts.poppins()),
-                                      leading: Icon(Icons.play_circle,color: Colors.blue,),
+                                      leading: Icon(
+                                        Icons.play_circle,
+                                        color: Colors.blue,
+                                      ),
                                     ),
                                   ],
                                 ),

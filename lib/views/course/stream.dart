@@ -24,13 +24,12 @@ class StreamPage extends StatefulWidget {
 }
 
 class _StreamPageState extends State<StreamPage> {
-  Future<CourseDetailResponse>? futureCourseDetail;
+  Future<ApiResponse>? futureCourseDetail;
 
   String? token;
   late VideoPlayerController videoPlayerController;
   late CustomVideoPlayerController _customVideoPlayerController;
   int currentModuleIndex = 0;
-  var quizId = '6528640d0d54e1fd2cab0950';
 
   Future<void> getToken() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -45,83 +44,40 @@ class _StreamPageState extends State<StreamPage> {
     }
   }
 
-  // Future<CourseDetailResponse> fetchCourseDetailById(
-  //     String courseId, String? token) async {
-  //   final baseUrl =
-  //       "https://decode-mnjh.onrender.com/api/student/studentViewCourse/$courseId";
+Future<ApiResponse> fetchCourseDetailById(
+  String courseId, String? token) async {
+  final baseUrl = "https://decode-mnjh.onrender.com/api/student/studentViewCourse/$courseId";
 
-  //   final response = await http.get(
-  //     Uri.parse(baseUrl),
-  //     headers: {
-  //       'Authorization': 'Bearer $token',
-  //       'Content-Type': 'application/json',
-  //     },
-  //   );
+  final response = await http.get(
+    Uri.parse(baseUrl),
+    headers: {
+      'Authorization': 'Bearer $token',
+      'Content-Type': 'application/json',
+    },
+  );
 
-  //   if (response.statusCode == 200) {
-  //     final data = json.decode(response.body);
-  //     if (data['result'] is List) {
-  //       final result = data['result'] as List;
-  //       if (result.isNotEmpty) {
-  //         final modules = result.map((moduleData) {
-  //           return CourseModuleResponse.fromJson(moduleData);
-  //         }).toList();
-  //         return CourseDetailResponse(
-  //             message: "Course details fetched successfully",
-  //             result: modules,
-  //             comments: []);
-  //       }
-  //     }
-  //     throw Exception(
-  //         'Course details not found or data structure is incorrect.');
-  //   }
-  //   throw Exception('Failed to load course details: ${response.body}');
-  // }
+  if (response.statusCode == 200) {
+    final data = json.decode(response.body);
+    try {
+      final message = data['message'];
+      final resultData = data['result'] as List<dynamic>; // Cast to List<dynamic>
+      final List<CourseModule> result = resultData
+          .map((moduleData) => CourseModule.fromJson(moduleData))
+          .toList();
 
-  Future<CourseDetailResponse> fetchCourseDetailById(
-      String courseId, String? token) async {
-    final baseUrl =
-        "https://decode-mnjh.onrender.com/api/student/studentViewCourse/$courseId";
-
-    final response = await http.get(
-      Uri.parse(baseUrl),
-      headers: {
-        'Authorization': 'Bearer $token',
-        'Content-Type': 'application/json',
-      },
-    );
-
-    if (response.statusCode == 200) {
-      final data = json.decode(response.body);
-      try {
-        if (data['result'] is List) {
-          final result = data['result'] as List;
-          if (result.isNotEmpty) {
-            final modules = result.map((moduleData) {
-              return CourseModule.fromJson(moduleData);
-            }).toList();
-
-            final comments = data['comments'] is List
-                ? data['comments'].map((comment) {
-                    return Comment.fromJson(comment);
-                  }).toList()
-                : [];
-
-            return CourseDetailResponse(
-              message: data['message'],
-              result: modules,
-            );
-          }
-        }
-        throw Exception(
-            'Course details not found or data structure is incorrect.');
-      } catch (e) {
-        throw Exception('Failed to parse API response: $e');
-      }
-    } else {
-      throw Exception('Failed to load course details: ${response.body}');
+      return ApiResponse(
+        message: message,
+        result: result,
+      );
+    } catch (e) {
+      throw Exception('Failed to parse API response: $e');
     }
+  } else {
+    throw Exception('Failed to load course details: ${response.body}');
   }
+}
+
+
 
   // Future<CommentResponse> fetchCommentById(String commentId) async {
   //   final baseUrl = "https://decode-mnjh.onrender.com/api/comments/$commentId";
@@ -291,17 +247,6 @@ class _StreamPageState extends State<StreamPage> {
     }
   }
 
-  //   void navigateToQuizPage(String quizId) {
-  //   Navigator.push(
-  //     context,
-  //     MaterialPageRoute(
-  //       builder: (context) => QuizPage(quizId: quizId),
-  //     ),
-  //   ).then((value) {
-  //     loadNextVideo();
-  //   });
-  // }
-
   List<VideoPlayerController> videoControllers = [];
   dynamic MID;
 
@@ -317,114 +262,115 @@ class _StreamPageState extends State<StreamPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
-      appBar: AppBar(
-        title: Text('Course Detail'),
         backgroundColor: Colors.white,
-        elevation: 0,
-        leading: GestureDetector(
-          onTap: () {
-            Navigator.pop(context);
-          },
-          child: Icon(
-            Icons.arrow_back,
-            color: Colors.black,
+        appBar: AppBar(
+          title: Text('Course Detail'),
+          backgroundColor: Colors.white,
+          elevation: 0,
+          leading: GestureDetector(
+            onTap: () {
+              Navigator.pop(context);
+            },
+            child: Icon(
+              Icons.arrow_back,
+              color: Colors.black,
+            ),
           ),
         ),
-      ),
-      body: futureCourseDetail == null
-          ? Center(child: CircularProgressIndicator())
-          : FutureBuilder<CourseDetailResponse>(
-              future: futureCourseDetail,
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return Center(child: CircularProgressIndicator());
-                } else if (snapshot.hasError) {
-                  print(snapshot.error);
-                  return Center(child: Text('Error: ${snapshot.error}'));
-                } else if (!snapshot.hasData) {
-                  return Center(child: Text('No data available.'));
-                } else {
-                  final courseDetail = snapshot.data!;
-                  final module = courseDetail.result[currentModuleIndex];
+        body: futureCourseDetail == null
+            ? Center(child: CircularProgressIndicator())
+            : FutureBuilder<ApiResponse>(
+                future: futureCourseDetail,
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return Center(child: CircularProgressIndicator());
+                  } else if (snapshot.hasError) {
+                    print(snapshot.error);
+                    return Center(child: Text('Error: ${snapshot.error}'));
+                  } else if (!snapshot.hasData) {
+                    return Center(child: Text('No data available.'));
+                  } else {
+                    final apiResponse = snapshot.data!;
+                    final module = apiResponse.result[currentModuleIndex];
 
-                  return Column(
-                    children: [
-                      Center(
-                          child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Thetext(
-                            thetext: module.moduleTitle,
-                            style: GoogleFonts.poppins()),
-                      )),
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: SafeArea(
-                          child: CustomVideoPlayer(
-                            customVideoPlayerController:
-                                _customVideoPlayerController,
+                    return Column(
+                      children: [
+                        Center(
+                            child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Thetext(
+                              thetext: module.moduleTitle,
+                              style: GoogleFonts.poppins()),
+                        )),
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: SafeArea(
+                            child: CustomVideoPlayer(
+                              customVideoPlayerController:
+                                  _customVideoPlayerController,
+                            ),
                           ),
                         ),
-                      ),
-                      SizedBox(
-                        height: 5.h,
-                      ),
-                      GestureDetector(
-                        onTap: () async {
-                          final courseDetail = await futureCourseDetail;
+                        SizedBox(
+                          height: 5.h,
+                        ),
+                        GestureDetector(
+                          onTap: () async {
+                            final courseDetail = await futureCourseDetail;
 
-                          if (courseDetail != null) {
-                            final currentModule =
-                                courseDetail.result[currentModuleIndex];
+                            if (courseDetail != null) {
+                              final currentModule =
+                                  courseDetail.result[currentModuleIndex];
 
-                            if (currentModule.quizzes.isNotEmpty && videoPlayerController != null) {
-                              videoPlayerController.pause();
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => QuizPage(
-                                      quizId: currentModule.quizzes.first),
-                                ),
-                              );
-                            } else if (currentModuleIndex <
-                                courseDetail.result.length - 1) {
-                              final nextModule =
-                                  courseDetail.result[currentModuleIndex + 1];
-
-                              if (nextModule.quizzes.isNotEmpty) {
-                               // videoPlayerController.pause();
-                                
+                              if (currentModule.quizzes.isNotEmpty &&
+                                  videoPlayerController != null) {
+                                videoPlayerController.pause();
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
                                     builder: (context) => QuizPage(
-                                        quizId: nextModule.quizzes.first),
+                                        quizId: currentModule.quizzes.first),
                                   ),
                                 );
-                              } else {
-                                loadNextVideo();
+                              } else if (currentModuleIndex <
+                                  courseDetail.result.length - 1) {
+                                final nextModule =
+                                    courseDetail.result[currentModuleIndex + 1];
+
+                                if (nextModule.quizzes.isNotEmpty) {
+                                  // videoPlayerController.pause();
+
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => QuizPage(
+                                          quizId: nextModule.quizzes.first),
+                                    ),
+                                  );
+                                } else {
+                                  loadNextVideo();
+                                }
                               }
-                            }
-                          } else {}
-                        },
-                        child: Container(
-                          height: 7.h,
-                          width: MediaQuery.of(context).size.width - 10.w,
-                          decoration: BoxDecoration(
-                              color: Colors.blue,
-                              borderRadius: BorderRadius.circular(10)),
-                          child: Center(
-                              child: Thetext(
-                                  thetext: "Next Module",
-                                  style: GoogleFonts.poppins(
-                                      color: Colors.white))),
-                        ),
-                      )
-                    ],
-                  );
-                }
-              },
-            ),
-    );
+                            } else {}
+                          },
+                          child: Container(
+                            height: 7.h,
+                            width: MediaQuery.of(context).size.width - 10.w,
+                            decoration: BoxDecoration(
+                                color: Colors.blue,
+                                borderRadius: BorderRadius.circular(10)),
+                            child: Center(
+                                child: Thetext(
+                                    thetext: "Next Module",
+                                    style: GoogleFonts.poppins(
+                                        color: Colors.white))),
+                          ),
+                        )
+                      ],
+                    );
+                  }
+                },
+              )
+              );
   }
 }

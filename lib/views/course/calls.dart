@@ -7,6 +7,7 @@ import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:decodelms/models/meetings.dart';
 import 'package:clipboard/clipboard.dart';
+import 'package:sizer/sizer.dart';
 
 class Calls extends StatefulWidget {
   const Calls({super.key});
@@ -64,16 +65,52 @@ class _CallsState extends State<Calls> {
     }
   }
 
+  Future<void> scheduleMeeting() async {
+    final url = Uri.parse(
+        'https://decode-mnjh.onrender.com/api/admin/adminScheduleMeeting');
+
+    final headers = {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer $Token',
+    };
+
+    final body = json.encode({
+      "email": "ebisedi@yahoo.com",
+      "description": "ebisedi@yahoo.com",
+      "date": "12/12/2022",
+      "time": "10:00AM",
+      "courseName": "React",
+    });
+
+    final response = await http.post(
+      url,
+      headers: headers,
+      body: body,
+    );
+
+    if (response.statusCode == 201) {
+           print(response.body);
+    } else {
+      // Meeting scheduling failed
+      print(response.body);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
           backgroundColor: Colors.white,
           elevation: 0,
-          title: Thetext(
-              thetext: "Live lessons",
-              style: GoogleFonts.poppins(
-                  fontWeight: FontWeight.bold, color: Colors.black))),
+          title: GestureDetector(
+            onTap: () {
+              scheduleMeeting();
+            },
+            child: Thetext(
+                thetext: "Live lessons",
+                style: GoogleFonts.poppins(
+                    fontWeight: FontWeight.bold, color: Colors.black)),
+          )),
       body: FutureBuilder<List<Meeting>>(
         future: futureMeetings,
         builder: (context, snapshot) {
@@ -105,50 +142,61 @@ class _CallsState extends State<Calls> {
                             border:
                                 Border.all(width: 0.5, color: Colors.black)),
                         padding: EdgeInsets.all(
-                            16.0), // Adjust the padding as needed
+                            16.0), 
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text(
-                                  meeting.courseName,
-                                  style: TextStyle(
-                                    fontWeight: FontWeight
-                                        .bold, // Add styling as needed
-                                    fontSize: 18, // Add your desired font size
-                                  ),
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.only(
-                                    top: 10,
-                                    bottom: 10,
-                                  ),
-                                  child: Text(
-                                    'By: ${meeting.instructor}',
-                                    style: TextStyle(
-                                      fontSize:
-                                          14, // Add your desired font size
+                                Thetext(
+                                    thetext: meeting.courseName,
+                                    style: GoogleFonts.poppins(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 13.sp
+                                    )),
+
+                                    Row(
+                                      children: [
+                                        Icon(Icons.access_time,color: Colors.blue,),
+                                        Padding(
+                                          padding: const EdgeInsets.all(8.0),
+                                          child: Row(
+                                            children: [
+                                              Thetext(thetext: meeting.time, style: GoogleFonts.poppins()),
+                                              SizedBox(width: 2.w,),
+                                              Thetext(thetext: meeting.date, style: GoogleFonts.poppins()),
+
+                                            ],
+                                          ),
+                                        ),
+                                      ],
                                     ),
-                                  ),
-                                ),
-                                Row(
-                                  children: [
-                                    Icon(Icons.calendar_month),
-                                    Text(
-                                      '  ${meeting.date} ${meeting.time}',
-                                      style: TextStyle(
-                                        fontSize:
-                                            14, // Add your desired font size
-                                      ),
+
+
+                                         Row(
+                                      children: [
+                                        Icon(Icons.person,color: Colors.blue,),
+                                        Padding(
+                                          padding: const EdgeInsets.all(8.0),
+                                          child: Row(
+                                            children: [
+                                              //Thetext(thetext: meeting.time, style: GoogleFonts.poppins()),
+                                             // SizedBox(width: 2.w,),
+                                              Thetext(thetext: meeting.instructor, style: GoogleFonts.poppins()),
+
+                                            ],
+                                          ),
+                                        ),
+                                      ],
                                     ),
-                                  ],
-                                ),
+
                               ],
                             ),
+
+                            
                             IconButton(
-                              icon: Icon(Icons.copy),
+                              icon: Icon(Icons.copy),  
                               onPressed: () {
                                 FlutterClipboard.copy(
                                         "https://decode-lms.netlify.app/lecture/${meeting.room}")

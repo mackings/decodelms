@@ -78,7 +78,7 @@ class _SignupState extends ConsumerState<Signup> {
           builder: (context) {
             return EnrollmentDialog(
                 title: "Registered Successfully",
-                message: "Welcome to Decode LMS",
+                message: "Check email inbox for Verification",
                 message2: 'Procced',
                 press1: () {
                   Navigator.pop(context);
@@ -124,6 +124,7 @@ class _SignupState extends ConsumerState<Signup> {
               child: Row(
                 children: [
                   Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       GestureDetector(
                         onTap: () {
@@ -139,7 +140,7 @@ class _SignupState extends ConsumerState<Signup> {
                       ),
                       Thetext(
                         thetext:
-                            "Get started by creating an account or by \nsigning in with your socials  ",
+                            "Get started by creating an account or\nsigning in as an exisiting user  ",
                         style: GoogleFonts.poppins(
                           fontSize: 10.sp,
                         ),
@@ -239,7 +240,7 @@ class _SignupState extends ConsumerState<Signup> {
                             });
                       }
                     },
-                    buttontxt: "Register",
+                    buttontxt: "Create Account",
                     btncolor: Colors.blue,
                   ),
             Padding(

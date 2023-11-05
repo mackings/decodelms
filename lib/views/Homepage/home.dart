@@ -61,7 +61,9 @@ class _HomepageState extends ConsumerState<Homepage> {
                     children: [
                       Thetext(
                           thetext: "Welcome back",
-                          style: GoogleFonts.poppins()),
+                          style: GoogleFonts.poppins(
+                            fontWeight: FontWeight.bold
+                          )),
                     ],
                   ),
                   Row(
@@ -121,7 +123,7 @@ class _HomepageState extends ConsumerState<Homepage> {
                         },
                         decoration: InputDecoration(
                           hintStyle: GoogleFonts.poppins(color: Colors.black),
-                          hintText: "Search Course",
+                          hintText: "Search a Course",
                           suffixIcon: Container(
                             height: 40.sp, // Same height as the TextFormField
                             width: 40.sp, // Custom width for the container

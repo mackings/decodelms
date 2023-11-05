@@ -100,7 +100,7 @@ class _CourseCarouselSliderState extends State<CourseCarouselSlider> {
             // No courses found, display a message
             return Center(
                 child: Thetext(
-                    thetext: "You have not Enrolled Yet",
+                    thetext: "You have not Enrolled for a Course",
                     style: GoogleFonts.poppins()));
           }
         }
@@ -317,7 +317,7 @@ class _CourseCarouselSlider2State extends State<CourseCarouselSlider2> {
             // No courses found, display a message
             return Center(
               child: Thetext(
-                thetext: "You are not Enrolled Yet",
+                thetext: "You have not Enrolled for a Course",
                 style: GoogleFonts.poppins(),
               ),
             );
