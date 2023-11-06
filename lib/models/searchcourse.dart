@@ -52,17 +52,17 @@ class Courseresults {
   });
 
   factory Courseresults.fromJson(Map<String, dynamic> json) {
-    final List<dynamic> reviewsData = json['reviews'];
+    final List<dynamic> reviewsData = json['reviews'] ?? [];
     final List<Review> reviews = reviewsData
         .map((reviewData) => Review.fromJson(reviewData))
         .toList();
 
-    final List<dynamic> courseImagesData = json['course_image'];
+    final List<dynamic> courseImagesData = json['course_image']?? [];
     final List<CourseImage> courseImages = courseImagesData
         .map((courseImageData) => CourseImage.fromJson(courseImageData))
         .toList();
 
-    final List<dynamic> modulesData = json['modules'];
+    final List<dynamic> modulesData = json['modules']?? [];
     final List<Module> modules = modulesData
         .map((moduleData) => Module.fromJson(moduleData))
         .toList();
@@ -187,8 +187,8 @@ class Module {
   });
 
 factory Module.fromJson(Map<String, dynamic> json) {
-  List<Map<String, String>?> imageList = (json['image'] as List<dynamic>)
-      .map((imageJson) {
+  List<Map<String, String>?>? imageList = (json['image'] as List<dynamic>?)
+      ?.map((imageJson) {
         if (imageJson is Map<String, String>) {
           return Map<String, String>.from(imageJson);
         } else if (imageJson is String) {
@@ -200,8 +200,8 @@ factory Module.fromJson(Map<String, dynamic> json) {
       .where((image) => image != null)
       .toList();
 
-  List<Map<String, String>?> videoList = (json['video'] as List<dynamic>)
-      .map((videoJson) {
+  List<Map<String, String>?>? videoList = (json['video'] as List<dynamic>?)
+      ?.map((videoJson) {
         if (videoJson is Map<String, String>) {
           return Map<String, String>.from(videoJson);
         } else if (videoJson is String) {
@@ -218,32 +218,33 @@ factory Module.fromJson(Map<String, dynamic> json) {
     courseId: json['courseId'] ?? '',
     moduleTitle: json['moduleTitle'] ?? '',
     moduleDescription: json['moduleDescription'] ?? '',
-    image: imageList,
-    video: videoList,
+    image: imageList ?? [],
+    video: videoList ?? [],
     moduleDuration: json['moduleDuration'] ?? '',
-    quizzes: (json['quizzes'] as List<dynamic>)
-        .map((quiz) => quiz.toString())
-        .toList(),
-    comments: (json['comments'] as List<dynamic>)
-        .map((comment) => comment.toString())
-        .toList(),
-    likeAndDislikeUsers: (json['likeAndDislikeUsers'] as List<dynamic>)
-        .map((user) => user.toString())
-        .toList(),
+    quizzes: (json['quizzes'] as List<dynamic>?)
+        ?.map((quiz) => quiz.toString())
+        .toList() ?? [],
+    comments: (json['comments'] as List<dynamic>?)
+        ?.map((comment) => comment.toString())
+        .toList() ?? [],
+    likeAndDislikeUsers: (json['likeAndDislikeUsers'] as List<dynamic>?)
+        ?.map((user) => user.toString())
+        .toList() ?? [],
     commentCount: json['commentCount'] ?? 0, // Use appropriate defaults
-    commentId: (json['commentId'] as List<dynamic>)
-        .map((commentId) => commentId.toString())
-        .toList(),
+    commentId: (json['commentId'] as List<dynamic>?)
+        ?.map((commentId) => commentId.toString())
+        .toList() ?? [],
     likeCount: json['likeCount'] ?? 0, // Use appropriate defaults
     dislikeCount: json['dislikeCount'] ?? 0, // Use appropriate defaults
     id: json['_id'] ?? '',
     createdAt: json['createdAt'] ?? '',
     updatedAt: json['updatedAt'] ?? '',
-    questions: (json['questions'] as List<dynamic>)
-        .map((question) => question.toString())
-        .toList(),
+    questions: (json['questions'] as List<dynamic>?)
+        ?.map((question) => question.toString())
+        .toList() ?? [],
   );
 }
+
 
 }
 

@@ -26,6 +26,7 @@ class _CourseCardState extends State<CourseCard> {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
+        print("Course ID is $Id");
         setState(() {
           Id = widget.course.id;
         });

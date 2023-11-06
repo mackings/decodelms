@@ -93,7 +93,7 @@ class _SigninState extends ConsumerState<Signin> {
                       ),
                       Thetext(
                         thetext:
-                            "Welcome back!login to your account to\nscontinue learning",
+                            "Welcome back! login to your account to\nscontinue learning",
                         style: GoogleFonts.poppins(
                           fontSize: 10.sp,
                         ),

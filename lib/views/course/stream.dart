@@ -8,6 +8,7 @@ import 'package:decodelms/views/quiz/quiz.dart';
 import 'package:decodelms/widgets/appbar.dart';
 import 'package:decodelms/widgets/buttons.dart';
 import 'package:decodelms/widgets/course/courseslider.dart';
+import 'package:decodelms/widgets/course/dialogs.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
@@ -44,40 +45,41 @@ class _StreamPageState extends State<StreamPage> {
     }
   }
 
-Future<ApiResponse> fetchCourseDetailById(
-  String courseId, String? token) async {
-  final baseUrl = "https://decode-mnjh.onrender.com/api/student/studentViewCourse/$courseId";
+  Future<ApiResponse> fetchCourseDetailById(
+      String courseId, String? token) async {
+    final baseUrl =
+        "https://decode-mnjh.onrender.com/api/student/studentViewCourse/$courseId";
 
-  final response = await http.get(
-    Uri.parse(baseUrl),
-    headers: {
-      'Authorization': 'Bearer $token',
-      'Content-Type': 'application/json',
-    },
-  );
+    final response = await http.get(
+      Uri.parse(baseUrl),
+      headers: {
+        'Authorization': 'Bearer $token',
+        'Content-Type': 'application/json',
+      },
+    );
 
-  if (response.statusCode == 200) {
-    final data = json.decode(response.body);
-    try {
-      final message = data['message'];
-      final resultData = data['result'] as List<dynamic>; // Cast to List<dynamic>
-      final List<CourseModule> result = resultData
-          .map((moduleData) => CourseModule.fromJson(moduleData))
-          .toList();
+    if (response.statusCode == 200) {
+      final data = json.decode(response.body);
+      print("Course ID Is ${courseId}");
+      try {
+        final message = data['message'];
+        final resultData =
+            data['result'] as List<dynamic>; // Cast to List<dynamic>
+        final List<CourseModule> result = resultData
+            .map((moduleData) => CourseModule.fromJson(moduleData))
+            .toList();
 
-      return ApiResponse(
-        message: message,
-        result: result,
-      );
-    } catch (e) {
-      throw Exception('Failed to parse API response: $e');
+        return ApiResponse(
+          message: message,
+          result: result,
+        );
+      } catch (e) {
+        throw Exception('Failed to parse API response: $e');
+      }
+    } else {
+      throw Exception('Failed to load course details: ${response.body}');
     }
-  } else {
-    throw Exception('Failed to load course details: ${response.body}');
   }
-}
-
-
 
   // Future<CommentResponse> fetchCommentById(String commentId) async {
   //   final baseUrl = "https://decode-mnjh.onrender.com/api/comments/$commentId";
@@ -127,6 +129,9 @@ Future<ApiResponse> fetchCourseDetailById(
       throw Exception('Failed to post comment: ${response.body}');
     }
   }
+
+  var btntext = 'Next Module';
+  var btntext2 = 'Finish Course';
 
   void _showCommentModal(String moduleId) {
     showModalBottomSheet<void>(
@@ -200,7 +205,6 @@ Future<ApiResponse> fetchCourseDetailById(
 
             print('Total Video Duration: $totalDurationString');
 
-            // Listen to video player status changes
             videoPlayerController.addListener(() {
               if (videoPlayerController.value.isInitialized &&
                   videoPlayerController.value.isPlaying &&
@@ -243,6 +247,9 @@ Future<ApiResponse> fetchCourseDetailById(
       final nextModule = courseDetail.result[currentModuleIndex];
       if (nextModule.video.isNotEmpty) {
         loadVideo(nextModule.video.first.path);
+      } else {
+        // Handle the case where the video list is empty, e.g., show an error message or perform some other action.
+        print('No video available for the next module');
       }
     }
   }
@@ -314,63 +321,130 @@ Future<ApiResponse> fetchCourseDetailById(
                         SizedBox(
                           height: 5.h,
                         ),
+
+                        // Initialize buttonText as "Next Module"
+
+// ...
+
                         GestureDetector(
                           onTap: () async {
                             final courseDetail = await futureCourseDetail;
 
                             if (courseDetail != null) {
-                              final currentModule =
-                                  courseDetail.result[currentModuleIndex];
-
-                              if (currentModule.quizzes.isNotEmpty &&
-                                  videoPlayerController != null) {
-                                videoPlayerController.pause();
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => QuizPage(
-                                        quizId: currentModule.quizzes.first),
-                                  ),
-                                );
-                              } else if (currentModuleIndex <
+                              if (currentModuleIndex <
                                   courseDetail.result.length - 1) {
+                                // Not the last module, go to the next module's video
+                                currentModuleIndex++;
                                 final nextModule =
-                                    courseDetail.result[currentModuleIndex + 1];
+                                    courseDetail.result[currentModuleIndex];
 
-                                if (nextModule.quizzes.isNotEmpty) {
-                                  // videoPlayerController.pause();
-
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) => QuizPage(
-                                          quizId: nextModule.quizzes.first),
-                                    ),
-                                  );
-                                } else {
-                                  loadNextVideo();
+                                if (nextModule.video.isNotEmpty) {
+                                  loadVideo(nextModule.video.first.path);
                                 }
+                              } else {
+                                // Last module, change the button text to "Finish Course" and show a dialog
+                                setState(() {
+                                  btntext = "Finish Course";
+                                });
+
+                                showDialog(
+                                  context: context,
+                                  builder: (context) {
+                                    return EnrollmentDialog(
+                                        title: 'Congratulations',
+                                        message:
+                                            "Course Completed successfully",
+                                        message2: "Get certified",
+                                        press1: () {},
+                                        press2: () {},
+                                        theicon: Icon(Icons.check_circle,color: Colors.blue,));
+                                  },
+                                );
                               }
-                            } else {}
+                            }
                           },
                           child: Container(
                             height: 7.h,
                             width: MediaQuery.of(context).size.width - 10.w,
                             decoration: BoxDecoration(
-                                color: Colors.blue,
-                                borderRadius: BorderRadius.circular(10)),
+                              color: Colors.blue,
+                              borderRadius: BorderRadius.circular(10),
+                            ),
                             child: Center(
-                                child: Thetext(
-                                    thetext: "Next Module",
-                                    style: GoogleFonts.poppins(
-                                        color: Colors.white))),
+                              child: Thetext(
+                                thetext: btntext,
+                                style: GoogleFonts.poppins(
+                                  color: Colors.white,
+                                ),
+                              ),
+                            ),
                           ),
                         )
+
+// GestureDetector(
+//   onTap: () async {
+//     print("Quiz ID is ${module.quizzes.first}");
+//     print(module.id);
+//     final courseDetail = await futureCourseDetail;
+
+//     if (courseDetail != null) {
+//       final currentModule =
+//           courseDetail.result[currentModuleIndex];
+
+//       if (currentModule.quizzes.isNotEmpty &&
+//           videoPlayerController != null) {
+//         videoPlayerController.pause();
+//         Navigator.push(
+//           context,
+//           MaterialPageRoute(
+//             builder: (context) => QuizPage(
+//               quizId: currentModule.quizzes.first,
+//             ),
+//           ),
+//         );
+//       } else if (currentModuleIndex < courseDetail.result.length - 1) {
+//         final nextModule =
+//             courseDetail.result[currentModuleIndex + 1];
+
+//         if (nextModule.quizzes.isNotEmpty) {
+//           Navigator.push(
+//             context,
+//             MaterialPageRoute(
+//               builder: (context) => QuizPage(
+//                 quizId: nextModule.quizzes.first,
+//               ),
+//             ),
+//           );
+//         } else {
+//           print("Loaded ${module}");
+//           loadNextVideo();
+//         }
+//       }
+//     } else {
+//       print("Course detail is null");
+//     }
+//   },
+//   child: Container(
+//     height: 7.h,
+//     width: MediaQuery.of(context).size.width - 10.w,
+//     decoration: BoxDecoration(
+//       color: Colors.blue,
+//       borderRadius: BorderRadius.circular(10),
+//     ),
+//     child: Center(
+//       child: Thetext(
+//         thetext: "Next Module",
+//         style: GoogleFonts.poppins(
+//           color: Colors.white,
+//         ),
+//       ),
+//     ),
+//   ),
+// )
                       ],
                     );
                   }
                 },
-              )
-              );
+              ));
   }
 }
