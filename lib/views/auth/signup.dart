@@ -49,7 +49,7 @@ class _SignupState extends ConsumerState<Signup> {
   Future signup(Register register) async {
     dynamic payload = jsonEncode({
       "firstName": register.firstname,
-      "lastName": "User",
+      "lastName": register.lastname,
       "email": register.email,
       "phoneNumber": register.phone,
       "password": register.password
@@ -111,6 +111,8 @@ class _SignupState extends ConsumerState<Signup> {
     }
   }
 
+  bool visi = false;
+
   @override
   Widget build(BuildContext context) {
     final thetheme = ref.watch(api.themeprovider.notifier);
@@ -120,7 +122,7 @@ class _SignupState extends ConsumerState<Signup> {
         thebody: Column(
           children: [
             Padding(
-              padding: const EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
+              padding: const EdgeInsets.fromLTRB(20.0, 0.0, 20.0, 10.0),
               child: Row(
                 children: [
                   Column(
@@ -156,22 +158,25 @@ class _SignupState extends ConsumerState<Signup> {
             Padding(
               padding: const EdgeInsets.only(bottom: 20, top: 5),
               child: TheFormfield(
+                vis: false,
                 controller: firstname,
-                value: "Enter Username",
+                value: "Enter First Name",
                 prefix: Icon(Icons.person),
               ),
             ),
-            // Padding(
-            //   padding: const EdgeInsets.only(bottom: 20, top: 5),
-            //   child: TheFormfield(
-            //     controller: lastname,
-            //     value: "Enter Last Name",
-            //     prefix: Icon(Icons.person),
-            //   ),
-            // ),
             Padding(
               padding: const EdgeInsets.only(bottom: 20, top: 5),
               child: TheFormfield(
+                vis: false,
+                controller: lastname,
+                value: "Enter Last Name",
+                prefix: Icon(Icons.person),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(bottom: 20, top: 5),
+              child: TheFormfield(
+                vis: false,
                 controller: email,
                 value: "Enter Email",
                 prefix: Icon(Icons.email),
@@ -180,20 +185,30 @@ class _SignupState extends ConsumerState<Signup> {
             Padding(
               padding: const EdgeInsets.only(bottom: 20, top: 5),
               child: TheFormfield(
+                vis: false,
                 controller: phone,
                 value: "Enter Phone Number",
                 prefix: Icon(Icons.phone),
               ),
             ),
-            Padding(
-              padding: const EdgeInsets.only(bottom: 20, top: 5),
-              child: TheFormfield(
-                controller: password,
-                value: "Enter Password",
-                prefix: Icon(Icons.lock),
-                suffix: Icon(Icons.visibility),
-              ),
-            ),
+Padding(
+  padding: const EdgeInsets.only(bottom: 20, top: 5),
+  child: TheFormfield(
+    vis: visi,
+    controller: password,
+    value: "Enter Password",
+    prefix: Icon(Icons.lock),
+    suffix: GestureDetector(
+      onTap: () {
+        setState(() {
+          visi = !visi;
+        });
+      },
+      child: visi ? Icon(Icons.visibility) : Icon(Icons.visibility_off),
+    ),
+  ),
+),
+
             SizedBox(
               height: 4.h,
             ),

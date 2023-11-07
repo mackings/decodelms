@@ -264,6 +264,7 @@ class _RequestresetState extends State<Requestreset> {
             Padding(
               padding: const EdgeInsets.only(top: 20, bottom: 30),
               child: TheFormfield(
+                vis: false,
                 controller: emailreq,
                 value: 'Enter Email',
                 suffix: Icon(Icons.email),
@@ -307,6 +308,7 @@ class _RequestresetState extends State<Requestreset> {
               height: 2.h,
             ),
             TheFormfield(
+              vis: false,
               value: "Enter Token",
               controller: Thetoken,
               suffix: Icon(Icons.token),
@@ -315,6 +317,7 @@ class _RequestresetState extends State<Requestreset> {
               height: 20,
             ),
             TheFormfield(
+              vis: false,
               value: "Enter New Passord",
               controller: Thepassword,
               suffix: Icon(Icons.token),

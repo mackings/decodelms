@@ -357,7 +357,7 @@ class _StreamPageState extends State<StreamPage> {
                                         message2: "Get certified",
                                         press1: () {},
                                         press2: () {},
-                                        theicon: Icon(Icons.check_circle,color: Colors.blue,));
+                                        theicon: Icon(Icons.check_circle,color: Colors.blue,size: 60,));
                                   },
                                 );
                               }

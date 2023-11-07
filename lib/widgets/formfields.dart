@@ -9,9 +9,10 @@ class TheFormfield extends ConsumerStatefulWidget {
   var controller;
   var value;
   var input;
+  bool vis;
 
   TheFormfield(
-      {this.controller, this.prefix, this.suffix, this.value, this.input});
+      {this.controller, this.prefix, this.suffix, this.value, this.input,required this.vis});
 
   @override
   ConsumerState<ConsumerStatefulWidget> createState() => _TheFormfieldState();
@@ -35,6 +36,7 @@ class _TheFormfieldState extends ConsumerState<TheFormfield> {
             ),
             child: TextFormField(
               controller: widget.controller,
+              obscureText: widget.vis,
               onChanged: (value) {
                 setState(() {
                   widget.input = value;

@@ -10,15 +10,15 @@ class Enrolledcourses extends StatefulWidget {
   State<Enrolledcourses> createState() => _EnrolledcoursesState();
 }
 
-
 class _EnrolledcoursesState extends State<Enrolledcourses> {
+  bool visi = false;
 
   @override
   void dispose() {
-    
     // TODO: implement dispose
     super.dispose();
   }
+
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
@@ -26,12 +26,15 @@ class _EnrolledcoursesState extends State<Enrolledcourses> {
       child: Scaffold(
         appBar: AppBar(
           backgroundColor: Colors.white,
-          elevation: 0,  
+          elevation: 0,
           leading: GestureDetector(
               onTap: () {
                 Navigator.pop(context);
               },
-              child: Icon(Icons.arrow_back,color: Colors.black,)),
+              child: Icon(
+                Icons.arrow_back,
+                color: Colors.black,
+              )),
           title: Thetext(
             thetext: "My Courses",
             style: GoogleFonts.poppins(
@@ -59,7 +62,9 @@ class _EnrolledcoursesState extends State<Enrolledcourses> {
             children: [
               Column(
                 children: [
-                  Expanded(child: GestureDetector(child: CourseCarouselSlider2()))],
+                  Expanded(
+                      child: GestureDetector(child: CourseCarouselSlider2()))
+                ],
               ),
               Center(child: Text('Other Tab Content')),
             ],

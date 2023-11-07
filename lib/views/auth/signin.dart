@@ -72,6 +72,15 @@ class _SigninState extends ConsumerState<Signin> {
     }
   }
 
+  bool _isObscure = true;
+  bool visi = false;
+
+  void _togglePasswordVisibility() {
+    setState(() {
+      _isObscure = !_isObscure;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     final thetheme = ref.watch(api.themeprovider.notifier);
@@ -93,7 +102,7 @@ class _SigninState extends ConsumerState<Signin> {
                       ),
                       Thetext(
                         thetext:
-                            "Welcome back! login to your account to\nscontinue learning",
+                            "Welcome back! login to your account to\ncontinue learning",
                         style: GoogleFonts.poppins(
                           fontSize: 10.sp,
                         ),
@@ -107,6 +116,7 @@ class _SigninState extends ConsumerState<Signin> {
               height: 6.h,
             ),
             TheFormfield(
+              vis: false,
               controller: email,
               value: "Enter Email",
               prefix: Icon(Icons.email),
@@ -115,10 +125,22 @@ class _SigninState extends ConsumerState<Signin> {
               height: 5.h,
             ),
             TheFormfield(
+              vis: visi,
               controller: password,
               value: "Enter Password",
-              prefix: Icon(Icons.lock),
-              suffix: Icon(Icons.visibility),
+              prefix: GestureDetector(
+                onTap: () {
+                 // _togglePasswordVisibility;
+                },
+                child: Icon(Icons.lock)),
+              suffix: GestureDetector(
+      onTap: () {
+        setState(() {
+          visi = !visi;
+        });
+      },
+      child: visi ? Icon(Icons.visibility) : Icon(Icons.visibility_off),
+    ),
             ),
             SizedBox(
               height: 2.h,
