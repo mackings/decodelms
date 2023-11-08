@@ -309,6 +309,7 @@ class _StreamPageState extends State<StreamPage> {
                               thetext: module.moduleTitle,
                               style: GoogleFonts.poppins()),
                         )),
+
                         Padding(
                           padding: const EdgeInsets.all(8.0),
                           child: SafeArea(
@@ -318,8 +319,18 @@ class _StreamPageState extends State<StreamPage> {
                             ),
                           ),
                         ),
-                        SizedBox(
-                          height: 5.h,
+
+
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Container(
+                            height: 7.h,
+                            width: MediaQuery.of(context).size.width -10.w,
+                            decoration: BoxDecoration(
+                              border: Border.all(width: 0.5),
+                              borderRadius: BorderRadius.circular(10)
+                            ),
+                          ),
                         ),
 
                         // Initialize buttonText as "Next Module"

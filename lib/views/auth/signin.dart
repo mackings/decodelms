@@ -39,38 +39,42 @@ class _SigninState extends ConsumerState<Signin> {
     return Login(email: email.text, password: password.text);
   }
 
-  Future signin(Login login) async {
-    dynamic payload =
-        jsonEncode({"email": login.email, "password": login.password});
-    final response = await http.post(
-        Uri.parse("https://decode-mnjh.onrender.com/api/user/login"),
-        body: payload,
-        headers: {
-          "Content-Type": "application/json",
-        });
-
-    if (response.statusCode == 200) {
-      dynamic data = jsonDecode(response.body);
-      String token = data['token'];
-      SharedPreferences prefs = await SharedPreferences.getInstance();
-      await prefs.setString('token', token);
-
-      print("Token: $token");
-      print("Token saved in shared preferences.");
-
-      print("success");
-      print(data);
-      return data;
-    } else {
-      Map<String, dynamic> theres = jsonDecode(response.body);
-      setState(() {
-        err = theres['message'];
-      });
-      print("failed");
-      print(payload);
-      throw Exception(response.body);
+Future signin(Login login) async {
+  dynamic payload = jsonEncode({"email": login.email, "password": login.password});
+  final response = await http.post(
+    Uri.parse("https://decode-mnjh.onrender.com/api/user/login"),
+    body: payload,
+    headers: {
+      "Content-Type": "application/json",
     }
+  );
+
+  if (response.statusCode == 200) {
+    dynamic data = jsonDecode(response.body);
+    String token = data['token'];
+
+    // Save the user data to shared preferences
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setString('token', token);
+    await prefs.setString('userData', jsonEncode(data['user'])); // Save user data
+
+    print("Token: $token");
+    print("Token and user data saved in shared preferences.");
+
+    print("success");
+    print(data);
+    return data;
+  } else {
+    Map<String, dynamic> theres = jsonDecode(response.body);
+    setState(() {
+      err = theres['message'];
+    });
+    print("failed");
+    print(payload);
+    throw Exception(response.body);
   }
+}
+
 
   bool _isObscure = true;
   bool visi = false;
@@ -129,18 +133,19 @@ class _SigninState extends ConsumerState<Signin> {
               controller: password,
               value: "Enter Password",
               prefix: GestureDetector(
-                onTap: () {
-                 // _togglePasswordVisibility;
-                },
-                child: Icon(Icons.lock)),
+                  onTap: () {
+                    // _togglePasswordVisibility;
+                  },
+                  child: Icon(Icons.lock)),
               suffix: GestureDetector(
-      onTap: () {
-        setState(() {
-          visi = !visi;
-        });
-      },
-      child: visi ? Icon(Icons.visibility) : Icon(Icons.visibility_off),
-    ),
+                onTap: () {
+                  setState(() {
+                    visi = !visi;
+                  });
+                },
+                child:
+                    visi ? Icon(Icons.visibility) : Icon(Icons.visibility_off),
+              ),
             ),
             SizedBox(
               height: 2.h,
@@ -182,7 +187,7 @@ class _SigninState extends ConsumerState<Signin> {
                           dynamic response = await signin(Userlogin());
 
                           if (response != null) {
-                            Navigator.push(
+                            Navigator.pushReplacement(
                                 context,
                                 MaterialPageRoute(
                                     builder: (context) => Homepage()));

@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:math';
 
 import 'package:decodelms/views/course/allcourse.dart';
@@ -24,14 +25,41 @@ class Homepage extends ConsumerStatefulWidget {
 
 class _HomepageState extends ConsumerState<Homepage> {
   dynamic Token;
+  dynamic User;
+  dynamic firstname;
+
+  String getFirstNameFromUserData(String userData) {
+    if (userData.isNotEmpty) {
+      dynamic userDataJson = jsonDecode(userData);
+      if (userDataJson.containsKey('firstName')) {
+        return userDataJson['firstName'];
+      }
+    }
+    return ''; // Return an empty string if first name is not found
+  }
+
   Future GetToken() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? token = prefs.getString('token');
+    String? user = prefs.getString('userData');
     if (token != null) {
       setState(() {
         Token = token;
+        User = user;
       });
       print("Token retrieved from shared preferences: $Token");
+      print("User Data retrieved from shared preferences: $User");
+
+      // Extract and print the first name from the user data
+      String firstName = getFirstNameFromUserData(User ?? '');
+      if (firstName.isNotEmpty) {
+        setState(() {
+          firstname = firstName;
+        });
+        print("First Name: $firstName");
+      } else {
+        print("First Name not found in user data.");
+      }
     } else {
       print("Token not found in shared preferences.");
     }
@@ -60,10 +88,9 @@ class _HomepageState extends ConsumerState<Homepage> {
                   Column(
                     children: [
                       Thetext(
-                          thetext: "Welcome back",
-                          style: GoogleFonts.poppins(
-                            fontWeight: FontWeight.bold
-                          )),
+                          thetext: "Hello, ${firstname}",
+                          style:
+                              GoogleFonts.poppins()),
                     ],
                   ),
                   Row(

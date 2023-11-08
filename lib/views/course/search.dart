@@ -167,7 +167,7 @@ void call(){}
 Expanded(
   child: searchResults.isEmpty
       ? Center(
-          child: Thetext(thetext: "Course Not Found", style: GoogleFonts.poppins()),
+          child: Thetext(thetext: "Search A New Course", style: GoogleFonts.poppins()),
         )
       : ListView.builder(
           itemCount: searchResults.length,
