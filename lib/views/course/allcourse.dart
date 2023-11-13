@@ -41,7 +41,7 @@ class _allCoursesPageState extends State<allCoursesPage> {
 
   Future<List<AllCourse>> fetchAllCourses() async {
     final response = await http.get(
-      Uri.parse('https://decode-mnjh.onrender.com/api/course/viewAllCourses'),
+      Uri.parse('https://server-eight-beige.vercel.app/api/course/viewAllCourses'),
       headers: {
         'Authorization': 'Bearer $Token',
       },

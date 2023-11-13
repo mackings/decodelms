@@ -54,7 +54,7 @@ void call(){}
     });
 
     final response = await http.get(
-        Uri.parse('https://decode-mnjh.onrender.com/api/course/search/$query'),
+        Uri.parse('https://server-eight-beige.vercel.app/api/course/search/$query'),
         headers: {
           "Content-Type": "application/json",
           'Authorization': 'Bearer $Token',

@@ -48,7 +48,7 @@ class _StreamPageState extends State<StreamPage> {
   Future<ApiResponse> fetchCourseDetailById(
       String courseId, String? token) async {
     final baseUrl =
-        "https://decode-mnjh.onrender.com/api/student/studentViewCourse/$courseId";
+        "https://server-eight-beige.vercel.app/api/student/studentViewCourse/$courseId";
 
     final response = await http.get(
       Uri.parse(baseUrl),
@@ -82,7 +82,7 @@ class _StreamPageState extends State<StreamPage> {
   }
 
   // Future<CommentResponse> fetchCommentById(String commentId) async {
-  //   final baseUrl = "https://decode-mnjh.onrender.com/api/comments/$commentId";
+  //   final baseUrl = "https://server-eight-beige.vercel.app/api/comments/$commentId";
 
   //   final response = await http.get(
   //     Uri.parse(baseUrl),
@@ -112,7 +112,7 @@ class _StreamPageState extends State<StreamPage> {
 
   Future<void> postComment(String moduleId, String comment) async {
     final apiUrl =
-        "https://decode-mnjh.onrender.com/api/comments/module/$moduleId";
+        "https://server-eight-beige.vercel.app/api/comments/module/$moduleId";
 
     final response = await http.post(
       Uri.parse(apiUrl),
@@ -338,7 +338,7 @@ class _StreamPageState extends State<StreamPage> {
 // ...
 
                         GestureDetector(
-                          onTap: () async {
+                          onTap: () async { 
                             final courseDetail = await futureCourseDetail;
 
                             if (courseDetail != null) {

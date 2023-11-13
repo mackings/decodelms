@@ -55,7 +55,7 @@ class _RequestresetState extends State<Requestreset> {
         jsonEncode({"token": Thetoken.text, "password": Thepassword.text});
     try {
       final response = await http.post(
-          Uri.parse("https://decode-mnjh.onrender.com/api/user/resetpassword"),
+          Uri.parse("https://server-eight-beige.vercel.app/api/user/resetpassword"),
           headers: {
             
             "Content-Type": "application/json",
@@ -143,7 +143,7 @@ class _RequestresetState extends State<Requestreset> {
     dynamic payload = jsonEncode({"email": emailreq.text});
     try {
       final response = await http.post(
-          Uri.parse("https://decode-mnjh.onrender.com/api/user/forgotpassword"),
+          Uri.parse("https://server-eight-beige.vercel.app/api/user/forgotpassword"),
           headers: {
             "Content-Type": "application/json",
             'Authorization': 'Bearer $Token',

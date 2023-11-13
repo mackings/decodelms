@@ -27,6 +27,8 @@ class _MyBottomNavigationBarState extends State<MyBottomNavigationBar> {
       currentIndex: widget.currentIndex,
       onTap: widget.onTabTapped,
       type: BottomNavigationBarType.fixed,
+      selectedItemColor: Colors.black,
+      unselectedItemColor: Colors.black,
       items: [
         BottomNavigationBarItem(
           icon: GestureDetector(
@@ -65,9 +67,21 @@ class _MyBottomNavigationBarState extends State<MyBottomNavigationBar> {
                   MaterialPageRoute(builder: (context) => Calls()));
              
             },
-            child: Icon(Icons.video_chat),
+            child: Icon(Icons.call_to_action),
           ),
           label: 'Live lessons',
+        ),
+
+                BottomNavigationBarItem(
+          icon: GestureDetector(
+            onTap: () {
+                            Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => Calls()));
+             
+            },
+            child: Icon(Icons.person),
+          ),
+          label: 'Profile',
         ),
       ],
     );

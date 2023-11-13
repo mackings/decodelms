@@ -41,7 +41,7 @@ class _CourseCarouselSliderState extends State<CourseCarouselSlider> {
 
   Future<List<Course>> fetchCourses() async {
     final response = await http.get(
-      Uri.parse('https://decode-mnjh.onrender.com/api/student/studentGet'),
+      Uri.parse('https://server-eight-beige.vercel.app/api/student/studentGet'),
       headers: {
         'Authorization': 'Bearer $Token',
       },
@@ -138,7 +138,7 @@ class _AllCourseCarouselSliderState extends State<AllCourseCarouselSlider> {
 
   Future<List<AllCourse>> fetchAllCourses() async {
     final response = await http.get(
-      Uri.parse('https://decode-mnjh.onrender.com/api/course/viewAllCourses'),
+      Uri.parse('https://server-eight-beige.vercel.app/api/course/viewAllCourses'),
       headers: {
         'Authorization': 'Bearer $Token',
       },
@@ -256,7 +256,7 @@ class _CourseCarouselSlider2State extends State<CourseCarouselSlider2> {
 
   Future<List<Course>> fetchCourses() async {
     final response = await http.get(
-      Uri.parse('https://decode-mnjh.onrender.com/api/student/studentGet'),
+      Uri.parse('https://server-eight-beige.vercel.app/api/student/studentGet'),
       headers: {
         'Authorization': 'Bearer $Token',
       },

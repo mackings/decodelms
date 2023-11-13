@@ -42,7 +42,7 @@ class _CallsState extends State<Calls> {
 
   Future<List<Meeting>> fetchMeetings() async {
     final response = await http.get(
-      Uri.parse('https://decode-mnjh.onrender.com/API/admin/getRoomId'),
+      Uri.parse('https://server-eight-beige.vercel.app/API/admin/getRoomId'),
       headers: {
         "Content-Type": "application/json",
         'Authorization': 'Bearer $Token',
@@ -67,7 +67,7 @@ class _CallsState extends State<Calls> {
 
   Future<void> scheduleMeeting() async {
     final url = Uri.parse(
-        'https://decode-mnjh.onrender.com/api/admin/adminScheduleMeeting');
+        'https://server-eight-beige.vercel.app/api/admin/adminScheduleMeeting');
 
     final headers = {
       'Content-Type': 'application/json',

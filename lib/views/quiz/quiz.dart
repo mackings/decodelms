@@ -18,7 +18,7 @@ import 'package:sizer/sizer.dart';
 // }
 
 // class _QuizPageState extends State<QuizPage> {
-//   final String baseUrl = 'https://decode-mnjh.onrender.com/api/quizes/getQuiz';
+//   final String baseUrl = 'https://server-eight-beige.vercel.app/api/quizes/getQuiz';
 //   String? token;
 //   Quiz? _quiz;
 //   List<int?> selectedAnswers = [];
@@ -153,7 +153,7 @@ class QuizPage extends StatefulWidget {
 }
 
 class _QuizPageState extends State<QuizPage> {
-  final String baseUrl = 'https://decode-mnjh.onrender.com/api/quizes/getQuiz';
+  final String baseUrl = 'https://server-eight-beige.vercel.app/api/quizes/getQuiz';
   late String? token;
   List<int?> selectedAnswers = [];
 
@@ -222,7 +222,7 @@ class _QuizPageState extends State<QuizPage> {
     try {
       final response = await http.post(
           Uri.parse(
-              "https://decode-mnjh.onrender.com/api/quizes/submitAnswers/6544dfddd74246f1aa536fa5"),
+              "https://server-eight-beige.vercel.app/api/quizes/submitAnswers/6544dfddd74246f1aa536fa5"),
           headers: {
             "Content-Type": "application/json",
             'Authorization': 'Bearer $token',

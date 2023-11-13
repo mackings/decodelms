@@ -35,7 +35,7 @@ class _HomepageState extends ConsumerState<Homepage> {
         return userDataJson['firstName'];
       }
     }
-    return ''; // Return an empty string if first name is not found
+    return ''; 
   }
 
   Future GetToken() async {
@@ -50,7 +50,6 @@ class _HomepageState extends ConsumerState<Homepage> {
       print("Token retrieved from shared preferences: $Token");
       print("User Data retrieved from shared preferences: $User");
 
-      // Extract and print the first name from the user data
       String firstName = getFirstNameFromUserData(User ?? '');
       if (firstName.isNotEmpty) {
         setState(() {
@@ -77,7 +76,7 @@ class _HomepageState extends ConsumerState<Homepage> {
 
   @override
   Widget build(BuildContext context) {
-    return Sizer(builder: ((context, orientation, deviceType) {
+    return Sizer(builder: ((context, orientation, deviceType) { 
       return TheBar(
           callback: () {},
           thebody: Column(
@@ -87,6 +86,7 @@ class _HomepageState extends ConsumerState<Homepage> {
                 children: [
                   Column(
                     children: [
+                      SizedBox(height:15),
                       Thetext(
                           thetext: "Hello, ${firstname}",
                           style:

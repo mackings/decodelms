@@ -55,7 +55,7 @@ class _SignupState extends ConsumerState<Signup> {
       "password": register.password
     });
     final response = await http.post(
-        Uri.parse("https://decode-mnjh.onrender.com/api/user/signup"),
+        Uri.parse("https://server-eight-beige.vercel.app/api/user/signup"),
         body: payload,
         headers: {
           "Content-Type": "application/json",
