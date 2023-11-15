@@ -299,6 +299,7 @@ class _StreamPageState extends State<StreamPage> {
                   } else {
                     final apiResponse = snapshot.data!;
                     final module = apiResponse.result[currentModuleIndex];
+                    print("Current module Quiz ${module.quizzes.first}");
 
                     return Column(
                       children: [
@@ -320,77 +321,77 @@ class _StreamPageState extends State<StreamPage> {
                           ),
                         ),
 
-
                         Padding(
                           padding: const EdgeInsets.all(8.0),
                           child: Container(
                             height: 7.h,
-                            width: MediaQuery.of(context).size.width -10.w,
+                            width: MediaQuery.of(context).size.width - 10.w,
                             decoration: BoxDecoration(
-                              border: Border.all(width: 0.5),
-                              borderRadius: BorderRadius.circular(10)
-                            ),
+                                border: Border.all(width: 0.5),
+                                borderRadius: BorderRadius.circular(10)),
                           ),
                         ),
 
-                        // Initialize buttonText as "Next Module"
 
-// ...
 
-                        GestureDetector(
-                          onTap: () async { 
-                            final courseDetail = await futureCourseDetail;
+GestureDetector(
+  onTap: () async {
+    final courseDetail = await futureCourseDetail;
 
-                            if (courseDetail != null) {
-                              if (currentModuleIndex <
-                                  courseDetail.result.length - 1) {
-                                // Not the last module, go to the next module's video
-                                currentModuleIndex++;
-                                final nextModule =
-                                    courseDetail.result[currentModuleIndex];
+    if (courseDetail != null) {
+      final currentModule = courseDetail.result[currentModuleIndex];
 
-                                if (nextModule.video.isNotEmpty) {
-                                  loadVideo(nextModule.video.first.path);
-                                }
-                              } else {
-                                // Last module, change the button text to "Finish Course" and show a dialog
-                                setState(() {
-                                  btntext = "Finish Course";
-                                });
+      if (currentModule.quizzes.isNotEmpty) {
+        videoPlayerController.pause();
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => QuizPage(
+              quizId: currentModule.quizzes.first,
+            ),
+          ),
+        );
+      } else if (currentModuleIndex < courseDetail.result.length - 1) {
+        final nextModule = courseDetail.result[currentModuleIndex + 1];
 
-                                showDialog(
-                                  context: context,
-                                  builder: (context) {
-                                    return EnrollmentDialog(
-                                        title: 'Congratulations',
-                                        message:
-                                            "Course Completed successfully",
-                                        message2: "Get certified",
-                                        press1: () {},
-                                        press2: () {},
-                                        theicon: Icon(Icons.check_circle,color: Colors.blue,size: 60,));
-                                  },
-                                );
-                              }
-                            }
-                          },
-                          child: Container(
-                            height: 7.h,
-                            width: MediaQuery.of(context).size.width - 10.w,
-                            decoration: BoxDecoration(
-                              color: Colors.blue,
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                            child: Center(
-                              child: Thetext(
-                                thetext: btntext,
-                                style: GoogleFonts.poppins(
-                                  color: Colors.white,
-                                ),
-                              ),
-                            ),
-                          ),
-                        )
+        if (nextModule.quizzes.isNotEmpty) {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => QuizPage(
+                quizId: nextModule.quizzes.first,
+              ),
+            ),
+          );
+        } else if (nextModule.video.isNotEmpty) {
+          currentModuleIndex++;
+          loadVideo(nextModule.video.first.path);
+        } else {
+          // Perform the required action if neither video nor quiz is present in the next module
+        }
+      } else {
+        // Perform the required action if the course or module detail is null
+      }
+    }
+  },
+  child: Container(
+    height: 7.h,
+    width: MediaQuery.of(context).size.width - 10.w,
+    decoration: BoxDecoration(
+      color: Colors.blue,
+      borderRadius: BorderRadius.circular(10),
+    ),
+    child: Center(
+      child: Thetext(
+        thetext: btntext,
+        style: GoogleFonts.poppins(
+          color: Colors.white,
+        ),
+      ),
+    ),
+  ),
+)
+
 
 // GestureDetector(
 //   onTap: () async {

@@ -36,12 +36,10 @@ class Quiz {
 
   factory Quiz.fromJson(Map<String, dynamic> json) {
     final List<dynamic> questionIdsData = json['questionIds'];
-    final List<String> questionIds = questionIdsData.cast<String>();
+    final List<String> questionIds = List<String>.from(questionIdsData);
 
     final List<dynamic> questionsData = json['questions'];
-    final List<Question> questions = questionsData
-        .map((questionData) => Question.fromJson(questionData))
-        .toList();
+    final List<Question> questions = questionsData.map((questionData) => Question.fromJson(questionData)).toList();
 
     return Quiz(
       id: json['_id'],
@@ -60,7 +58,8 @@ class Question {
   final String title;
   final String description;
   final String duration;
-  final List<Answer> answers;
+  final List<String> answers;
+  final int correctAnswerIndex;
   final String id;
   final String createdAt;
   final String updatedAt;
@@ -71,49 +70,20 @@ class Question {
     required this.description,
     required this.duration,
     required this.answers,
+    required this.correctAnswerIndex,
     required this.id,
     required this.createdAt,
     required this.updatedAt,
   });
 
   factory Question.fromJson(Map<String, dynamic> json) {
-    final List<dynamic> answersData = json['answers'];
-    final List<Answer> answers = answersData
-        .map((answerData) => Answer.fromJson(answerData))
-        .toList();
-
     return Question(
       moduleId: json['moduleId'],
-      title: json['question_title'] ?? '', // You may want to provide a default value
-      description: json['question_description'] ?? '', // You may want to provide a default value
-      duration: json['question_duration'] ?? '', // You may want to provide a default value
-      answers: answers,
-      id: json['_id'],
-      createdAt: json['createdAt'],
-      updatedAt: json['updatedAt'],
-    );
-  }
-}
-
-class Answer {
-  final String text;
-  final bool isCorrect;
-  final String id;
-  final String createdAt;
-  final String updatedAt;
-
-  Answer({
-    required this.text,
-    required this.isCorrect,
-    required this.id,
-    required this.createdAt,
-    required this.updatedAt,
-  });
-
-  factory Answer.fromJson(Map<String, dynamic> json) {
-    return Answer(
-      text: json['text'],
-      isCorrect: json['isCorrect'],
+      title: json['question_title'] ?? '',
+      description: json['question_description'] ?? '',
+      duration: json['question_duration'] ?? '',
+      answers: List<String>.from(json['answers']),
+      correctAnswerIndex: json['correctAnswerIndexes'],
       id: json['_id'],
       createdAt: json['createdAt'],
       updatedAt: json['updatedAt'],

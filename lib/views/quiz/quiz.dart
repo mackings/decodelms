@@ -8,140 +8,6 @@ import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sizer/sizer.dart';
 
-// class QuizPage extends StatefulWidget {
-//   final String quizId;
-
-//   QuizPage({required this.quizId});
-
-//   @override
-//   _QuizPageState createState() => _QuizPageState();
-// }
-
-// class _QuizPageState extends State<QuizPage> {
-//   final String baseUrl = 'https://server-eight-beige.vercel.app/api/quizes/getQuiz';
-//   String? token;
-//   Quiz? _quiz;
-//   List<int?> selectedAnswers = [];
-
-//   @override
-//   void initState() {
-//     super.initState();
-//     _fetchToken();
-//   }
-
-//   Future<void> _fetchToken() async {
-//     SharedPreferences prefs = await SharedPreferences.getInstance();
-//     final savedToken = prefs.getString('token');
-//     if (savedToken != null) {
-//       setState(() {
-//         token = savedToken;
-//       });
-//       print("Token retrieved from shared preferences: $token");
-//       _loadQuiz();
-//     } else {
-//       print("Token not found in shared preferences.");
-//     }
-//   }
-
-//   Future<Quiz?> _loadQuiz() async {
-//     try {
-//       final response = await http.get(
-//         Uri.parse('$baseUrl/${widget.quizId}'),
-//         headers: {
-//           'Authorization': 'Bearer $token',
-//           'Content-Type': 'application/json',
-//         },
-//       );
-
-//       if (response.statusCode == 200) {
-//         final json = jsonDecode(response.body);
-//         final quizResponse = QuizResponse.fromJson(json);
-//         return quizResponse.quiz;
-//       } else {
-//         print(widget.quizId);
-//         print('Failed to load quiz: ${response.body}');
-//         return null;
-//       }
-//     } catch (e) {
-//       // Handle network errors here
-//       print('Error loading quiz: $e');
-//       print(widget.quizId);
-//       return null;
-//     }
-//   }
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       appBar: AppBar(
-//         title: Text('Quiz'),
-//       ),
-//       body: FutureBuilder<Quiz?>(
-//         future: _loadQuiz(),
-//         builder: (context, snapshot) {
-//           if (snapshot.connectionState == ConnectionState.waiting) {
-//             return Center(child: CircularProgressIndicator());
-//           } else if (snapshot.hasError) {
-//             print(snapshot.error);
-//             return Center(child: Text('Error loading quiz'));
-//           } else if (snapshot.hasData) {
-//             final quiz = snapshot.data;
-
-//             if (quiz == null) {
-//               return Center(child: Text('No quiz data available'));
-//             }
-
-//             return ListView.builder(
-//   itemCount: quiz.questions.length,
-//   itemBuilder: (context, index) {
-//     final question = quiz.questions[index];
-//     return Column(
-//       children: <Widget>[
-//         Text('Question ${index + 1}: ${question.description ?? 'N/A'}'),
-//         Column(
-//           children: List<Widget>.generate(
-//             question.answers.length,
-//             (answerIndex) {
-//               final answer = question.answers[answerIndex];
-
-//               return CheckboxListTile(
-//                 title: Text(answer.text),
-//                 value: selectedAnswers.length > index
-//                     ? selectedAnswers[index] == answerIndex
-//                     : false,
-//                 onChanged: (bool? newValue) {
-//                   setState(() {
-//                     if (newValue != null && newValue) {
-//                       // Update the selected answer for this question
-//                       if (selectedAnswers.length <= index) {
-//                         selectedAnswers.add(answerIndex);
-//                       } else {
-//                         selectedAnswers[index] = answerIndex;
-//                       }
-//                     } else {
-//                       // Deselect the answer if the checkbox is unchecked
-//                       selectedAnswers[index] = null;
-//                     }
-//                   });
-//                 },
-//               );
-//             },
-//           ),
-//         ),
-//       ],
-//     );
-//   },
-// );
-
-//           } else {
-
-//             return Center(child: Text('No quiz data available'));
-//           }
-//         },
-//       ),
-//     );
-//   }
-// }
 
 class QuizPage extends StatefulWidget {
   final String quizId;
@@ -153,7 +19,7 @@ class QuizPage extends StatefulWidget {
 }
 
 class _QuizPageState extends State<QuizPage> {
-  final String baseUrl = 'https://server-eight-beige.vercel.app/api/quizes/getQuiz';
+  final String baseUrl = 'https://decode-mnjh.onrender.com/api/quizes/getQuiz';
   late String? token;
   List<int?> selectedAnswers = [];
 
@@ -222,7 +88,7 @@ class _QuizPageState extends State<QuizPage> {
     try {
       final response = await http.post(
           Uri.parse(
-              "https://server-eight-beige.vercel.app/api/quizes/submitAnswers/6544dfddd74246f1aa536fa5"),
+              "https://decode-mnjh.onrender.com/api/quizes/submitAnswers/6544dfddd74246f1aa536fa5"),
           headers: {
             "Content-Type": "application/json",
             'Authorization': 'Bearer $token',
@@ -372,7 +238,7 @@ class _QuizPageState extends State<QuizPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: Colors.blue,
         elevation: 0,
         title: GestureDetector(
             onTap: () {
@@ -478,7 +344,7 @@ class _QuizQuestionViewState extends State<QuizQuestionView> {
                     padding: const EdgeInsets.all(8.0),
                     child: CheckboxListTile(
                       title: Thetext(
-                          thetext: answer.text, style: GoogleFonts.poppins()),
+                          thetext: answer, style: GoogleFonts.poppins()),
                       value: isSelected,
                       onChanged: (value) {
                         if (value != null && value) {
