@@ -8,7 +8,6 @@ import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sizer/sizer.dart';
 
-
 class QuizPage extends StatefulWidget {
   final String quizId;
 
@@ -21,7 +20,7 @@ class QuizPage extends StatefulWidget {
 class _QuizPageState extends State<QuizPage> {
   final String baseUrl = 'https://decode-mnjh.onrender.com/api/quizes/getQuiz';
   late String? token;
-  List<int?> selectedAnswers = [];
+  List<Map<String, dynamic>> selectedAnswers = [];
 
   int currentPage = 0;
 
@@ -50,17 +49,13 @@ class _QuizPageState extends State<QuizPage> {
   Quiz? _quiz;
 
   Future<Quiz?> _loadQuiz() async {
-
     try {
       final response = await http.get(
-
         Uri.parse('$baseUrl/${widget.quizId}'),
-
         headers: {
           'Authorization': 'Bearer $token',
           'Content-Type': 'application/json',
         },
-
       );
 
       if (response.statusCode == 200) {
@@ -88,19 +83,21 @@ class _QuizPageState extends State<QuizPage> {
     try {
       final response = await http.post(
           Uri.parse(
-              "https://decode-mnjh.onrender.com/api/quizes/submitAnswers/6544dfddd74246f1aa536fa5"),
+              "https://decode-mnjh.onrender.com/api/quizes/submitAnswers/$QID"),
           headers: {
             "Content-Type": "application/json",
             'Authorization': 'Bearer $token',
           },
-          body: jsonEncode({
-            "userId": "652f16f5ca153a64ae891d3e",
+          body: jsonEncode(
+            {
             "userAnswers": selectedAnswers
-          }));
+            }
+            ));
 
       if (response.statusCode == 200) {
         var data = jsonDecode(response.body);
         print(data);
+        print(selectedAnswers);
 
         setState(() {
           res = data['score'];
@@ -131,6 +128,7 @@ class _QuizPageState extends State<QuizPage> {
       } else if (response.statusCode == 409) {
         var data = jsonDecode(response.body);
         print(data);
+        print(selectedAnswers);
 
         setState(() {
           errorMessage = data['message'];
@@ -166,9 +164,7 @@ class _QuizPageState extends State<QuizPage> {
 
         // throw Exception(response.body);
       } else {
-        // setState(() {
-        //   isEnrolling = false;
-        // });
+        print(selectedAnswers);
 
         showDialog(
           context: context,
@@ -256,29 +252,48 @@ class _QuizPageState extends State<QuizPage> {
                   padding: const EdgeInsets.all(8.0),
                   child: QuizQuestionView(
                     question: _quiz!.questions[index],
-                    selectedAnswer: selectedAnswers.length > index
-                        ? selectedAnswers[index]
-                        : null,
+selectedAnswer: selectedAnswers.length > index
+    ? selectedAnswers[index]['correctAnswerIndexes']
+    : null,
+
                     onAnswerSelected: (int? answerIndex) {
                       setState(() {
+                        QID = _quiz!.id;
                         if (answerIndex != null) {
                           if (selectedAnswers.length <= index) {
                             int? parsedAnswerIndex =
                                 int.tryParse(answerIndex.toString());
                             if (parsedAnswerIndex != null) {
-                              selectedAnswers.add(parsedAnswerIndex);
-                              // Rest of your code
+                             
+                              String questionId = _quiz!.questions[index].id;
+
+                             
+                              Map<String, dynamic> answerMap = {
+                                'correctAnswerIndexes': parsedAnswerIndex,
+                                '_id': questionId,
+                              };
+
+                          
+                              selectedAnswers.add(answerMap);
 
                               print(selectedAnswers);
+                              print("Quiz ID $QID");
                             } else {
-                              // Handle the case where the conversion fails
-                              // You might want to show an error message or take appropriate action.
+                          
                             }
                           } else {
-                            selectedAnswers[index] = answerIndex;
+                            
+                            selectedAnswers[index] = {
+                              'correctAnswerIndexes': answerIndex,
+                              '_id': _quiz!.questions[index].id,
+                            };
                           }
                         } else {
-                          selectedAnswers[index] = null;
+                          
+                          selectedAnswers[index] = {
+                            'correctAnswerIndexes': null,
+                            '_id': _quiz!.questions[index].id,
+                          };
                         }
                       });
                     },
@@ -287,7 +302,6 @@ class _QuizPageState extends State<QuizPage> {
                 );
               },
             ),
-
     );
   }
 }
@@ -310,6 +324,8 @@ class QuizQuestionView extends StatefulWidget {
 }
 
 class _QuizQuestionViewState extends State<QuizQuestionView> {
+  bool isAnswerSelected = false; // Track whether an answer has been selected
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -346,13 +362,21 @@ class _QuizQuestionViewState extends State<QuizQuestionView> {
                       title: Thetext(
                           thetext: answer, style: GoogleFonts.poppins()),
                       value: isSelected,
-                      onChanged: (value) {
-                        if (value != null && value) {
-                          widget.onAnswerSelected(index);
-                        } else {
-                          widget.onAnswerSelected(null);
-                        }
-                      },
+                      onChanged: isAnswerSelected // Disable onChanged if an answer is already selected
+                          ? null
+                          : (value) {
+                              if (value != null && value) {
+                                setState(() {
+                                  isAnswerSelected = true;
+                                });
+                                widget.onAnswerSelected(index);
+                              } else {
+                                setState(() {
+                                  isAnswerSelected = false;
+                                });
+                                widget.onAnswerSelected(null);
+                              }
+                            },
                     ),
                   ),
                 ),
@@ -366,7 +390,7 @@ class _QuizQuestionViewState extends State<QuizQuestionView> {
             decoration: BoxDecoration(
               color: widget.isLastQuestion
                   ? Colors.blue
-                  : Colors.grey, // Change button color if last question
+                  : Colors.grey, // Change button color if the last question
               borderRadius: BorderRadius.circular(10),
             ),
             child: Center(
@@ -375,8 +399,7 @@ class _QuizQuestionViewState extends State<QuizQuestionView> {
                     ? "Submit Quiz"
                     : "Swipe left to Continue",
                 style: GoogleFonts.poppins(
-                  color: widget.isLastQuestion?Colors.white:Colors.white
-                ),
+                    color: widget.isLastQuestion ? Colors.white : Colors.white),
               ),
             ),
           ),
@@ -385,3 +408,4 @@ class _QuizQuestionViewState extends State<QuizQuestionView> {
     );
   }
 }
+
