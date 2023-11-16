@@ -113,7 +113,9 @@ class _QuizPageState extends State<QuizPage> {
               press1: () {
                 Navigator.pop(context);
               },
-              press2: () {},
+              press2: () {
+                Navigator.pop(context, res);
+              },
               theicon: Icon(
                 Icons.check_circle,
                 color: Colors.blue,
@@ -125,6 +127,8 @@ class _QuizPageState extends State<QuizPage> {
             );
           },
         );
+
+        
       } else if (response.statusCode == 409) {
         var data = jsonDecode(response.body);
         print(data);
@@ -133,10 +137,6 @@ class _QuizPageState extends State<QuizPage> {
         setState(() {
           errorMessage = data['message'];
         });
-
-        // setState(() {
-        //   isEnrolling = false;
-        // });
 
         showDialog(
           context: context,

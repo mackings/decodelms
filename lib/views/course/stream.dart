@@ -31,6 +31,8 @@ class _StreamPageState extends State<StreamPage> {
   late VideoPlayerController videoPlayerController;
   late CustomVideoPlayerController _customVideoPlayerController;
   int currentModuleIndex = 0;
+  bool isVideoPlaying = false;
+  late CourseModule currentModule;
 
   Future<void> getToken() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -80,33 +82,6 @@ class _StreamPageState extends State<StreamPage> {
       throw Exception('Failed to load course details: ${response.body}');
     }
   }
-
-  // Future<CommentResponse> fetchCommentById(String commentId) async {
-  //   final baseUrl = "https://server-eight-beige.vercel.app/api/comments/$commentId";
-
-  //   final response = await http.get(
-  //     Uri.parse(baseUrl),
-  //     headers: {
-  //       'Content-Type': 'application/json',
-  //       'Authorization': 'Bearer $token',
-  //     },
-  //   );
-
-  //   if (response.statusCode == 200) {
-  //     final data = json.decode(response.body);
-  //     print('comment Data $data');
-
-  //     if (data['message'] == "success") {
-  //       final commentData = data['comment']; // Extract the comment data
-  //       final comment = CommentResponse.fromJson(commentData);
-  //       return comment;
-  //     } else {
-  //       throw Exception('Failed to load comment: ${data['message']}');
-  //     }
-  //   } else {
-  //     throw Exception('Failed to load comment: ${response.body}');
-  //   }
-  // }
 
   // Function to post a comment to the module
 
@@ -194,12 +169,17 @@ class _StreamPageState extends State<StreamPage> {
     });
   }
 
+  bool isCurrentModuleAvailable() {
+    return currentModule != null;
+  }
+
   void loadVideo(String videoUrl) {
     videoPlayerController =
         VideoPlayerController.networkUrl(Uri.parse(videoUrl))
           ..initialize().then((_) {
             // Initialize and play the video
             videoPlayerController.play();
+
             Duration totalDuration = videoPlayerController.value.duration;
             String totalDurationString = formatDuration(totalDuration);
 
@@ -209,6 +189,7 @@ class _StreamPageState extends State<StreamPage> {
               if (videoPlayerController.value.isInitialized &&
                   videoPlayerController.value.isPlaying &&
                   videoPlayerController.value.position >= totalDuration) {
+                // Video has ended
                 void navigateToQuizPage(String quizId) {
                   Navigator.push(
                     context,
@@ -218,6 +199,11 @@ class _StreamPageState extends State<StreamPage> {
                   ).then((value) {
                     loadNextVideo();
                   });
+                }
+
+                if (isVideoPlaying) {
+                  isVideoPlaying = false;
+                  navigateToQuizPage(currentModule.quizzes.first);
                 }
               }
             });
@@ -299,7 +285,8 @@ class _StreamPageState extends State<StreamPage> {
                   } else {
                     final apiResponse = snapshot.data!;
                     final module = apiResponse.result[currentModuleIndex];
-                    print("Current module Quiz ${module.quizzes.first}");
+
+                    // print("Current module Quiz ${module.quizzes.first}");
 
                     return Column(
                       children: [
@@ -310,7 +297,6 @@ class _StreamPageState extends State<StreamPage> {
                               thetext: module.moduleTitle,
                               style: GoogleFonts.poppins()),
                         )),
-
                         Padding(
                           padding: const EdgeInsets.all(8.0),
                           child: SafeArea(
@@ -320,7 +306,6 @@ class _StreamPageState extends State<StreamPage> {
                             ),
                           ),
                         ),
-
                         Padding(
                           padding: const EdgeInsets.all(8.0),
                           child: Container(
@@ -331,128 +316,101 @@ class _StreamPageState extends State<StreamPage> {
                                 borderRadius: BorderRadius.circular(10)),
                           ),
                         ),
+                        GestureDetector(
+                          onTap: () async {
+                            if (futureCourseDetail != null) {
+                              final courseDetail = await futureCourseDetail;
 
+                              if (courseDetail != null) {
+                                final currentModule =
+                                    courseDetail.result[currentModuleIndex];
 
-
-GestureDetector(
-  onTap: () async {
-    final courseDetail = await futureCourseDetail;
-
-    if (courseDetail != null) {
-      final currentModule = courseDetail.result[currentModuleIndex];
-
-      if (currentModule.quizzes.isNotEmpty) {
-        videoPlayerController.pause();
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => QuizPage(
-              quizId: currentModule.quizzes.first,
-            ),
-          ),
-        );
-      } else if (currentModuleIndex < courseDetail.result.length - 1) {
-        final nextModule = courseDetail.result[currentModuleIndex + 1];
-
-        if (nextModule.quizzes.isNotEmpty) {
-          Navigator.push(
+                                if (currentModule.quizzes.isNotEmpty) {
+                                  videoPlayerController.pause();
+                                  // Navigator.push(
+                                  //   context,
+                                  //   MaterialPageRoute(
+                                  //     builder: (context) => QuizPage(
+                                  //       quizId: currentModule.quizzes.first,
+                                  //     ),
+                                  //   ),
+                                  // );
+                                 
+                                 // loadNextVideo();
+       final quizScore = await Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => QuizPage(
-                quizId: nextModule.quizzes.first,
-              ),
+              builder: (context) => QuizPage(quizId: currentModule.quizzes.first),
             ),
           );
-        } else if (nextModule.video.isNotEmpty) {
-          currentModuleIndex++;
-          loadVideo(nextModule.video.first.path);
-        } else {
-          // Perform the required action if neither video nor quiz is present in the next module
-        }
-      } else {
-        // Perform the required action if the course or module detail is null
-      }
-    }
-  },
-  child: Container(
-    height: 7.h,
-    width: MediaQuery.of(context).size.width - 10.w,
-    decoration: BoxDecoration(
-      color: Colors.blue,
-      borderRadius: BorderRadius.circular(10),
-    ),
-    child: Center(
-      child: Thetext(
-        thetext: btntext,
-        style: GoogleFonts.poppins(
-          color: Colors.white,
-        ),
-      ),
-    ),
-  ),
-)
+          print('Quiz Score: $quizScore');
+          if (quizScore >= 3) {
+            loadNextVideo();
+          }
+                                } else if (currentModuleIndex <
+                                    courseDetail.result.length - 1) {
+                                  final nextModule = courseDetail
+                                      .result[currentModuleIndex + 1];
 
+                                  if (nextModule.quizzes.isNotEmpty) {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => QuizPage(
+                                          quizId: nextModule.quizzes.first,
+                                        ),
+                                      ),
+                                    );
+                                  } else if (nextModule.video.isNotEmpty) {
+                                    currentModuleIndex++;
+                                    loadVideo(nextModule.video.first.path);
+                                  } else {
+                                    print(
+                                        "No video or quiz in the next module");
+                                  }
+                                } else {
+                                  // Perform the required action if the course or module detail is null
 
-// GestureDetector(
-//   onTap: () async {
-//     print("Quiz ID is ${module.quizzes.first}");
-//     print(module.id);
-//     final courseDetail = await futureCourseDetail;
-
-//     if (courseDetail != null) {
-//       final currentModule =
-//           courseDetail.result[currentModuleIndex];
-
-//       if (currentModule.quizzes.isNotEmpty &&
-//           videoPlayerController != null) {
-//         videoPlayerController.pause();
-//         Navigator.push(
-//           context,
-//           MaterialPageRoute(
-//             builder: (context) => QuizPage(
-//               quizId: currentModule.quizzes.first,
-//             ),
-//           ),
-//         );
-//       } else if (currentModuleIndex < courseDetail.result.length - 1) {
-//         final nextModule =
-//             courseDetail.result[currentModuleIndex + 1];
-
-//         if (nextModule.quizzes.isNotEmpty) {
-//           Navigator.push(
-//             context,
-//             MaterialPageRoute(
-//               builder: (context) => QuizPage(
-//                 quizId: nextModule.quizzes.first,
-//               ),
-//             ),
-//           );
-//         } else {
-//           print("Loaded ${module}");
-//           loadNextVideo();
-//         }
-//       }
-//     } else {
-//       print("Course detail is null");
-//     }
-//   },
-//   child: Container(
-//     height: 7.h,
-//     width: MediaQuery.of(context).size.width - 10.w,
-//     decoration: BoxDecoration(
-//       color: Colors.blue,
-//       borderRadius: BorderRadius.circular(10),
-//     ),
-//     child: Center(
-//       child: Thetext(
-//         thetext: "Next Module",
-//         style: GoogleFonts.poppins(
-//           color: Colors.white,
-//         ),
-//       ),
-//     ),
-//   ),
-// )
+                                  showDialog(
+                                    context: context,
+                                    builder: (BuildContext context) {
+                                      return EnrollmentDialog(
+                                        press1: () {
+                                          Navigator.pop(context);
+                                        },
+                                        press2: () {},
+                                        theicon: Icon(
+                                          Icons.check_circle,
+                                          color: Colors.blue,
+                                          size: 60,
+                                        ),
+                                        title: "Coursed Finished",
+                                        message: "All caught up",
+                                        message2: 'Give reviews',
+                                      );
+                                    },
+                                  );
+                                }
+                              }
+                            }
+                          },
+                          child: Container(
+                            height: 7.h,
+                            width: MediaQuery.of(context).size.width - 10.w,
+                            decoration: BoxDecoration(
+                              color: Colors.blue,
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            child: Center(
+                              child: Thetext(
+                                thetext: btntext,
+                                style: GoogleFonts.poppins(
+                                  color: Colors.white,
+                                ),
+                              ),
+                            ),
+                          ),
+                        )
                       ],
                     );
                   }
