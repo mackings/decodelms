@@ -26,6 +26,7 @@ class CourseModule {
   final String courseId;
   final String moduleTitle;
   final String moduleDescription;
+  final bool isCompleted;
   final List<Video> video;
   final List<Image> image;
   final List<Image> audio;
@@ -36,6 +37,7 @@ class CourseModule {
 
   CourseModule({
     required this.id,
+    required this.isCompleted,
     required this.userId,
     required this.courseId,
     required this.moduleTitle,
@@ -55,13 +57,16 @@ class CourseModule {
         videoData.map((video) => Video.fromJson(video)).toList();
 
     final List<dynamic> imageData = json['image'];
-    final List<Image> image = imageData.map((image) => Image.fromJson(image)).toList();
+    final List<Image> image =
+        imageData.map((image) => Image.fromJson(image)).toList();
 
     final List<dynamic> audioData = json['audio'];
-    final List<Image> audio = audioData.map((audio) => Image.fromJson(audio)).toList();
+    final List<Image> audio =
+        audioData.map((audio) => Image.fromJson(audio)).toList();
 
     return CourseModule(
       id: json['_id'],
+      isCompleted: json['isCompleted'],
       userId: json['userId'],
       courseId: json['courseId'],
       moduleTitle: json['module_title'],

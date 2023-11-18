@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:decodelms/models/quizquestions.dart';
 import 'package:decodelms/widgets/appbar.dart';
 import 'package:decodelms/widgets/course/dialogs.dart';
@@ -10,15 +12,16 @@ import 'package:sizer/sizer.dart';
 
 class QuizPage extends StatefulWidget {
   final String quizId;
+  final String moduleId;
 
-  QuizPage({required this.quizId});
+  QuizPage({required this.quizId, required this.moduleId});
 
   @override
   _QuizPageState createState() => _QuizPageState();
 }
 
 class _QuizPageState extends State<QuizPage> {
-  final String baseUrl = 'https://decode-mnjh.onrender.com/api/quizes/getQuiz';
+  final String baseUrl = 'https://server-eight-beige.vercel.app/api/quizes/getQuiz';
   late String? token;
   List<Map<String, dynamic>> selectedAnswers = [];
 
@@ -28,6 +31,7 @@ class _QuizPageState extends State<QuizPage> {
   void initState() {
     super.initState();
     _fetchToken();
+    print(" Module Id ${widget.moduleId}");
     //_loadQuiz();
   }
 
@@ -88,11 +92,7 @@ class _QuizPageState extends State<QuizPage> {
             "Content-Type": "application/json",
             'Authorization': 'Bearer $token',
           },
-          body: jsonEncode(
-            {
-            "userAnswers": selectedAnswers
-            }
-            ));
+          body: jsonEncode({"userAnswers": selectedAnswers}));
 
       if (response.statusCode == 200) {
         var data = jsonDecode(response.body);
@@ -114,7 +114,8 @@ class _QuizPageState extends State<QuizPage> {
                 Navigator.pop(context);
               },
               press2: () {
-                Navigator.pop(context, res);
+                // Navigator.pop(context, res);
+                Complete();
               },
               theicon: Icon(
                 Icons.check_circle,
@@ -127,8 +128,6 @@ class _QuizPageState extends State<QuizPage> {
             );
           },
         );
-
-        
       } else if (response.statusCode == 409) {
         var data = jsonDecode(response.body);
         print(data);
@@ -225,6 +224,140 @@ class _QuizPageState extends State<QuizPage> {
     }
   }
 
+  Future Complete() async {
+    String errorMessage = '';
+
+    try {
+      final response = await http.put(
+        Uri.parse(
+            "https://server-eight-beige.vercel.app/api/quizes/isCompletedModule/${widget.moduleId}"),
+        headers: {
+          'Authorization': 'Bearer $token',
+          'Content-Type': 'application/json',
+        },
+      );
+
+      if (response.statusCode == 200) {
+        var data = jsonDecode(response.body);
+        print(data);
+
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return EnrollmentDialog(
+              press1: () {
+                // Navigator.pop(context);
+                
+              },
+              press2: () {
+              
+                // Navigator.pop(context, res);
+              },
+              theicon: Icon(
+                Icons.check_circle,
+                color: Colors.blue,
+                size: 60,
+              ),
+              title: "Quiz Attempted",
+              message: "You Scored $res",
+              message2: 'Continue',
+            );
+          },
+        );
+      } else if (response.statusCode == 409) {
+        var data = jsonDecode(response.body);
+        print(data);
+        print(selectedAnswers);
+
+        setState(() {
+          errorMessage = data['message'];
+        });
+
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return EnrollmentDialog(
+              press1: () {
+                Navigator.pop(context);
+              },
+              press2: () {
+                Navigator.pop(context);
+              },
+              theicon: Icon(
+                Icons.error,
+                color: Colors.red,
+                size: 60,
+              ),
+              title: "Enrollment Failed",
+              message: errorMessage.isNotEmpty
+                  ? errorMessage
+                  : "Enrollment failed. Please try again later.",
+              message2: "Take me Home",
+            );
+          },
+        );
+      } else {
+        print(selectedAnswers);
+
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return EnrollmentDialog(
+              press1: () {
+                Navigator.pop(context);
+              },
+              press2: () {
+                Navigator.pop(context);
+              },
+              theicon: Icon(
+                Icons.error,
+                color: Colors.red,
+                size: 60,
+              ),
+              title: "Enrollment Failed",
+              message: errorMessage.isNotEmpty
+                  ? errorMessage
+                  : "Enrollment failed. Please try again later.",
+              message2: "Take me Home",
+            );
+          },
+        );
+        print(response.body);
+      }
+    } catch (error) {
+      print('Error is $error');
+      setState(() {
+        // isEnrolling = false;
+      });
+
+      print(res);
+
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return EnrollmentDialog(
+            press1: () {
+              Navigator.pop(context);
+            },
+            press2: () {
+              Navigator.pop(context);
+            },
+            theicon: Icon(
+              Icons.error,
+              color: Colors.red,
+              size: 60,
+            ),
+            title: "Enrollment Failed",
+            message: errorMessage.isNotEmpty
+                ? errorMessage
+                : "Enrollment failed. Please try again later.",
+            message2: "Take me Home",
+          );
+        },
+      );
+    }
+  }
+
   dynamic res;
   bool isLastQuestion(int index) {
     return index == _quiz!.questions.length - 1;
@@ -252,10 +385,9 @@ class _QuizPageState extends State<QuizPage> {
                   padding: const EdgeInsets.all(8.0),
                   child: QuizQuestionView(
                     question: _quiz!.questions[index],
-selectedAnswer: selectedAnswers.length > index
-    ? selectedAnswers[index]['correctAnswerIndexes']
-    : null,
-
+                    selectedAnswer: selectedAnswers.length > index
+                        ? selectedAnswers[index]['correctAnswerIndexes']
+                        : null,
                     onAnswerSelected: (int? answerIndex) {
                       setState(() {
                         QID = _quiz!.id;
@@ -264,32 +396,25 @@ selectedAnswer: selectedAnswers.length > index
                             int? parsedAnswerIndex =
                                 int.tryParse(answerIndex.toString());
                             if (parsedAnswerIndex != null) {
-                             
                               String questionId = _quiz!.questions[index].id;
 
-                             
                               Map<String, dynamic> answerMap = {
                                 'correctAnswerIndexes': parsedAnswerIndex,
                                 '_id': questionId,
                               };
 
-                          
                               selectedAnswers.add(answerMap);
 
                               print(selectedAnswers);
                               print("Quiz ID $QID");
-                            } else {
-                          
-                            }
+                            } else {}
                           } else {
-                            
                             selectedAnswers[index] = {
                               'correctAnswerIndexes': answerIndex,
                               '_id': _quiz!.questions[index].id,
                             };
                           }
                         } else {
-                          
                           selectedAnswers[index] = {
                             'correctAnswerIndexes': null,
                             '_id': _quiz!.questions[index].id,
@@ -362,21 +487,22 @@ class _QuizQuestionViewState extends State<QuizQuestionView> {
                       title: Thetext(
                           thetext: answer, style: GoogleFonts.poppins()),
                       value: isSelected,
-                      onChanged: isAnswerSelected // Disable onChanged if an answer is already selected
-                          ? null
-                          : (value) {
-                              if (value != null && value) {
-                                setState(() {
-                                  isAnswerSelected = true;
-                                });
-                                widget.onAnswerSelected(index);
-                              } else {
-                                setState(() {
-                                  isAnswerSelected = false;
-                                });
-                                widget.onAnswerSelected(null);
-                              }
-                            },
+                      onChanged:
+                          isAnswerSelected // Disable onChanged if an answer is already selected
+                              ? null
+                              : (value) {
+                                  if (value != null && value) {
+                                    setState(() {
+                                      isAnswerSelected = true;
+                                    });
+                                    widget.onAnswerSelected(index);
+                                  } else {
+                                    setState(() {
+                                      isAnswerSelected = false;
+                                    });
+                                    widget.onAnswerSelected(null);
+                                  }
+                                },
                     ),
                   ),
                 ),
@@ -384,22 +510,26 @@ class _QuizQuestionViewState extends State<QuizQuestionView> {
             }).toList(),
           ),
           SizedBox(height: 8.h),
-          Container(
-            height: 7.h,
-            width: MediaQuery.of(context).size.width - 12.w,
-            decoration: BoxDecoration(
-              color: widget.isLastQuestion
-                  ? Colors.blue
-                  : Colors.grey, // Change button color if the last question
-              borderRadius: BorderRadius.circular(10),
-            ),
-            child: Center(
-              child: Thetext(
-                thetext: widget.isLastQuestion
-                    ? "Submit Quiz"
-                    : "Swipe left to Continue",
-                style: GoogleFonts.poppins(
-                    color: widget.isLastQuestion ? Colors.white : Colors.white),
+          GestureDetector(
+            onTap: () {},
+            child: Container(
+              height: 7.h,
+              width: MediaQuery.of(context).size.width - 12.w,
+              decoration: BoxDecoration(
+                color: widget.isLastQuestion
+                    ? Colors.blue
+                    : Colors.grey, // Change button color if the last question
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: Center(
+                child: Thetext(
+                  thetext: widget.isLastQuestion
+                      ? "Submit Quiz"
+                      : "Swipe left to Continue",
+                  style: GoogleFonts.poppins(
+                      color:
+                          widget.isLastQuestion ? Colors.white : Colors.white),
+                ),
               ),
             ),
           ),
@@ -408,4 +538,3 @@ class _QuizQuestionViewState extends State<QuizQuestionView> {
     );
   }
 }
-

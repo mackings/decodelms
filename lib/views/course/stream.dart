@@ -151,22 +151,41 @@ class _StreamPageState extends State<StreamPage> {
     getToken();
 
     setState(() {});
-
     Timer(Duration(seconds: 2), () {
       futureCourseDetail = fetchCourseDetailById(widget.courseId, token);
 
       futureCourseDetail!.then((courseDetail) {
         if (courseDetail.result.isNotEmpty) {
-          final firstModule = courseDetail.result.first;
-          if (firstModule.video.isNotEmpty) {
-            loadVideo(firstModule.video.first.path);
-          }
+          // Load the first module
+          loadModule(courseDetail, courseDetail.result.first);
         }
       });
-
-      print(widget.courseId);
-      print(token);
     });
+  }
+
+  void loadModule(ApiResponse courseDetail, CourseModule module) {
+    // Check if the current module is completed
+    if (module.isCompleted == true) {
+      print("Current module is already completed. Loading next module.");
+
+      loadNextModule(courseDetail);
+    } else if (module.video.isNotEmpty) {
+      // Load video for the current module
+      loadVideo(module.video.first.path);
+    }
+  }
+
+  void loadNextModule(ApiResponse courseDetail) {
+    if (currentModuleIndex < courseDetail.result.length - 1) {
+      currentModuleIndex++;
+      final nextModule = courseDetail.result[currentModuleIndex];
+      if (nextModule.video.isNotEmpty) {
+        loadVideo(nextModule.video.first.path);
+      } else {
+        // Handle the case where the video list is empty, e.g., show an error message or perform some other action.
+        print('No video available for the next module');
+      }
+    }
   }
 
   bool isCurrentModuleAvailable() {
@@ -194,7 +213,10 @@ class _StreamPageState extends State<StreamPage> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => QuizPage(quizId: quizId),
+                      builder: (context) => QuizPage(
+                        quizId: quizId,
+                        moduleId: currentModule.id,
+                      ),
                     ),
                   ).then((value) {
                     loadNextVideo();
@@ -327,26 +349,29 @@ class _StreamPageState extends State<StreamPage> {
 
                                 if (currentModule.quizzes.isNotEmpty) {
                                   videoPlayerController.pause();
-                                  // Navigator.push(
-                                  //   context,
-                                  //   MaterialPageRoute(
-                                  //     builder: (context) => QuizPage(
-                                  //       quizId: currentModule.quizzes.first,
-                                  //     ),
-                                  //   ),
-                                  // );
-                                 
-                                 // loadNextVideo();
-       final quizScore = await Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => QuizPage(quizId: currentModule.quizzes.first),
-            ),
-          );
-          print('Quiz Score: $quizScore');
-          if (quizScore >= 3) {
-            loadNextVideo();
-          }
+                                  if (currentModule.isCompleted == false) {
+                                    print("Uncompleted");
+                                  } else {
+                                    print("Completed");
+                                  }
+
+                                  final quizScore = await Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => QuizPage(
+                                        quizId: currentModule.quizzes.first,
+                                        moduleId: currentModule.id,
+                                      ),
+                                    ),
+                                  );
+
+                                  print('Quiz Score: $quizScore');
+                                  if (quizScore >= 3) {
+                                    // Check if the current module is completed
+                                    if (currentModule.isCompleted == true) {
+                                      loadNextVideo(); // Proceed to the next module
+                                    }
+                                  }
                                 } else if (currentModuleIndex <
                                     courseDetail.result.length - 1) {
                                   final nextModule = courseDetail
@@ -357,40 +382,47 @@ class _StreamPageState extends State<StreamPage> {
                                       context,
                                       MaterialPageRoute(
                                         builder: (context) => QuizPage(
-                                          quizId: nextModule.quizzes.first,
-                                        ),
+                                            quizId: nextModule.quizzes.first,
+                                            moduleId: nextModule.id),
                                       ),
                                     );
                                   } else if (nextModule.video.isNotEmpty) {
-                                    currentModuleIndex++;
-                                    loadVideo(nextModule.video.first.path);
+                                    videoPlayerController.pause();
+                                    showDialog(
+                                      context: context,
+                                      builder: (BuildContext context) {
+                                        return AlertDialog(
+                                          title: Text('Complete Module'),
+                                          content: Text(
+                                              'Do you want to mark this module as completed?'),
+                                          actions: [
+                                            TextButton(
+                                              onPressed: () {
+                                                Navigator.pop(context);
+                                              },
+                                              child: Text('Cancel'),
+                                            ),
+                                            TextButton(
+                                              onPressed: () {
+                                                Navigator.pop(context);
+                                                currentModuleIndex++;
+                                                loadVideo(nextModule
+                                                    .video.first.path);
+                                              },
+                                              child: Text('Complete'),
+                                            ),
+                                          ],
+                                        );
+                                      },
+                                    );
+
+                                    // currentModuleIndex++;
+                                    // loadVideo(nextModule.video.first.path);
                                   } else {
                                     print(
                                         "No video or quiz in the next module");
                                   }
-                                } else {
-                                  // Perform the required action if the course or module detail is null
-
-                                  showDialog(
-                                    context: context,
-                                    builder: (BuildContext context) {
-                                      return EnrollmentDialog(
-                                        press1: () {
-                                          Navigator.pop(context);
-                                        },
-                                        press2: () {},
-                                        theicon: Icon(
-                                          Icons.check_circle,
-                                          color: Colors.blue,
-                                          size: 60,
-                                        ),
-                                        title: "Coursed Finished",
-                                        message: "All caught up",
-                                        message2: 'Give reviews',
-                                      );
-                                    },
-                                  );
-                                }
+                                } else {}
                               }
                             }
                           },
