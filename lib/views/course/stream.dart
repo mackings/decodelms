@@ -215,7 +215,7 @@ class _StreamPageState extends State<StreamPage> {
                     MaterialPageRoute(
                       builder: (context) => QuizPage(
                         quizId: quizId,
-                        moduleId: currentModule.id,
+                        courseId: currentModule.id,
                       ),
                     ),
                   ).then((value) {
@@ -307,6 +307,7 @@ class _StreamPageState extends State<StreamPage> {
                   } else {
                     final apiResponse = snapshot.data!;
                     final module = apiResponse.result[currentModuleIndex];
+                    final courseID = apiResponse.result;
 
                     // print("Current module Quiz ${module.quizzes.first}");
 
@@ -359,11 +360,11 @@ class _StreamPageState extends State<StreamPage> {
                                     context,
                                     MaterialPageRoute(
                                       builder: (context) => QuizPage(
-                                        quizId: currentModule.quizzes.first,
-                                        moduleId: currentModule.id,
-                                      ),
+                                          quizId: currentModule.quizzes.first,
+                                          courseId: widget.courseId),
                                     ),
                                   );
+                                  print("Passed Course ID ${widget.courseId}");
 
                                   print('Quiz Score: $quizScore');
                                   if (quizScore >= 3) {
@@ -383,7 +384,7 @@ class _StreamPageState extends State<StreamPage> {
                                       MaterialPageRoute(
                                         builder: (context) => QuizPage(
                                             quizId: nextModule.quizzes.first,
-                                            moduleId: nextModule.id),
+                                            courseId: nextModule.id),
                                       ),
                                     );
                                   } else if (nextModule.video.isNotEmpty) {

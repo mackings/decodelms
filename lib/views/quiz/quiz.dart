@@ -12,9 +12,9 @@ import 'package:sizer/sizer.dart';
 
 class QuizPage extends StatefulWidget {
   final String quizId;
-  final String moduleId;
+  final String courseId;
 
-  QuizPage({required this.quizId, required this.moduleId});
+  QuizPage({required this.quizId, required this.courseId});
 
   @override
   _QuizPageState createState() => _QuizPageState();
@@ -31,9 +31,10 @@ class _QuizPageState extends State<QuizPage> {
   void initState() {
     super.initState();
     _fetchToken();
-    print(" Module Id ${widget.moduleId}");
+    print(" Module Id ${widget.courseId}");
     //_loadQuiz();
   }
+
 
   Future<void> _fetchToken() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -53,7 +54,9 @@ class _QuizPageState extends State<QuizPage> {
   Quiz? _quiz;
 
   Future<Quiz?> _loadQuiz() async {
+
     try {
+
       final response = await http.get(
         Uri.parse('$baseUrl/${widget.quizId}'),
         headers: {
@@ -78,7 +81,7 @@ class _QuizPageState extends State<QuizPage> {
     }
   }
 
-  dynamic QID;
+  dynamic QID; 
   dynamic AID;
 
   Future SubmitQuiz() async {
@@ -230,7 +233,7 @@ class _QuizPageState extends State<QuizPage> {
     try {
       final response = await http.put(
         Uri.parse(
-            "https://server-eight-beige.vercel.app/api/quizes/isCompletedModule/${widget.moduleId}"),
+            "https://server-eight-beige.vercel.app/api/quizes/isCompletedModule/${widget.courseId}"),
         headers: {
           'Authorization': 'Bearer $token',
           'Content-Type': 'application/json',

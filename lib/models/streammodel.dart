@@ -1,6 +1,6 @@
 class ApiResponse {
   final String message;
-  final List<CourseModule> result;
+  final List<StudentCourse> result;
 
   ApiResponse({
     required this.message,
@@ -9,9 +9,8 @@ class ApiResponse {
 
   factory ApiResponse.fromJson(Map<String, dynamic> json) {
     final List<dynamic> resultData = json['result'];
-    final List<CourseModule> result = resultData
-        .map((moduleData) => CourseModule.fromJson(moduleData))
-        .toList();
+    final List<StudentCourse> result =
+        resultData.map((courseData) => StudentCourse.fromJson(courseData)).toList();
 
     return ApiResponse(
       message: json['message'],
@@ -20,26 +19,48 @@ class ApiResponse {
   }
 }
 
-class CourseModule {
-  final String id;
+class StudentCourse {
   final String userId;
   final String courseId;
+  final List<CourseModule> modules;
+  final bool isCompleted;
+
+  StudentCourse({
+    required this.userId,
+    required this.courseId,
+    required this.modules,
+    required this.isCompleted,
+  });
+
+  factory StudentCourse.fromJson(Map<String, dynamic> json) {
+    final List<dynamic> moduleData = json['module'];
+    final List<CourseModule> modules =
+        moduleData.map((module) => CourseModule.fromJson(module)).toList();
+
+    return StudentCourse(
+      userId: json['userId'],
+      courseId: json['courseId'],
+      modules: modules,
+      isCompleted: json['isCompleted'],
+    );
+  }
+}
+
+class CourseModule {
+  final String id;
   final String moduleTitle;
   final String moduleDescription;
-  final bool isCompleted;
   final List<Video> video;
   final List<Image> image;
-  final List<Image> audio;
+  final List<Audio> audio;
   final String moduleDuration;
   final List<String> quizzes;
   final int likeCount;
   final int dislikeCount;
+  final bool isCompleted;
 
   CourseModule({
     required this.id,
-    required this.isCompleted,
-    required this.userId,
-    required this.courseId,
     required this.moduleTitle,
     required this.moduleDescription,
     required this.video,
@@ -49,6 +70,7 @@ class CourseModule {
     required this.quizzes,
     required this.likeCount,
     required this.dislikeCount,
+    required this.isCompleted,
   });
 
   factory CourseModule.fromJson(Map<String, dynamic> json) {
@@ -61,14 +83,11 @@ class CourseModule {
         imageData.map((image) => Image.fromJson(image)).toList();
 
     final List<dynamic> audioData = json['audio'];
-    final List<Image> audio =
-        audioData.map((audio) => Image.fromJson(audio)).toList();
+    final List<Audio> audio =
+        audioData.map((audio) => Audio.fromJson(audio)).toList();
 
     return CourseModule(
       id: json['_id'],
-      isCompleted: json['isCompleted'],
-      userId: json['userId'],
-      courseId: json['courseId'],
       moduleTitle: json['module_title'],
       moduleDescription: json['module_description'],
       video: video,
@@ -78,6 +97,7 @@ class CourseModule {
       quizzes: (json['quizzes'] as List<dynamic>).cast<String>(),
       likeCount: json['like_count'],
       dislikeCount: json['dislike_count'],
+      isCompleted: json['isCompleted'],
     );
   }
 }
@@ -135,6 +155,38 @@ class Image {
 
   factory Image.fromJson(Map<String, dynamic> json) {
     return Image(
+      fieldName: json['fieldname'],
+      originalName: json['originalname'],
+      encoding: json['encoding'],
+      mimeType: json['mimetype'],
+      path: json['path'],
+      size: json['size'],
+      filename: json['filename'],
+    );
+  }
+}
+
+class Audio {
+  final String fieldName;
+  final String originalName;
+  final String encoding;
+  final String mimeType;
+  final String path;
+  final int size;
+  final String filename;
+
+  Audio({
+    required this.fieldName,
+    required this.originalName,
+    required this.encoding,
+    required this.mimeType,
+    required this.path,
+    required this.size,
+    required this.filename,
+  });
+
+  factory Audio.fromJson(Map<String, dynamic> json) {
+    return Audio(
       fieldName: json['fieldname'],
       originalName: json['originalname'],
       encoding: json['encoding'],

@@ -71,6 +71,7 @@ class _CourseCarouselSliderState extends State<CourseCarouselSlider> {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return AllCourseCardShimmer();
         } else if (snapshot.hasError) {
+          print(snapshot.error);
           return AllCourseCardShimmer();
         } else {
           final courses = snapshot.data;
@@ -138,7 +139,8 @@ class _AllCourseCarouselSliderState extends State<AllCourseCarouselSlider> {
 
   Future<List<AllCourse>> fetchAllCourses() async {
     final response = await http.get(
-      Uri.parse('https://server-eight-beige.vercel.app/api/course/viewAllCourses'),
+      Uri.parse(
+          'https://server-eight-beige.vercel.app/api/course/viewAllCourses'),
       headers: {
         'Authorization': 'Bearer $Token',
       },
@@ -151,9 +153,11 @@ class _AllCourseCarouselSliderState extends State<AllCourseCarouselSlider> {
           .map((courseData) => AllCourse.fromJson(courseData))
           .toList();
       print(allCourses);
+      print(responseData);
 
       return allCourses;
     } else {
+      print(response.body);
       throw Exception('Failed to load courses');
     }
   }

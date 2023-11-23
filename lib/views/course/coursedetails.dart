@@ -423,7 +423,7 @@ class _CourseDetailsPageState extends State<CourseDetailsPage> {
                                           children: [
                                             Thetext(
                                                 thetext: widget
-                                                    .allCourses.enrolled
+                                                    .allCourses.totalRegisteredByStudent
                                                     .toString(),
                                                 style: GoogleFonts.poppins()),
                                             Thetext(
@@ -451,7 +451,7 @@ class _CourseDetailsPageState extends State<CourseDetailsPage> {
                                 left: 30, right: 30, bottom: 10),
                             child: GestureDetector(
                               onTap: () {
-                                print(module.videoUrl);
+                                print(module.id);
                               },
                               child: Container(
                                 height: 10.h,
