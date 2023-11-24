@@ -47,41 +47,50 @@ class _StreamPageState extends State<StreamPage> {
     }
   }
 
-  Future<ApiResponse> fetchCourseDetailById(
-      String courseId, String? token) async {
-    final baseUrl =
-        "https://server-eight-beige.vercel.app/api/student/studentViewCourse/$courseId";
 
-    final response = await http.get(
-      Uri.parse(baseUrl),
-      headers: {
-        'Authorization': 'Bearer $token',
-        'Content-Type': 'application/json',
-      },
-    );
 
-    if (response.statusCode == 200) {
-      final data = json.decode(response.body);
-      print("Course ID Is ${courseId}");
-      try {
-        final message = data['message'];
-        final resultData =
-            data['result'] as List<dynamic>; // Cast to List<dynamic>
-        final List<CourseModule> result = resultData
-            .map((moduleData) => CourseModule.fromJson(moduleData))
+Future<ApiResponse> fetchCourseDetailById(
+    String courseId, String? token) async {
+  final baseUrl =
+      "https://server-eight-beige.vercel.app/api/student/studentViewCourse/$courseId";
+
+  final response = await http.get(
+    Uri.parse(baseUrl),
+    headers: {
+      'Authorization': 'Bearer $token',
+      'Content-Type': 'application/json',
+    },
+  );
+
+  if (response.statusCode == 200) {
+    final data = json.decode(response.body);
+
+
+    try {
+      final message = data['message'];
+      final resultData = data['result'] as List<dynamic>?;
+
+      if (resultData != null) {
+        final List<StudentCourse> result = resultData
+            .map((courseData) =>
+                StudentCourse.fromJson(courseData as Map<String, dynamic>))
             .toList();
 
         return ApiResponse(
           message: message,
           result: result,
         );
-      } catch (e) {
-        throw Exception('Failed to parse API response: $e');
+      } else {
+        throw Exception('Failed to parse API response: Result is null');
       }
-    } else {
-      throw Exception('Failed to load course details: ${response.body}');
+    } catch (e) {
+      throw Exception('Failed to parse API response: $e');
     }
+  } else {
+    throw Exception('Failed to load course details: ${response.body}');
   }
+}
+
 
   // Function to post a comment to the module
 
@@ -157,30 +166,32 @@ class _StreamPageState extends State<StreamPage> {
       futureCourseDetail!.then((courseDetail) {
         if (courseDetail.result.isNotEmpty) {
           // Load the first module
-          loadModule(courseDetail, courseDetail.result.first);
+          loadModule(courseDetail, courseDetail.result.first.modules.first);
         }
       });
     });
   }
 
-  void loadModule(ApiResponse courseDetail, CourseModule module) {
-    // Check if the current module is completed
-    if (module.isCompleted == true) {
-      print("Current module is already completed. Loading next module.");
 
-      loadNextModule(courseDetail);
-    } else if (module.video.isNotEmpty) {
-      // Load video for the current module
-      loadVideo(module.video.first.path);
-    }
+void loadModule(ApiResponse courseDetail, CourseModule module) {
+  // Check if the current module is completed
+  if (courseDetail.result.first.isCompleted == true) {
+    print("Current module is already completed. Loading next module.");
+
+    loadNextModule(courseDetail);
+  } else if (module.video.isNotEmpty) {
+    // Load video for the current module
+    loadVideo(module.video.first.path);
   }
+}
+
 
   void loadNextModule(ApiResponse courseDetail) {
     if (currentModuleIndex < courseDetail.result.length - 1) {
       currentModuleIndex++;
       final nextModule = courseDetail.result[currentModuleIndex];
-      if (nextModule.video.isNotEmpty) {
-        loadVideo(nextModule.video.first.path);
+      if (nextModule.modules.first.video.isNotEmpty) {
+        loadVideo(nextModule.modules.first.video.first.path);
       } else {
         // Handle the case where the video list is empty, e.g., show an error message or perform some other action.
         print('No video available for the next module');
@@ -253,8 +264,8 @@ class _StreamPageState extends State<StreamPage> {
         currentModuleIndex < courseDetail.result.length - 1) {
       currentModuleIndex++;
       final nextModule = courseDetail.result[currentModuleIndex];
-      if (nextModule.video.isNotEmpty) {
-        loadVideo(nextModule.video.first.path);
+      if (nextModule.modules.first.video.isNotEmpty) {
+        loadVideo(nextModule.modules.first.video.first.path);
       } else {
         // Handle the case where the video list is empty, e.g., show an error message or perform some other action.
         print('No video available for the next module');
@@ -306,7 +317,8 @@ class _StreamPageState extends State<StreamPage> {
                     return Center(child: Text('No data available.'));
                   } else {
                     final apiResponse = snapshot.data!;
-                    final module = apiResponse.result[currentModuleIndex];
+                    final module =
+                        apiResponse.result[currentModuleIndex].modules;
                     final courseID = apiResponse.result;
 
                     // print("Current module Quiz ${module.quizzes.first}");
@@ -317,7 +329,7 @@ class _StreamPageState extends State<StreamPage> {
                             child: Padding(
                           padding: const EdgeInsets.all(8.0),
                           child: Thetext(
-                              thetext: module.moduleTitle,
+                              thetext: module.first.moduleTitle,
                               style: GoogleFonts.poppins()),
                         )),
                         Padding(
@@ -339,111 +351,105 @@ class _StreamPageState extends State<StreamPage> {
                                 borderRadius: BorderRadius.circular(10)),
                           ),
                         ),
-                        GestureDetector(
-                          onTap: () async {
-                            if (futureCourseDetail != null) {
-                              final courseDetail = await futureCourseDetail;
+GestureDetector(
+  onTap: () async {
+    if (futureCourseDetail != null) {
+      final courseDetail = await futureCourseDetail;
 
-                              if (courseDetail != null) {
-                                final currentModule =
-                                    courseDetail.result[currentModuleIndex];
+      if (courseDetail != null) {
+        final currentModule = courseDetail.result[currentModuleIndex]?.modules?.first;
 
-                                if (currentModule.quizzes.isNotEmpty) {
-                                  videoPlayerController.pause();
-                                  if (currentModule.isCompleted == false) {
-                                    print("Uncompleted");
-                                  } else {
-                                    print("Completed");
-                                  }
+        if (currentModule?.quizzes.isNotEmpty == true) {
+          videoPlayerController.pause();
+if (courseDetail.result[currentModuleIndex].isCompleted == false) {
+  print("Uncompleted");
+} else {
+  print("Completed");
+}
 
-                                  final quizScore = await Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) => QuizPage(
-                                          quizId: currentModule.quizzes.first,
-                                          courseId: widget.courseId),
-                                    ),
-                                  );
-                                  print("Passed Course ID ${widget.courseId}");
 
-                                  print('Quiz Score: $quizScore');
-                                  if (quizScore >= 3) {
-                                    // Check if the current module is completed
-                                    if (currentModule.isCompleted == true) {
-                                      loadNextVideo(); // Proceed to the next module
-                                    }
-                                  }
-                                } else if (currentModuleIndex <
-                                    courseDetail.result.length - 1) {
-                                  final nextModule = courseDetail
-                                      .result[currentModuleIndex + 1];
+          final quizScore = await Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => QuizPage(
+                quizId: currentModule?.quizzes.first ?? '',
+                courseId: widget.courseId,
+              ),
+            ),
+          );
+          print("Passed Course ID ${widget.courseId}");
 
-                                  if (nextModule.quizzes.isNotEmpty) {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) => QuizPage(
-                                            quizId: nextModule.quizzes.first,
-                                            courseId: nextModule.id),
-                                      ),
-                                    );
-                                  } else if (nextModule.video.isNotEmpty) {
-                                    videoPlayerController.pause();
-                                    showDialog(
-                                      context: context,
-                                      builder: (BuildContext context) {
-                                        return AlertDialog(
-                                          title: Text('Complete Module'),
-                                          content: Text(
-                                              'Do you want to mark this module as completed?'),
-                                          actions: [
-                                            TextButton(
-                                              onPressed: () {
-                                                Navigator.pop(context);
-                                              },
-                                              child: Text('Cancel'),
-                                            ),
-                                            TextButton(
-                                              onPressed: () {
-                                                Navigator.pop(context);
-                                                currentModuleIndex++;
-                                                loadVideo(nextModule
-                                                    .video.first.path);
-                                              },
-                                              child: Text('Complete'),
-                                            ),
-                                          ],
-                                        );
-                                      },
-                                    );
+          print('Quiz Score: $quizScore');
+          if (quizScore >= 3) {
+            // Check if the current module is completed
+            if (courseDetail.result[currentModuleIndex].isCompleted == false) {
+              loadNextVideo(); // Proceed to the next module
+            }
+          }
+        } else if (currentModuleIndex < courseDetail.result.length - 1) {
+          final nextModule = courseDetail.result[currentModuleIndex + 1]?.modules?.first;
 
-                                    // currentModuleIndex++;
-                                    // loadVideo(nextModule.video.first.path);
-                                  } else {
-                                    print(
-                                        "No video or quiz in the next module");
-                                  }
-                                } else {}
-                              }
-                            }
-                          },
-                          child: Container(
-                            height: 7.h,
-                            width: MediaQuery.of(context).size.width - 10.w,
-                            decoration: BoxDecoration(
-                              color: Colors.blue,
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                            child: Center(
-                              child: Thetext(
-                                thetext: btntext,
-                                style: GoogleFonts.poppins(
-                                  color: Colors.white,
-                                ),
-                              ),
-                            ),
-                          ),
-                        )
+          if (nextModule?.quizzes.isNotEmpty == true) {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => QuizPage(
+                  quizId: nextModule?.quizzes.first ?? '',
+                  courseId: nextModule?.id ?? '',
+                ),
+              ),
+            );
+          } else if (nextModule?.video.isNotEmpty == true) {
+            videoPlayerController.pause();
+            showDialog(
+              context: context,
+              builder: (BuildContext context) {
+                return AlertDialog(
+                  title: Text('Complete Module'),
+                  content: Text('Do you want to mark this module as completed?'),
+                  actions: [
+                    TextButton(
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                      child: Text('Cancel'),
+                    ),
+                    TextButton(
+                      onPressed: () {
+                        Navigator.pop(context);
+                        currentModuleIndex++;
+                        loadVideo(nextModule?.video.first?.path ?? '');
+                      },
+                      child: Text('Complete'),
+                    ),
+                  ],
+                );
+              },
+            );
+          } else {
+            print("No video or quiz in the next module");
+          }
+        } else {}
+      }
+    }
+  },
+  child: Container(
+    height: 7.h,
+    width: MediaQuery.of(context).size.width - 10.w,
+    decoration: BoxDecoration(
+      color: Colors.blue,
+      borderRadius: BorderRadius.circular(10),
+    ),
+    child: Center(
+      child: Thetext(
+        thetext: btntext,
+        style: GoogleFonts.poppins(
+          color: Colors.white,
+        ),
+      ),
+    ),
+  ),
+)
                       ],
                     );
                   }
