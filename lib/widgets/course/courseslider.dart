@@ -1,8 +1,7 @@
 import 'dart:convert';
-
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:decodelms/models/coursemodel.dart';
-import 'package:decodelms/views/course/coursedetails.dart';
+import 'package:decodelms/models/firstmodel.dart';
 import 'package:decodelms/views/course/stream.dart';
 import 'package:decodelms/widgets/appbar.dart';
 import 'package:decodelms/widgets/course/coursecard.dart';
@@ -11,7 +10,6 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:shimmer/shimmer.dart';
-import 'package:sizer/sizer.dart';
 
 class CourseCarouselSlider extends StatefulWidget {
   @override
@@ -137,35 +135,72 @@ class _AllCourseCarouselSliderState extends State<AllCourseCarouselSlider> {
     super.initState();
   }
 
-  Future<List<AllCourse>> fetchAllCourses() async {
+Future<List<Coursem>?> fetchAllCourses() async {
+  try {
     final response = await http.get(
-      Uri.parse(
-          'https://server-eight-beige.vercel.app/api/course/viewAllCourses'),
+      Uri.parse('https://server-eight-beige.vercel.app/api/course/viewAllCourses'),
       headers: {
         'Authorization': 'Bearer $Token',
+        'Content-Type': 'application/json',
       },
     );
 
     if (response.statusCode == 200) {
-      final List<dynamic> responseData = json.decode(response.body)['courses'];
+      final dynamic responseData = json.decode(response.body);
 
-      List<AllCourse> allCourses = responseData
-          .map((courseData) => AllCourse.fromJson(courseData))
-          .toList();
-      print(allCourses);
-      print(responseData);
+      if (responseData != null &&
+          responseData is Map<String, dynamic> &&
+          responseData.containsKey('courses')) {
+        final coursesData = responseData['courses'];
 
-      return allCourses;
+        if (coursesData is List) {
+          List<Coursem>? allCourses = (coursesData as List?)
+              ?.map<Coursem>((courseData) {
+                if (courseData is Map<String, dynamic>) {
+                  return Coursem.fromJson(courseData);
+                } else {
+                  return Coursem(
+                    id: 'Invalid Course Data',
+                    userId: '',
+                    courseTitle: '',
+                    courseDescription: '',
+                    courseLanguage: '',
+                    reviews: [],
+                    courseImage: [],
+                    isPaidCourse: '',
+                    isPriceCourse: 0,
+                    modules: [],
+                    totalRegisteredByStudent: 0,
+                    createdAt: '',
+                    updatedAt: '',
+                  );
+                }
+              })
+              .toList();
+
+          print("All Courses $allCourses");
+          return allCourses;
+        } else {
+          throw Exception('Invalid data format for courses');
+        }
+      } else {
+        throw Exception('No courses data found in the response');
+      }
     } else {
-      print(response.body);
-      throw Exception('Failed to load courses');
+      throw Exception('Failed to load courses: ${response.statusCode}');
     }
+  } catch (e) {
+    print('Error fetching courses: $e');
+    return null; // Return null on error
   }
+}
+
 
 //AllCourse
+
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<List<AllCourse>>(
+    return FutureBuilder<List<Coursem>?>(
       future: fetchAllCourses(), // Pass the bearer token
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
@@ -196,9 +231,11 @@ class _AllCourseCarouselSliderState extends State<AllCourseCarouselSlider> {
             ),
           );
         } else if (snapshot.hasError) {
+          print('Snapshot has error');
           return AllCourseCardShimmer();
         } else if (snapshot.hasData) {
           final allCourses = snapshot.data;
+          print('Snapshot has data $allCourses');
           return Padding(
             padding: const EdgeInsets.all(8.0),
             child: CarouselSlider(
@@ -231,6 +268,7 @@ class _AllCourseCarouselSliderState extends State<AllCourseCarouselSlider> {
 }
 
 ///////Enrolled Slide
+
 class CourseCarouselSlider2 extends StatefulWidget {
   @override
   State<CourseCarouselSlider2> createState() => _CourseCarouselSlider2State();

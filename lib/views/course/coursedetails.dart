@@ -14,7 +14,7 @@ import 'package:sizer/sizer.dart';
 import 'package:http/http.dart' as http;
 
 class CourseDetailsPage extends StatefulWidget {
-  final AllCourse allCourses;
+  final Coursem allCourses;
   //final List<Courseresults> searchCourses; // Corrected variable name
 
   const CourseDetailsPage({required this.allCourses});
@@ -216,16 +216,7 @@ class _CourseDetailsPageState extends State<CourseDetailsPage> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                // Padding(
-                //   padding: const EdgeInsets.all(8.0),
-                //   child: ButtonRow(
-                //     title: "About Course",
-                //     leftButtonCallback: () {
-                //       Navigator.pop(context);
-                //     },
-                //     rightButtonCallback: () {},
-                //   ),
-                // ),
+
                 Padding(
                   padding: const EdgeInsets.only(
                     top: 40,
@@ -257,7 +248,7 @@ class _CourseDetailsPageState extends State<CourseDetailsPage> {
                           height: 25.h,
                           decoration: BoxDecoration(
                             image: DecorationImage(
-                              image: NetworkImage(widget.allCourses.imageUrl),
+                              image: NetworkImage(widget.allCourses.courseImage.first.path),
                               fit: BoxFit.cover,
                             ),
                           ),
@@ -271,7 +262,7 @@ class _CourseDetailsPageState extends State<CourseDetailsPage> {
                   child: Row(
                     children: [
                       Thetext(
-                          thetext: widget.allCourses.title,
+                          thetext: widget.allCourses.courseTitle,
                           style: GoogleFonts.poppins(
                             fontWeight: FontWeight.bold,
                             fontSize: 15.sp,
@@ -297,7 +288,7 @@ class _CourseDetailsPageState extends State<CourseDetailsPage> {
                               children: [
                                 CircleAvatar(
                                   backgroundImage:
-                                      NetworkImage(widget.allCourses.imageUrl),
+                                      NetworkImage(widget.allCourses.courseImage.first.path),
                                 ),
                                 Padding(
                                   padding: const EdgeInsets.all(8.0),
@@ -353,7 +344,7 @@ class _CourseDetailsPageState extends State<CourseDetailsPage> {
                           child: Column(
                             children: [
                               Thetext(
-                                  thetext: widget.allCourses.description,
+                                  thetext: widget.allCourses.courseDescription,
                                   style: GoogleFonts.poppins()),
                               Padding(
                                 padding:
@@ -422,9 +413,8 @@ class _CourseDetailsPageState extends State<CourseDetailsPage> {
                                               CrossAxisAlignment.start,
                                           children: [
                                             Thetext(
-                                                thetext: widget
-                                                    .allCourses.totalRegisteredByStudent
-                                                    .toString(),
+                                                thetext:widget.allCourses.totalRegisteredByStudent.toString(),
+                                                  
                                                 style: GoogleFonts.poppins()),
                                             Thetext(
                                                 thetext: "Enrolled",
@@ -465,7 +455,7 @@ class _CourseDetailsPageState extends State<CourseDetailsPage> {
                                   children: [
                                     ListTile(
                                       title: Thetext(
-                                          thetext: module.title,
+                                          thetext: module.moduleTitle,
                                           style: GoogleFonts.poppins()),
                                       leading: Icon(
                                         Icons.play_circle,

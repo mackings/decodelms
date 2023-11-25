@@ -1,15 +1,14 @@
 import 'dart:convert';
 
 import 'package:decodelms/models/coursemodel.dart';
+import 'package:decodelms/models/firstmodel.dart';
 import 'package:decodelms/views/course/coursedetails.dart';
 import 'package:decodelms/views/course/stream.dart';
 import 'package:decodelms/widgets/appbar.dart';
-import 'package:decodelms/widgets/course/courseslider.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:http/http.dart' as http;
 import 'package:sizer/sizer.dart';
+import 'package:flutter/widgets.dart' as FlutterWidgets;
 
 class CourseCard extends StatefulWidget {
   final Course course;
@@ -55,7 +54,7 @@ class _CourseCardState extends State<CourseCard> {
             // Display the course image
             ClipRRect(
               borderRadius: BorderRadius.circular(10),
-              child: Image.network(
+              child: FlutterWidgets.Image.network(
                 widget.course.imageUrl, // Use the course's image URL
                 fit: BoxFit.cover,
                 width: double.infinity,
@@ -90,7 +89,8 @@ class _CourseCardState extends State<CourseCard> {
 }
 
 class AllCourseCard extends StatefulWidget {
-  final AllCourse allCourse;
+  //final AllCourse allCourse;
+  final Coursem allCourse;
 
   AllCourseCard({required this.allCourse});
 
@@ -108,7 +108,8 @@ class _AllCourseCardState extends State<AllCourseCard> {
           children: [
             GestureDetector(
               onTap: () {
-                print(widget.allCourse.imageUrl);
+                print(widget.allCourse.courseImage);
+
                 Navigator.of(context).push(
                   MaterialPageRoute(
                     builder: (context) => CourseDetailsPage(
@@ -121,14 +122,13 @@ class _AllCourseCardState extends State<AllCourseCard> {
                 children: [
                   ClipRRect(
                     borderRadius: BorderRadius.only(
-                      // bottomLeft: Radius.circular(10),
-                      // bottomRight: Radius.circular(10),
                       topLeft: Radius.circular(10),
                       topRight: Radius.circular(10),
                     ),
-                    child: Image.network(
-                      widget.allCourse.imageUrl.isNotEmpty
-                          ? widget.allCourse.imageUrl
+                    child: FlutterWidgets.Image.network(
+                      widget.allCourse.courseImage.isNotEmpty
+                          ? widget
+                              .allCourse.courseImage.first.path
                           : '',
                       fit: BoxFit.cover,
                       width: double.infinity,
@@ -139,10 +139,7 @@ class _AllCourseCardState extends State<AllCourseCard> {
                     padding: const EdgeInsets.only(top: 30, bottom: 30),
                     child: Center(
                       child: GestureDetector(
-                        onTap: () {
-                          // Handle play button tap action
-                          // You can add your navigation logic here
-                        },
+                        onTap: () {},
                         child: Icon(
                           Icons.play_circle_outline,
                           color: Colors.white,
@@ -170,7 +167,7 @@ class _AllCourseCardState extends State<AllCourseCard> {
                   Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: Thetext(
-                      thetext: widget.allCourse.title,
+                      thetext: widget.allCourse.courseTitle,
                       style: GoogleFonts.poppins(
                         fontWeight: FontWeight.bold,
                       ),
@@ -178,34 +175,24 @@ class _AllCourseCardState extends State<AllCourseCard> {
                   ),
                   GestureDetector(
                     onTap: () {
-                      Navigator.of(context).push(
-                        MaterialPageRoute(
-                          builder: (context) =>
-                              CourseDetailsPage(allCourses: widget.allCourse),
-                        ),
-                      );
+                      // Navigator.of(context).push(
+                      //   MaterialPageRoute(
+                      //     builder: (context) =>
+                      //         CourseDetailsPage(allCourses: widget.allCourse),
+                      //   ),
+                      // );
                     },
                     child: Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: Thetext(
-                        thetext: widget.allCourse.description,
+                        thetext:
+                            widget.allCourse.courseDescription,
                         style: GoogleFonts.poppins(
                           color: Colors.black,
                         ),
                       ),
                     ),
                   ),
-
-                  //widget.allCourse.description
-
-                  // Padding(
-                  //   padding: const EdgeInsets.all(8.0),
-                  //   child: Icon(
-                  //     Icons.play_circle_outline,
-                  //     color: Colors.black,
-                  //     size: 48.0,
-                  //   ),
-                  // ),
                 ],
               ),
             ),
@@ -236,25 +223,15 @@ class _CourseEnrolledCard2State extends State<CourseEnrolledCard2> {
           child: Column(
             children: [
               GestureDetector(
-                onTap: () {
-                  // Navigator.of(context).push(
-                  //   MaterialPageRoute(
-                  //     builder: (context) => CourseDetailsPage(
-                  //       allCourses: widget.allCourse,
-                  //     ),
-                  //   ),
-                  // );
-                },
+                onTap: () {},
                 child: Stack(
                   children: [
                     ClipRRect(
                       borderRadius: BorderRadius.only(
-                        // bottomLeft: Radius.circular(10),
-                        // bottomRight: Radius.circular(10),
                         topLeft: Radius.circular(10),
                         topRight: Radius.circular(10),
                       ),
-                      child: Image.network(
+                      child: FlutterWidgets.Image.network(
                         widget.course.imageUrl.isNotEmpty
                             ? widget.course.imageUrl
                             : '',
@@ -267,10 +244,7 @@ class _CourseEnrolledCard2State extends State<CourseEnrolledCard2> {
                       padding: const EdgeInsets.only(top: 30, bottom: 30),
                       child: Center(
                         child: GestureDetector(
-                          onTap: () {
-                            // Handle play button tap action
-                            // You can add your navigation logic here
-                          },
+                          onTap: () {},
                           child: Icon(
                             Icons.play_circle_outline,
                             color: Colors.white,
@@ -305,14 +279,7 @@ class _CourseEnrolledCard2State extends State<CourseEnrolledCard2> {
                       ),
                     ),
                     GestureDetector(
-                      onTap: () {
-                        // Navigator.of(context).push(
-                        //   MaterialPageRoute(
-                        //     builder: (context) =>
-                        //         CourseDetailsPage(allCourses: widget.allCourse),
-                        //   ),
-                        // );
-                      },
+                      onTap: () {},
                       child: Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: Thetext(
@@ -323,15 +290,6 @@ class _CourseEnrolledCard2State extends State<CourseEnrolledCard2> {
                         ),
                       ),
                     ),
-
-                    // Padding(
-                    //   padding: const EdgeInsets.all(8.0),
-                    //   child: Icon(
-                    //     Icons.play_circle_outline,
-                    //     color: Colors.black,
-                    //     size: 48.0,
-                    //   ),
-                    // ),
                   ],
                 ),
               ),
@@ -342,85 +300,6 @@ class _CourseEnrolledCard2State extends State<CourseEnrolledCard2> {
     );
   }
 }
-
-// class CourseEnrolledCard extends StatefulWidget {
-//   final Course course;
-
-//   CourseEnrolledCard({required this.course});
-
-//   @override
-//   State<CourseEnrolledCard> createState() => _CourseEnrolledCardState();
-// }
-
-// class _CourseEnrolledCardState extends State<CourseEnrolledCard> {
-//   @override
-//   Widget build(BuildContext context) {
-//     return
-//     Padding(
-//       padding: const EdgeInsets.symmetric(horizontal: 30),
-//       child: Container(
-//         height: 18.h, // Adjust the height as needed
-//         decoration: BoxDecoration(
-//           border: Border.all(width: 0.5, color: Colors.black),
-//           borderRadius: BorderRadius.circular(10),
-//         ),
-//         child: Padding(
-//           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-//           child: Row(
-//             mainAxisAlignment: MainAxisAlignment.spaceBetween,
-//             children: [
-//               Container(
-//                 width: 25.w, // Adjust the width as needed
-//                 height: double.infinity, // Expand to the available height
-//                 decoration: BoxDecoration(
-//                   borderRadius: BorderRadius.circular(10),
-//                   image: DecorationImage(
-//                     image: NetworkImage(widget.course.imageUrl),
-//                     fit: BoxFit.cover,
-//                   ),
-//                 ),
-//               ),
-//               Expanded(
-//                 child: Padding(
-//                   padding: const EdgeInsets.all(10.0),
-//                   child: Column(
-//                     crossAxisAlignment: CrossAxisAlignment.start,
-//                     children: [
-//                       Thetext(
-//                         thetext: widget.course.title,
-//                         style: GoogleFonts.poppins(fontWeight: FontWeight.bold),
-//                       ),
-//                       Padding(
-//                         padding: const EdgeInsets.all(8.0),
-//                         child: Thetext(
-//                           thetext: "4hr 30Mins",
-//                           style: GoogleFonts.poppins(
-//                               //fontWeight: FontWeight.bold
-//                               ),
-//                         ),
-//                       ),
-
-//             LinearProgressIndicator(
-//               value: 0.5,
-//               minHeight: 10.0,
-//               backgroundColor: Colors.grey,
-//               borderRadius: BorderRadius.circular(10),
-//               valueColor: AlwaysStoppedAnimation<Color>(Colors.black),
-//             ),
-
-//                     ],
-//                   ),
-//                 ),
-//               ),
-//             ],
-//           ),
-//         ),
-//       ),
-//     );
-//   }
-// }
-
-//Animation
 
 class AnimatedLoadingIndicator extends StatefulWidget {
   @override

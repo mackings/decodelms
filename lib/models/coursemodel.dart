@@ -1,108 +1,148 @@
-class Course {
-  final String id;
-  final String title;
-  final String description;
-  final String imageUrl; // Change imageUrl to a String
+class AllCourse {
+  String message;
+  List<Coursem> courses;
+  int totalPages;
+  int totalCourses;
+  int currentPage;
 
-  Course({
-    required this.id,
-    required this.title,
-    required this.description,
-    required this.imageUrl,
+  AllCourse({
+    required this.message,
+    required this.courses,
+    required this.totalPages,
+    required this.totalCourses,
+    required this.currentPage,
   });
 
-  factory Course.fromJson(Map<String, dynamic> json) {
-    // Extract the first course image URL from the list
-    String imageUrl = json['image'] is List
-        ? (json['image'][0]['path']
-            as String) // Use the 'path' property for the image URL
-        : '';
-
-    return Course(
-      id: json['courseId'],
-      title: json['title'],
-      description: json['description'],
-      imageUrl: imageUrl,
+  factory AllCourse.fromJson(Map<String, dynamic> json) {
+    return AllCourse(
+      message: json['message'] ?? '',
+      courses: (json['courses'] as List<dynamic>)
+          .map((course) => Coursem.fromJson(course))
+          .toList(),
+      totalPages: json['totalPages'] ?? 0,
+      totalCourses: json['totalCourses'] ?? 0,
+      currentPage: json['currentPage'] ?? 0,
     );
   }
 }
 
+class Coursem {
+  String id;
+  String userId;
+  String courseTitle;
+  String courseDescription;
+  String courseLanguage;
+  List<dynamic> reviews;
+  List<CourseImage> courseImage;
+  String isPaidCourse;
+  int isPriceCourse;
+  List<Module> modules;
+  int totalRegisteredByStudent;
+  String createdAt;
+  String updatedAt;
 
-
-
-class AllCourse {
-  final String id;
-  final String title;
-  final String description;
-  final String isPaidCourse;
-  final int totalRegisteredByStudent;
-  final List<Module> modules;
-  final String imageUrl;
-
-  AllCourse({
+  Coursem({
     required this.id,
-    required this.title,
-    required this.description,
+    required this.userId,
+    required this.courseTitle,
+    required this.courseDescription,
+    required this.courseLanguage,
+    required this.reviews,
+    required this.courseImage,
     required this.isPaidCourse,
-    required this.totalRegisteredByStudent,
+    required this.isPriceCourse,
     required this.modules,
-    required this.imageUrl,
+    required this.totalRegisteredByStudent,
+    required this.createdAt,
+    required this.updatedAt,
   });
 
-  factory AllCourse.fromJson(Map<String, dynamic> json) {
-    List<Module> modulesList = (json['modules'] as List)
-        .map((moduleJson) => Module.fromJson(moduleJson))
-        .toList();
-
-    String imageUrl = json['course_image'] is List
-        ? (json['course_image'][0]['path'] as String)
-        : '';
-
-    return AllCourse(
+  factory Coursem.fromJson(Map<String, dynamic> json) {
+    return Coursem(
       id: json['_id'],
-      title: json['course_title'],
-      description: json['course_description'],
+      userId: json['userId'],
+      courseTitle: json['course_title'],
+      courseDescription: json['course_description'],
+      courseLanguage: json['course_language'],
+      reviews: json['reviews'],
+      courseImage: (json['course_image'] as List<dynamic>)
+          .map((image) => CourseImage.fromJson(image))
+          .toList(),
       isPaidCourse: json['isPaid_course'],
+      isPriceCourse: json['isPrice_course'],
+      modules: (json['modules'] as List<dynamic>)
+          .map((module) => Module.fromJson(module))
+          .toList(),
       totalRegisteredByStudent: json['totalRegisteredByStudent'],
-      modules: modulesList,
-      imageUrl: imageUrl,
+      createdAt: json['createdAt'],
+      updatedAt: json['updatedAt'],
+    );
+  }
+}
+
+class CourseImage {
+  String fieldName;
+  String originalName;
+  String encoding;
+  String mimeType;
+  String path;
+  int size;
+  String filename;
+
+  CourseImage({
+    required this.fieldName,
+    required this.originalName,
+    required this.encoding,
+    required this.mimeType,
+    required this.path,
+    required this.size,
+    required this.filename,
+  });
+
+  factory CourseImage.fromJson(Map<String, dynamic> json) {
+    return CourseImage(
+      fieldName: json['fieldname'],
+      originalName: json['originalname'],
+      encoding: json['encoding'],
+      mimeType: json['mimetype'],
+      path: json['path'],
+      size: json['size'],
+      filename: json['filename'],
     );
   }
 }
 
 class Module {
-  final String userId;
-  final String courseId;
-  final String title;
-  final String description;
-  final List<Video> video;
-  final List<dynamic> image; // Update the type based on the actual data type
-  final List<Audio> audio;
-  final String moduleDuration;
-  final List<dynamic> quizzes; // Update the type based on the actual data type
-  final List<dynamic> comments; // Update the type based on the actual data type
-  final bool isCompleted;
-  final List<dynamic> likeAndDislikeUsers; // Update the type based on the actual data type
-  final int commentCount;
-  final List<dynamic> commentId; // Update the type based on the actual data type
-  final int likeCount;
-  final int dislikeCount;
-  final String id;
-  final String createdAt;
-  final String updatedAt;
+  String userId;
+  String courseId;
+  String moduleTitle;
+  String moduleDescription;
+  List<Video> video;
+  List<CourseImage> image;
+  List<CourseImage> audio;
+  String moduleDuration;
+  List<dynamic> quizzes;
+  List<dynamic> comments;
+  List<dynamic> likeAndDislikeUsers;
+  int commentCount;
+  List<dynamic> commentId;
+  int likeCount;
+  int dislikeCount;
+  String id;
+  String createdAt;
+  String updatedAt;
 
   Module({
     required this.userId,
     required this.courseId,
-    required this.title,
-    required this.description,
+    required this.moduleTitle,
+    required this.moduleDescription,
     required this.video,
     required this.image,
     required this.audio,
     required this.moduleDuration,
     required this.quizzes,
     required this.comments,
-    required this.isCompleted,
     required this.likeAndDislikeUsers,
     required this.commentCount,
     required this.commentId,
@@ -114,26 +154,23 @@ class Module {
   });
 
   factory Module.fromJson(Map<String, dynamic> json) {
-    List<Video> video = (json['video'] as List)
-        .map((videoJson) => Video.fromJson(videoJson))
-        .toList();
-
-    List<Audio> audio = (json['audio'] as List)
-        .map((audioJson) => Audio.fromJson(audioJson))
-        .toList();
-
     return Module(
       userId: json['userId'],
       courseId: json['courseId'],
-      title: json['module_title'],
-      description: json['module_description'],
-      video: video,
-      image: json['image'],
-      audio: audio,
+      moduleTitle: json['module_title'],
+      moduleDescription: json['module_description'],
+      video: (json['video'] as List<dynamic>)
+          .map((v) => Video.fromJson(v))
+          .toList(),
+      image: (json['image'] as List<dynamic>)
+          .map((image) => CourseImage.fromJson(image))
+          .toList(),
+      audio: (json['audio'] as List<dynamic>)
+          .map((audio) => CourseImage.fromJson(audio))
+          .toList(),
       moduleDuration: json['module_duration'],
       quizzes: json['quizzes'],
       comments: json['comments'],
-      isCompleted: json['isCompleted'],
       likeAndDislikeUsers: json['likeAndDislikeUsers'],
       commentCount: json['comment_count'],
       commentId: json['commentId'],
@@ -146,21 +183,20 @@ class Module {
   }
 }
 
-
 class Video {
-  final String fieldname;
-  final String originalname;
-  final String encoding;
-  final String mimetype;
-  final String path;
-  final int size;
-  final String filename;
+  String fieldName;
+  String originalName;
+  String encoding;
+  String mimeType;
+  String path;
+  int size;
+  String filename;
 
   Video({
-    required this.fieldname,
-    required this.originalname,
+    required this.fieldName,
+    required this.originalName,
     required this.encoding,
-    required this.mimetype,
+    required this.mimeType,
     required this.path,
     required this.size,
     required this.filename,
@@ -168,42 +204,10 @@ class Video {
 
   factory Video.fromJson(Map<String, dynamic> json) {
     return Video(
-      fieldname: json['fieldname'],
-      originalname: json['originalname'],
+      fieldName: json['fieldname'],
+      originalName: json['originalname'],
       encoding: json['encoding'],
-      mimetype: json['mimetype'],
-      path: json['path'],
-      size: json['size'],
-      filename: json['filename'],
-    );
-  }
-}
-
-class Audio {
-  final String fieldname;
-  final String originalname;
-  final String encoding;
-  final String mimetype;
-  final String path;
-  final int size;
-  final String filename;
-
-  Audio({
-    required this.fieldname,
-    required this.originalname,
-    required this.encoding,
-    required this.mimetype,
-    required this.path,
-    required this.size,
-    required this.filename,
-  });
-
-  factory Audio.fromJson(Map<String, dynamic> json) {
-    return Audio(
-      fieldname: json['fieldname'],
-      originalname: json['originalname'],
-      encoding: json['encoding'],
-      mimetype: json['mimetype'],
+      mimeType: json['mimetype'],
       path: json['path'],
       size: json['size'],
       filename: json['filename'],

@@ -39,33 +39,71 @@ class _allCoursesPageState extends State<allCoursesPage> {
     super.initState();
   }
 
-  Future<List<AllCourse>> fetchAllCourses() async {
+Future<List<Coursem>?> fetchAllCourses() async {
+  try {
     final response = await http.get(
       Uri.parse('https://server-eight-beige.vercel.app/api/course/viewAllCourses'),
       headers: {
         'Authorization': 'Bearer $Token',
+        'Content-Type': 'application/json',
       },
     );
 
     if (response.statusCode == 200) {
-      final List<dynamic> responseData =
-          (json.decode(response.body)['courses'] as List<dynamic>);
+      final dynamic responseData = json.decode(response.body);
 
-      List<AllCourse> allCourses = responseData
-          .map((courseData) => AllCourse.fromJson(courseData))
-          .toList();
-      print(allCourses);
+      if (responseData != null &&
+          responseData is Map<String, dynamic> &&
+          responseData.containsKey('courses')) {
+        final coursesData = responseData['courses'];
 
-      return allCourses;
+        if (coursesData is List) {
+          List<Coursem>? allCourses = (coursesData as List?)
+              ?.map<Coursem>((courseData) {
+                if (courseData is Map<String, dynamic>) {
+                  return Coursem.fromJson(courseData);
+                } else {
+                  return Coursem(
+                    id: 'Invalid Course Data',
+                    userId: '',
+                    courseTitle: '',
+                    courseDescription: '',
+                    courseLanguage: '',
+                    reviews: [],
+                    courseImage: [],
+                    isPaidCourse: '',
+                    isPriceCourse: 0,
+                    modules: [],
+                    totalRegisteredByStudent: 0,
+                    createdAt: '',
+                    updatedAt: '',
+                  );
+                }
+              })
+              .toList();
+
+          print("All Courses $allCourses");
+          return allCourses;
+        } else {
+          throw Exception('Invalid data format for courses');
+        }
+      } else {
+        throw Exception('No courses data found in the response');
+      }
     } else {
-      throw Exception('Failed to load courses');
+      throw Exception('Failed to load courses: ${response.statusCode}');
     }
+  } catch (e) {
+    print('Error fetching courses: $e');
+    return null; // Return null on error
   }
+}
+
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: FutureBuilder<List<AllCourse>>(
+      body: FutureBuilder<List<Coursem>?>(
         future: fetchAllCourses(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
