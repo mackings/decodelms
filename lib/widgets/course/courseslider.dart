@@ -190,7 +190,7 @@ Future<List<Coursem>?> fetchAllCourses() async {
       throw Exception('Failed to load courses: ${response.statusCode}');
     }
   } catch (e) {
-    print('Error fetching courses: $e');
+    print('Error fetching courses: ${e}');
     return null; // Return null on error
   }
 }

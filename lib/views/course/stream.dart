@@ -147,7 +147,6 @@ class _StreamPageState extends State<StreamPage> {
   }
 
   dynamic vidurl;
-
   late Quiz _quiz;
 
   @override
@@ -156,12 +155,12 @@ class _StreamPageState extends State<StreamPage> {
     getToken();
 
     setState(() {});
+
     Timer(Duration(seconds: 2), () {
       futureCourseDetail = fetchCourseDetailById(widget.courseId, token);
 
       futureCourseDetail!.then((courseDetail) {
         if (courseDetail.result.isNotEmpty) {
-          // Load the first module
           loadModule(courseDetail, courseDetail.result.first.modules.first);
         }
       });
@@ -189,19 +188,13 @@ class _StreamPageState extends State<StreamPage> {
       if (nextModule.modules.first.video.isNotEmpty) {
         loadVideo(nextModule.modules.first.video.first.path);
       } else {
-        // Handle the case where the video list is empty, e.g., show an error message or perform some other action.
+        
         print('No video available for the next module');
       }
     } else {
       // All modules are completed
       print("All caught up! You have completed all modules.");
 
-      // Stop loading
-      // setState(() {
-      //   // Set any loading state variable to false
-      // });
-
-      // Show a dialog indicating that the course has been completed
       showDialog(
         context: context,
         barrierDismissible: false,
@@ -212,12 +205,10 @@ class _StreamPageState extends State<StreamPage> {
               message: "Proceed to Certification",
               message2: "Claim",
               press1: () {
-              
                 Navigator.pop(context);
                 Navigator.pop(context);
               },
               press2: () {
-               
                 Navigator.pop(context);
                 Navigator.pop(context);
               },
@@ -390,16 +381,15 @@ class _StreamPageState extends State<StreamPage> {
 
                               if (courseDetail != null) {
                                 final currentModule = courseDetail
-                                    .result[currentModuleIndex]?.modules?.first;
-
-                                if (currentModule?.quizzes.isNotEmpty == true) {
+                                    .result[currentModuleIndex].modules.first;
+                                if (currentModule.quizzes.isNotEmpty == true) {
                                   videoPlayerController.pause();
                                   if (courseDetail.result[currentModuleIndex]
                                           .isCompleted ==
                                       false) {
                                     print("Uncompleted");
                                   } else {
-                                    print("Completed");
+                                    print("True");
                                   }
 
                                   final quizScore = await Navigator.push(
@@ -425,12 +415,11 @@ class _StreamPageState extends State<StreamPage> {
                                   }
                                 } else if (currentModuleIndex <
                                     courseDetail.result.length - 1) {
-                                  final nextModule = courseDetail
-                                      .result[currentModuleIndex + 1]
-                                      ?.modules
-                                      ?.first;
 
-                                  if (nextModule?.quizzes.isNotEmpty == true) {
+                                  final nextModule = courseDetail
+                                      .result[currentModuleIndex].modules.first;
+
+                                  if (nextModule.quizzes.isNotEmpty == true) {
                                     Navigator.push(
                                       context,
                                       MaterialPageRoute(
@@ -441,7 +430,7 @@ class _StreamPageState extends State<StreamPage> {
                                         ),
                                       ),
                                     );
-                                  } else if (nextModule?.video.isNotEmpty ==
+                                  } else if (nextModule.video.isNotEmpty ==
                                       true) {
                                     videoPlayerController.pause();
                                     showDialog(
