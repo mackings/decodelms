@@ -75,12 +75,14 @@ class _CallsState extends State<Calls> {
     };
 
     final body = json.encode({
-      "email": "ebisedi@yahoo.com",
-      "description": "ebisedi@yahoo.com",
-      "date": "11/06/2023",
-      "time": "11:30AM",
-      "courseName": "Hacking",
-    });
+    "email": "ebisedi@yahoo.com",
+    "description": "Introduction to Go",
+    "date": "23/12/2023",
+    "time": "1:30pm",
+    "courseName": "Go",
+    "isPaid": "free",
+    "amount": 0
+});
 
     final response = await http.post(
       url,

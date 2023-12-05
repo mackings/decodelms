@@ -13,15 +13,17 @@ import 'package:sizer/sizer.dart';
 class QuizPage extends StatefulWidget {
   final String quizId;
   final String courseId;
+  final String moduleId;
 
-  QuizPage({required this.quizId, required this.courseId});
+  QuizPage({required this.quizId, required this.courseId, required this.moduleId});
 
   @override
   _QuizPageState createState() => _QuizPageState();
 }
 
 class _QuizPageState extends State<QuizPage> {
-  final String baseUrl = 'https://server-eight-beige.vercel.app/api/quizes/getQuiz';
+  final String baseUrl =
+      'https://server-eight-beige.vercel.app/api/quizes/getQuiz';
   late String? token;
   List<Map<String, dynamic>> selectedAnswers = [];
 
@@ -34,7 +36,6 @@ class _QuizPageState extends State<QuizPage> {
     print(" Module Id ${widget.courseId}");
     //_loadQuiz();
   }
-
 
   Future<void> _fetchToken() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -54,9 +55,7 @@ class _QuizPageState extends State<QuizPage> {
   Quiz? _quiz;
 
   Future<Quiz?> _loadQuiz() async {
-
     try {
-
       final response = await http.get(
         Uri.parse('$baseUrl/${widget.quizId}'),
         headers: {
@@ -81,7 +80,7 @@ class _QuizPageState extends State<QuizPage> {
     }
   }
 
-  dynamic QID; 
+  dynamic QID;
   dynamic AID;
 
   Future SubmitQuiz() async {
@@ -90,7 +89,7 @@ class _QuizPageState extends State<QuizPage> {
     try {
       final response = await http.post(
           Uri.parse(
-              "https://decode-mnjh.onrender.com/api/quizes/submitAnswers/$QID"),
+              "https://server-eight-beige.vercel.app/api/quizes/submitAnswers/$QID"),
           headers: {
             "Content-Type": "application/json",
             'Authorization': 'Bearer $token',
@@ -233,7 +232,7 @@ class _QuizPageState extends State<QuizPage> {
     try {
       final response = await http.put(
         Uri.parse(
-            "https://server-eight-beige.vercel.app/api/quizes/isCompletedModule/${widget.courseId}"),
+            "https://server-eight-beige.vercel.app/api/student/markcomplete/${widget.courseId}/${widget.moduleId}"),
         headers: {
           'Authorization': 'Bearer $token',
           'Content-Type': 'application/json',
@@ -250,10 +249,8 @@ class _QuizPageState extends State<QuizPage> {
             return EnrollmentDialog(
               press1: () {
                 // Navigator.pop(context);
-                
               },
               press2: () {
-              
                 // Navigator.pop(context, res);
               },
               theicon: Icon(
@@ -374,6 +371,8 @@ class _QuizPageState extends State<QuizPage> {
         elevation: 0,
         title: GestureDetector(
             onTap: () {
+              SubmitQuiz();
+              print("Tapped");
               SubmitQuiz();
             },
             child: Text('Quiz')),

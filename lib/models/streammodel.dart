@@ -23,13 +23,11 @@ class StudentCourse {
   final String userId;
   final String courseId;
   final List<CourseModule> modules;
-  final bool isCompleted;
 
   StudentCourse({
     required this.userId,
     required this.courseId,
     required this.modules,
-    required this.isCompleted,
   });
 
   factory StudentCourse.fromJson(Map<String, dynamic> json) {
@@ -41,7 +39,6 @@ class StudentCourse {
       userId: json['userId'],
       courseId: json['courseId'],
       modules: modules,
-      isCompleted: json['isCompleted'] ?? false,
     );
   }
 }
@@ -57,6 +54,7 @@ class CourseModule {
   final List<String> quizzes;
   final int likeCount;
   final int dislikeCount;
+  final bool isCompleted;
 
   CourseModule({
     required this.id,
@@ -69,6 +67,7 @@ class CourseModule {
     required this.quizzes,
     required this.likeCount,
     required this.dislikeCount,
+    required this.isCompleted,
   });
 
   factory CourseModule.fromJson(Map<String, dynamic> json) {
@@ -95,6 +94,7 @@ class CourseModule {
       quizzes: (json['quizzes'] as List<dynamic>).cast<String>(),
       likeCount: json['like_count'],
       dislikeCount: json['dislike_count'],
+      isCompleted: json['isCompleted'] ?? false,
     );
   }
 }

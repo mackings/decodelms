@@ -169,7 +169,7 @@ class _StreamPageState extends State<StreamPage> {
 
   void loadModule(ApiResponse courseDetail, CourseModule module) {
     // Check if the current module is completed
-    if (courseDetail.result.first.isCompleted == true) {
+    if (courseDetail.result.first.modules.first.isCompleted == true) {
       print("Current module is already completed. Loading next module.");
 
       loadNextModule(courseDetail);
@@ -182,13 +182,12 @@ class _StreamPageState extends State<StreamPage> {
   }
 
   void loadNextModule(ApiResponse courseDetail) {
-    if (currentModuleIndex < courseDetail.result.length - 1) {
+    if (currentModuleIndex < courseDetail.result.first.modules.length - 1) {
       currentModuleIndex++;
-      final nextModule = courseDetail.result[currentModuleIndex];
-      if (nextModule.modules.first.video.isNotEmpty) {
-        loadVideo(nextModule.modules.first.video.first.path);
+      final nextModule = courseDetail.result.first.modules[currentModuleIndex];
+      if (nextModule.video.isNotEmpty) {
+        loadVideo(nextModule.video.first.path);
       } else {
-        
         print('No video available for the next module');
       }
     } else {
@@ -248,9 +247,9 @@ class _StreamPageState extends State<StreamPage> {
                     context,
                     MaterialPageRoute(
                       builder: (context) => QuizPage(
-                        quizId: quizId,
-                        courseId: currentModule.id,
-                      ),
+                          quizId: quizId,
+                          courseId: currentModule.id,
+                          moduleId: currentModule.id),
                     ),
                   ).then((value) {
                     loadNextVideo();
@@ -284,11 +283,11 @@ class _StreamPageState extends State<StreamPage> {
     final courseDetail = await futureCourseDetail;
 
     if (courseDetail != null &&
-        currentModuleIndex < courseDetail.result.length - 1) {
+        currentModuleIndex < courseDetail.result.first.modules.length - 1) {
       currentModuleIndex++;
-      final nextModule = courseDetail.result[currentModuleIndex];
-      if (nextModule.modules.first.video.isNotEmpty) {
-        loadVideo(nextModule.modules.first.video.first.path);
+      final nextModule = courseDetail.result.first.modules[currentModuleIndex];
+      if (nextModule.video.isNotEmpty) {
+        loadVideo(nextModule.video.first.path);
       } else {
         // Handle the case where the video list is empty, e.g., show an error message or perform some other action.
         print('No video available for the next module');
@@ -341,10 +340,8 @@ class _StreamPageState extends State<StreamPage> {
                   } else {
                     final apiResponse = snapshot.data!;
                     final module =
-                        apiResponse.result[currentModuleIndex].modules;
+                        apiResponse.result.first.modules[currentModuleIndex];
                     final courseID = apiResponse.result;
-
-                    // print("Current module Quiz ${module.quizzes.first}");
 
                     return Column(
                       children: [
@@ -352,7 +349,7 @@ class _StreamPageState extends State<StreamPage> {
                             child: Padding(
                           padding: const EdgeInsets.all(8.0),
                           child: Thetext(
-                              thetext: module.first.moduleTitle,
+                              thetext: module.moduleTitle,
                               style: GoogleFonts.poppins()),
                         )),
                         Padding(
@@ -381,10 +378,13 @@ class _StreamPageState extends State<StreamPage> {
 
                               if (courseDetail != null) {
                                 final currentModule = courseDetail
-                                    .result[currentModuleIndex].modules.first;
+                                    .result.first.modules[currentModuleIndex];
                                 if (currentModule.quizzes.isNotEmpty == true) {
                                   videoPlayerController.pause();
-                                  if (courseDetail.result[currentModuleIndex]
+                                  if (courseDetail
+                                          .result
+                                          .first
+                                          .modules[currentModuleIndex]
                                           .isCompleted ==
                                       false) {
                                     print("Uncompleted");
@@ -396,18 +396,22 @@ class _StreamPageState extends State<StreamPage> {
                                     context,
                                     MaterialPageRoute(
                                       builder: (context) => QuizPage(
-                                        quizId:
-                                            currentModule?.quizzes.first ?? '',
-                                        courseId: widget.courseId,
-                                      ),
+                                          quizId:
+                                              currentModule?.quizzes.first ??
+                                                  '',
+                                          courseId: widget.courseId,
+                                          moduleId: currentModule.id),
                                     ),
                                   );
-                                  print("Passed Course ID ${widget.courseId}");
+                                  // print("Passed Course ID ${widget.courseId}");
 
                                   print('Quiz Score: $quizScore');
                                   if (quizScore >= 3) {
                                     // Check if the current module is completed
-                                    if (courseDetail.result[currentModuleIndex]
+                                    if (courseDetail
+                                            .result
+                                            .first
+                                            .modules[currentModuleIndex]
                                             .isCompleted ==
                                         false) {
                                       loadNextVideo(); // Proceed to the next module
@@ -415,7 +419,6 @@ class _StreamPageState extends State<StreamPage> {
                                   }
                                 } else if (currentModuleIndex <
                                     courseDetail.result.length - 1) {
-
                                   final nextModule = courseDetail
                                       .result[currentModuleIndex].modules.first;
 
@@ -424,10 +427,10 @@ class _StreamPageState extends State<StreamPage> {
                                       context,
                                       MaterialPageRoute(
                                         builder: (context) => QuizPage(
-                                          quizId:
-                                              nextModule?.quizzes.first ?? '',
-                                          courseId: nextModule?.id ?? '',
-                                        ),
+                                            quizId:
+                                                nextModule?.quizzes.first ?? '',
+                                            courseId: nextModule?.id ?? '',
+                                            moduleId: currentModule.id),
                                       ),
                                     );
                                   } else if (nextModule.video.isNotEmpty ==
