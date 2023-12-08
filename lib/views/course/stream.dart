@@ -148,6 +148,7 @@ class _StreamPageState extends State<StreamPage> {
 
   dynamic vidurl;
   late Quiz _quiz;
+  String? moduleID;
 
   @override
   void initState() {
@@ -181,45 +182,66 @@ class _StreamPageState extends State<StreamPage> {
     }
   }
 
-  void loadNextModule(ApiResponse courseDetail) {
-    if (currentModuleIndex < courseDetail.result.first.modules.length - 1) {
-      currentModuleIndex++;
-      final nextModule = courseDetail.result.first.modules[currentModuleIndex];
-      if (nextModule.video.isNotEmpty) {
-        loadVideo(nextModule.video.first.path);
-      } else {
-        print('No video available for the next module');
-      }
-    } else {
-      // All modules are completed
-      print("All caught up! You have completed all modules.");
+void loadNextModule(ApiResponse courseDetail) {
+  if (currentModuleIndex < courseDetail.result.first.modules.length - 1) {
+    currentModuleIndex++;
+    final nextModule = courseDetail.result.first.modules[currentModuleIndex];
 
-      showDialog(
-        context: context,
-        barrierDismissible: false,
-        barrierColor: Colors.blue,
-        builder: (BuildContext context) {
-          return EnrollmentDialog(
-              title: "All Caught up",
-              message: "Proceed to Certification",
-              message2: "Claim",
-              press1: () {
-                Navigator.pop(context);
-                Navigator.pop(context);
-              },
-              press2: () {
-                Navigator.pop(context);
-                Navigator.pop(context);
-              },
-              theicon: Icon(
-                Icons.check_circle,
-                color: Colors.blue,
-                size: 50,
-              ));
-        },
-      );
+    if (nextModule.isCompleted) {
+      print("Next module is already completed. Loading the next one.");
+      loadNextModule(courseDetail);
+    } else if (nextModule.video.isNotEmpty) {
+      // Load video for the next module
+      loadVideo(nextModule.video.first.path);
+    } else if (nextModule.quizzes.isNotEmpty) {
+      // Check if the next module has a quiz
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => QuizPage(
+              quizId: nextModule.quizzes.first,
+              courseId: widget.courseId,
+              moduleId: nextModule.id),
+        ),
+      ).then((_) {
+        // After the quiz page is closed, load the video for the next module
+        loadNextVideo();
+      });
+    } else {
+      // Handle the case where the next module has neither a video nor a quiz
+      print('All caught up! You have completed all modules.');
     }
+  } else {
+    // All modules are completed
+    print("All caught up! You have completed all modules.");
+
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return EnrollmentDialog(
+          title: "Congratulations",
+          message: "You just completed this Course",
+          message2: "Certify Me",
+          press1: () {
+            Navigator.pop(context);
+            Navigator.pop(context);
+          },
+          press2: () {
+            Navigator.pop(context);
+            Navigator.pop(context);
+          },
+          theicon: Icon(
+            Icons.check_circle,
+            color: Colors.blue,
+            size: 50,
+          ),
+        );
+      },
+    );
   }
+}
+
 
   bool isCurrentModuleAvailable() {
     return currentModule != null;
@@ -279,19 +301,148 @@ class _StreamPageState extends State<StreamPage> {
     return '${twoDigits(duration.inHours)}:$twoDigitMinutes:$twoDigitSeconds';
   }
 
-  void loadNextVideo() async {
-    final courseDetail = await futureCourseDetail;
+void loadNextVideo() async {
+  final courseDetail = await futureCourseDetail;
 
-    if (courseDetail != null &&
-        currentModuleIndex < courseDetail.result.first.modules.length - 1) {
-      currentModuleIndex++;
-      final nextModule = courseDetail.result.first.modules[currentModuleIndex];
-      if (nextModule.video.isNotEmpty) {
-        loadVideo(nextModule.video.first.path);
+  if (courseDetail != null &&
+      currentModuleIndex < courseDetail.result.first.modules.length - 1) {
+    currentModuleIndex++;
+    final nextModule = courseDetail.result.first.modules[currentModuleIndex];
+
+    if (nextModule.video.isNotEmpty) {
+      loadVideo(nextModule.video.first.path);
+    } else {
+      // Handle the case where the next module has no video
+      print('No video available for the next module');
+    }
+  }
+}
+
+  Future Complete() async {
+    String errorMessage = '';
+
+    try {
+      final response = await http.put(
+        Uri.parse(
+            "https://server-eight-beige.vercel.app/api/student/markcomplete/${widget.courseId}/${moduleID}"),
+        headers: {
+          'Authorization': 'Bearer $token',
+          'Content-Type': 'application/json',
+        },
+      );
+
+      if (response.statusCode == 200) {
+        var data = jsonDecode(response.body);
+        print(data);
+
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return EnrollmentDialog(
+              press1: () {
+                // Navigator.pop(context);
+              },
+              press2: () {
+               Navigator.pop(context);
+               Navigator.pop(context);
+              },
+              theicon: Icon(
+                Icons.check_circle,
+                color: Colors.blue,
+                size: 60,
+              ),
+              title: "Module Marked",
+              message: "Completed",
+              message2: 'Continue',
+            );
+          },
+        );
+      } else if (response.statusCode == 409) {
+        var data = jsonDecode(response.body);
+        print(data);
+
+        setState(() {
+          errorMessage = data['message'];
+        });
+
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return EnrollmentDialog(
+              press1: () {
+                Navigator.pop(context);
+              },
+              press2: () {
+                Navigator.pop(context);
+              },
+              theicon: Icon(
+                Icons.error,
+                color: Colors.red,
+                size: 60,
+              ),
+              title: "Enrollment Failed",
+              message: errorMessage.isNotEmpty
+                  ? errorMessage
+                  : "Enrollment failed. Please try again later.",
+              message2: "Take me Home",
+            );
+          },
+        );
       } else {
-        // Handle the case where the video list is empty, e.g., show an error message or perform some other action.
-        print('No video available for the next module');
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return EnrollmentDialog(
+              press1: () {
+                Navigator.pop(context);
+              },
+              press2: () {
+                Navigator.pop(context);
+              },
+              theicon: Icon(
+                Icons.error,
+                color: Colors.red,
+                size: 60,
+              ),
+              title: "Enrollment Failed",
+              message: errorMessage.isNotEmpty
+                  ? errorMessage
+                  : "Enrollment failed. Please try again later.",
+              message2: "Take me Home",
+            );
+          },
+        );
+        print(response.body);
       }
+    } catch (error) {
+      print('Error is $error');
+      setState(() {
+        // isEnrolling = false;
+      });
+
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return EnrollmentDialog(
+            press1: () {
+              Navigator.pop(context);
+            },
+            press2: () {
+              Navigator.pop(context);
+            },
+            theicon: Icon(
+              Icons.error,
+              color: Colors.red,
+              size: 60,
+            ),
+            title: "Enrollment Failed",
+            message: errorMessage.isNotEmpty
+                ? errorMessage
+                : "Enrollment failed. Please try again later.",
+            message2: "Take me Home",
+          );
+        },
+      );
     }
   }
 
@@ -375,6 +526,9 @@ class _StreamPageState extends State<StreamPage> {
                           onTap: () async {
                             if (futureCourseDetail != null) {
                               final courseDetail = await futureCourseDetail;
+                              setState(() {
+                                moduleID = module.id;
+                              });
 
                               if (courseDetail != null) {
                                 final currentModule = courseDetail
@@ -407,7 +561,7 @@ class _StreamPageState extends State<StreamPage> {
 
                                   print('Quiz Score: $quizScore');
                                   if (quizScore >= 3) {
-                                    // Check if the current module is completed
+
                                     if (courseDetail
                                             .result
                                             .first
@@ -464,12 +618,40 @@ class _StreamPageState extends State<StreamPage> {
                                         );
                                       },
                                     );
-                                  } else {
-                                    print(
-                                        "No video or quiz in the next module");
+                                    final currentModule = courseDetail.result
+                                        .first.modules[currentModuleIndex];
+                                  } else if (currentModule.quizzes.isEmpty &&
+                                      currentModule.video.isNotEmpty) {
+                                    print("No quiz in the next module");
                                   }
-                                } else {}
-                              }
+                                } else {
+                                  videoPlayerController.pause();
+
+                                  showDialog(
+                                    context: context,
+                                    builder: (BuildContext context) {
+                                      return EnrollmentDialog(
+                                          title: "Well Done",
+                                          message: "Decode has Something for you..",
+                                          message2: "Continue",
+                                          press1: () {
+                                            Navigator.pop(context);
+                                            Navigator.pop(context);
+                                          },
+                                          press2: () {
+                                            Complete();
+                                           // Navigator.pop(context);
+                                          },
+                                          theicon: Icon(
+                                            Icons.check_circle,
+                                            color: Colors.blue,
+                                            size: 50,
+                                          ));
+                                    },
+                                  );
+                                  //Last Action
+                                }
+                              } 
                             }
                           },
                           child: Container(

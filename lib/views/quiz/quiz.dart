@@ -15,7 +15,8 @@ class QuizPage extends StatefulWidget {
   final String courseId;
   final String moduleId;
 
-  QuizPage({required this.quizId, required this.courseId, required this.moduleId});
+  QuizPage(
+      {required this.quizId, required this.courseId, required this.moduleId});
 
   @override
   _QuizPageState createState() => _QuizPageState();
@@ -373,7 +374,6 @@ class _QuizPageState extends State<QuizPage> {
             onTap: () {
               SubmitQuiz();
               print("Tapped");
-              SubmitQuiz();
             },
             child: Text('Quiz')),
       ),
@@ -513,7 +513,13 @@ class _QuizQuestionViewState extends State<QuizQuestionView> {
           ),
           SizedBox(height: 8.h),
           GestureDetector(
-            onTap: () {},
+            onTap: () {
+              if (widget.isLastQuestion) {
+                print("Last one");
+              } else {
+                print("Not one");
+              }
+            },
             child: Container(
               height: 7.h,
               width: MediaQuery.of(context).size.width - 12.w,
