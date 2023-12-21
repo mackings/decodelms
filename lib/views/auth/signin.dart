@@ -26,6 +26,39 @@ class Signin extends ConsumerStatefulWidget {
 }
 
 class _SigninState extends ConsumerState<Signin> {
+
+
+  @override
+  void initState() {
+  _loadSavedCredentials();
+    super.initState();
+  }
+  late final SharedPreferences prefs;
+
+  Future<void> _loadSavedCredentials() async {
+    prefs = await SharedPreferences.getInstance();
+    setState(() {
+      //Retrieve saved credentials
+      email.text = prefs.getString('email') ?? '';
+      password.text = prefs.getString('password') ?? '';
+      isuncheked = prefs.getBool('rememberMe') ?? false;
+    });
+  }
+
+  // Save user credentials locally
+  Future<void> _saveCredentials() async {
+    await prefs.setString('email', email.text);
+    await prefs.setString('password', password.text);
+    await prefs.setBool('rememberMe', isuncheked);
+  }
+
+  // Remove saved credentials
+  Future<void> _clearCredentials() async {
+    await prefs.remove('email');
+    await prefs.remove('password');
+    await prefs.remove('rememberMe');
+  }
+
   bool ischecked = true;
   bool isuncheked = false;
   bool loading = false;
@@ -39,42 +72,42 @@ class _SigninState extends ConsumerState<Signin> {
     return Login(email: email.text, password: password.text);
   }
 
-Future signin(Login login) async {
-  dynamic payload = jsonEncode({"email": login.email, "password": login.password});
-  final response = await http.post(
-    Uri.parse("https://server-eight-beige.vercel.app/api/user/login"),
-    body: payload,
-    headers: {
-      "Content-Type": "application/json",
+  Future signin(Login login) async {
+    dynamic payload =
+        jsonEncode({"email": login.email, "password": login.password});
+    final response = await http.post(
+        Uri.parse("https://server-eight-beige.vercel.app/api/user/login"),
+        body: payload,
+        headers: {
+          "Content-Type": "application/json",
+        });
+
+    if (response.statusCode == 200) {
+      dynamic data = jsonDecode(response.body);
+      String token = data['token'];
+
+      // Save the user data to shared preferences
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      await prefs.setString('token', token);
+      await prefs.setString(
+          'userData', jsonEncode(data['user'])); // Save user data
+
+      print("Token: $token");
+      print("Token and user data saved in shared preferences.");
+
+      print("success");
+      print(data);
+      return data;
+    } else {
+      Map<String, dynamic> theres = jsonDecode(response.body);
+      setState(() {
+        err = theres['message'];
+      });
+      print("failed");
+      print(payload);
+      throw Exception(response.body);
     }
-  );
-
-  if (response.statusCode == 200) {
-    dynamic data = jsonDecode(response.body);
-    String token = data['token'];
-
-    // Save the user data to shared preferences
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    await prefs.setString('token', token);
-    await prefs.setString('userData', jsonEncode(data['user'])); // Save user data
-
-    print("Token: $token");
-    print("Token and user data saved in shared preferences.");
-
-    print("success");
-    print(data);
-    return data;
-  } else {
-    Map<String, dynamic> theres = jsonDecode(response.body);
-    setState(() {
-      err = theres['message'];
-    });
-    print("failed");
-    print(payload);
-    throw Exception(response.body);
   }
-}
-
 
   bool _isObscure = true;
   bool visi = false;
@@ -123,7 +156,7 @@ Future signin(Login login) async {
               vis: false,
               controller: email,
               value: "Enter Email",
-              prefix: Icon(Icons.email),
+              prefix: Icon(Icons.email,color: Colors.black,),
             ),
             SizedBox(
               height: 5.h,
@@ -136,7 +169,7 @@ Future signin(Login login) async {
                   onTap: () {
                     // _togglePasswordVisibility;
                   },
-                  child: Icon(Icons.lock)),
+                  child: Icon(Icons.lock,color: Colors.black,)),
               suffix: GestureDetector(
                 onTap: () {
                   setState(() {
@@ -144,7 +177,7 @@ Future signin(Login login) async {
                   });
                 },
                 child:
-                    visi ? Icon(Icons.visibility) : Icon(Icons.visibility_off),
+                    visi ? Icon(Icons.visibility,color: Colors.black,) : Icon(Icons.visibility_off,color: Colors.black,),
               ),
             ),
             SizedBox(
@@ -152,18 +185,20 @@ Future signin(Login login) async {
             ),
             Row(
               children: [
-                Checkbox(
-                    value: isuncheked,
-                    onChanged: (value) {
-                      ref.read(api.themeprovider.notifier).state = 1;
-
-                      setState(() {
-                        isuncheked = value!;
-
-                        print(value);
-                        print(thetheme.state);
-                      });
-                    }),
+            Checkbox(
+              focusColor: Colors.black,
+              value: isuncheked,
+              onChanged: (value) {
+                setState(() {
+                  isuncheked = value ?? false;
+                  if (isuncheked) {
+                    _saveCredentials(); // Save credentials if "Remember Me" is checked
+                  } else {
+                    _clearCredentials(); // Clear credentials if unchecked
+                  }
+                });
+              },
+            ),
                 Thetext(
                   thetext: "Remember Me",
                   style: GoogleFonts.poppins(),

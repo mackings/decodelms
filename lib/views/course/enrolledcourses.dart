@@ -26,19 +26,15 @@ class _EnrolledcoursesState extends State<Enrolledcourses> {
       child: Scaffold(
         appBar: AppBar(
           backgroundColor: Colors.white,
+          automaticallyImplyLeading: false,
           elevation: 0,
-          leading: GestureDetector(
-              onTap: () {
-                Navigator.pop(context);
-              },
-              child: Icon(
-                Icons.arrow_back,
-                color: Colors.black,
-              )),
-          title: Thetext(
-            thetext: "My Courses",
-            style: GoogleFonts.poppins(
-                color: Colors.black, fontWeight: FontWeight.bold),
+          title: Padding(
+            padding: const EdgeInsets.only(left: 5, right: 5, top: 10),
+            child: Thetext(
+              thetext: "My Courses",
+              style: GoogleFonts.poppins(
+                  color: Colors.black, fontWeight: FontWeight.bold),
+            ),
           ),
           bottom: TabBar(
             tabs: [

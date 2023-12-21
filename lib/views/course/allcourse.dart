@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
+import 'package:sizer/sizer.dart';
 
 class allCoursesPage extends StatefulWidget {
   allCoursesPage({Key? key}) : super(key: key);
@@ -103,6 +104,26 @@ Future<List<Coursem>?> fetchAllCourses() async {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
+      appBar: AppBar(
+        backgroundColor: Colors.white,
+        
+        elevation: 0,
+        titleSpacing: 0.0,
+        automaticallyImplyLeading: false,
+
+        title: Padding(
+          padding: const EdgeInsets.only(top: 20,left: 15),
+          child: Thetext(thetext: "Courses", style: GoogleFonts.poppins(
+            color: Colors.black,
+            fontWeight: FontWeight.bold,
+            fontSize: 15.sp
+            
+          )
+          ),
+        ),
+      ),
+      
       body: FutureBuilder<List<Coursem>?>(
         future: fetchAllCourses(),
         builder: (context, snapshot) {

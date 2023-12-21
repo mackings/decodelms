@@ -14,9 +14,14 @@ class QuizPage extends StatefulWidget {
   final String quizId;
   final String courseId;
   final String moduleId;
+  final VoidCallback? onSubmitQuiz;
 
-  QuizPage(
-      {required this.quizId, required this.courseId, required this.moduleId});
+  QuizPage({
+    required this.quizId,
+    required this.courseId,
+    required this.moduleId,
+    this.onSubmitQuiz,
+  });
 
   @override
   _QuizPageState createState() => _QuizPageState();
@@ -80,10 +85,12 @@ class _QuizPageState extends State<QuizPage> {
       print('Error loading quiz: $e');
     }
   }
+  
 
   dynamic QID;
   dynamic AID;
 
+  
   Future SubmitQuiz() async {
     String errorMessage = '';
 
@@ -117,7 +124,7 @@ class _QuizPageState extends State<QuizPage> {
                 Navigator.pop(context);
               },
               press2: () {
-                // Navigator.pop(context, res);
+               Navigator.pop(context);
                 Complete();
               },
               theicon: Icon(
@@ -248,19 +255,18 @@ class _QuizPageState extends State<QuizPage> {
           context: context,
           builder: (BuildContext context) {
             return EnrollmentDialog(
-              press1: () {
-                // Navigator.pop(context);
-              },
+              press1: () {},
               press2: () {
-                // Navigator.pop(context, res);
+                Navigator.pop(context);
+                Navigator.pop(context);
               },
               theicon: Icon(
                 Icons.check_circle,
                 color: Colors.blue,
                 size: 60,
               ),
-              title: "Quiz Attempted",
-              message: "You Scored $res",
+              title: "Completed",
+              message: "Module Completed",
               message2: 'Continue',
             );
           },
@@ -364,21 +370,37 @@ class _QuizPageState extends State<QuizPage> {
     return index == _quiz!.questions.length - 1;
   }
 
+  bool load = false;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
-        backgroundColor: Colors.blue,
+        automaticallyImplyLeading: false,
+        backgroundColor: Colors.white,
         elevation: 0,
-        title: GestureDetector(
-            onTap: () {
-              SubmitQuiz();
-              print("Tapped");
-            },
-            child: Text('Quiz')),
+        title: Padding(
+          padding: const EdgeInsets.only(top: 20, left: 15),
+          child: Thetext(
+              thetext: "Quiz",
+              style: GoogleFonts.poppins(
+                  color: Colors.black,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 15.sp)),
+        ),
       ),
       body: _quiz == null
-          ? Center(child: CircularProgressIndicator())
+          ? Center(child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              CircularProgressIndicator(),
+              Padding(
+                padding: const EdgeInsets.all(10.0),
+                child: Thetext(thetext: "Loading Questions", style: GoogleFonts.poppins()),
+              )
+            ],
+          ))
           : PageView.builder(
               controller: PageController(initialPage: currentPage),
               itemCount: _quiz!.questions.length,
@@ -386,6 +408,9 @@ class _QuizPageState extends State<QuizPage> {
                 return Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: QuizQuestionView(
+                    onSubmitQuizParentCallback: SubmitQuiz,
+                    load: load,
+                    onSubmitQuiz: SubmitQuiz,
                     question: _quiz!.questions[index],
                     selectedAnswer: selectedAnswers.length > index
                         ? selectedAnswers[index]['correctAnswerIndexes']
@@ -437,13 +462,19 @@ class QuizQuestionView extends StatefulWidget {
   final Question question;
   final int? selectedAnswer;
   final Function(int?) onAnswerSelected;
-  final bool isLastQuestion; // Define isLastQuestion property
+  final bool isLastQuestion;
+  final VoidCallback? onSubmitQuiz;
+  late final bool load;
+  final VoidCallback? onSubmitQuizParentCallback;
 
   QuizQuestionView({
     required this.question,
     required this.selectedAnswer,
     required this.onAnswerSelected,
-    required this.isLastQuestion, // Include isLastQuestion in the constructor
+    required this.isLastQuestion,
+    required this.onSubmitQuiz,
+    required this.load,
+    required this.onSubmitQuizParentCallback,
   });
 
   @override
@@ -451,8 +482,8 @@ class QuizQuestionView extends StatefulWidget {
 }
 
 class _QuizQuestionViewState extends State<QuizQuestionView> {
+  bool loading = false;
   bool isAnswerSelected = false; // Track whether an answer has been selected
-
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -512,35 +543,52 @@ class _QuizQuestionViewState extends State<QuizQuestionView> {
             }).toList(),
           ),
           SizedBox(height: 8.h),
-          GestureDetector(
-            onTap: () {
-              if (widget.isLastQuestion) {
-                print("Last one");
-              } else {
-                print("Not one");
-              }
-            },
-            child: Container(
-              height: 7.h,
-              width: MediaQuery.of(context).size.width - 12.w,
-              decoration: BoxDecoration(
-                color: widget.isLastQuestion
-                    ? Colors.blue
-                    : Colors.grey, // Change button color if the last question
-                borderRadius: BorderRadius.circular(10),
-              ),
-              child: Center(
-                child: Thetext(
-                  thetext: widget.isLastQuestion
-                      ? "Submit Quiz"
-                      : "Swipe left to Continue",
-                  style: GoogleFonts.poppins(
-                      color:
-                          widget.isLastQuestion ? Colors.white : Colors.white),
+          loading
+              ? CircularProgressIndicator()
+              : GestureDetector(
+                  onTap: () async {
+                    setState(() {
+                      loading = true;
+                    });
+
+                    if (widget.isLastQuestion && widget.onSubmitQuiz != null) {
+                      if (widget.onSubmitQuizParentCallback != null) {
+                        widget.onSubmitQuizParentCallback!();
+                      }
+                      Timer(Duration(seconds: 3), () {
+                        setState(() {
+                          loading = false;
+                        });
+                      });
+
+                      print("Last one");
+                    } else {
+                      print("Not one");
+                    }
+                  },
+                  child: Container(
+                    height: 7.h,
+                    width: MediaQuery.of(context).size.width - 12.w,
+                    decoration: BoxDecoration(
+                      color: widget.isLastQuestion
+                          ? Colors.blue
+                          : Colors
+                              .grey, // Change button color if the last question
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: Center(
+                      child: Thetext(
+                        thetext: widget.isLastQuestion
+                            ? "Submit Quiz"
+                            : "Swipe left to Continue",
+                        style: GoogleFonts.poppins(
+                            color: widget.isLastQuestion
+                                ? Colors.white
+                                : Colors.white),
+                      ),
+                    ),
+                  ),
                 ),
-              ),
-            ),
-          ),
         ],
       ),
     );

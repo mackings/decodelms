@@ -2,6 +2,7 @@ import 'package:decodelms/views/Homepage/home.dart';
 import 'package:decodelms/views/course/allcourse.dart';
 import 'package:decodelms/views/course/calls.dart';
 import 'package:decodelms/views/course/search.dart';
+import 'package:decodelms/views/profile/profile.dart';
 import 'package:flutter/material.dart';
 
 
@@ -76,7 +77,7 @@ class _MyBottomNavigationBarState extends State<MyBottomNavigationBar> {
           icon: GestureDetector(
             onTap: () {
                             Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => Calls()));
+                  MaterialPageRoute(builder: (context) => ProfileScreen()));
              
             },
             child: Icon(Icons.person),

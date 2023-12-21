@@ -93,20 +93,23 @@ class _HomepageState extends ConsumerState<Homepage> {
                               GoogleFonts.poppins()),
                     ],
                   ),
-                  Row(
-                    children: [
-                      badges.Badge(
-                        badgeStyle: badges.BadgeStyle(badgeColor: Colors.blue),
-                        badgeContent: Text(
-                          '0',
-                          style: GoogleFonts.poppins(color: Colors.white),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 10),
+                    child: Row(
+                      children: [
+                        badges.Badge(
+                          badgeStyle: badges.BadgeStyle(badgeColor: Colors.blue),
+                          badgeContent: Text(
+                            '0',
+                            style: GoogleFonts.poppins(color: Colors.white),
+                          ),
+                          child: CircleAvatar(child: Icon(Icons.person)),
                         ),
-                        child: Icon(Icons.local_activity),
-                      ),
-                      SizedBox(
-                        width: 3.w,
-                      ),
-                    ],
+                        SizedBox(
+                          width: 3.w,
+                        ),
+                      ],
+                    ),
                   ),
                 ],
               ),

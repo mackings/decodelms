@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:decodelms/models/coursemodel.dart';
 import 'package:decodelms/models/searchcourse.dart';
+import 'package:decodelms/views/Homepage/home.dart';
 import 'package:decodelms/views/course/coursestream.dart';
 import 'package:decodelms/views/course/enrolledcourses.dart';
 import 'package:decodelms/widgets/appbar.dart';
@@ -187,6 +188,7 @@ class _CourseDetailsPageState extends State<CourseDetailsPage> {
             },
             press2: () {
               Navigator.pop(context);
+              Navigator.pushReplacement(context, Homepage() as Route<Object?>);
             },
             theicon: Icon(
               Icons.error,
@@ -216,7 +218,6 @@ class _CourseDetailsPageState extends State<CourseDetailsPage> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-
                 Padding(
                   padding: const EdgeInsets.only(
                     top: 40,
@@ -248,7 +249,8 @@ class _CourseDetailsPageState extends State<CourseDetailsPage> {
                           height: 25.h,
                           decoration: BoxDecoration(
                             image: DecorationImage(
-                              image: NetworkImage(widget.allCourses.courseImage.first.path),
+                              image: NetworkImage(
+                                  widget.allCourses.courseImage.first.path),
                               fit: BoxFit.cover,
                             ),
                           ),
@@ -287,8 +289,8 @@ class _CourseDetailsPageState extends State<CourseDetailsPage> {
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 CircleAvatar(
-                                  backgroundImage:
-                                      NetworkImage(widget.allCourses.courseImage.first.path),
+                                  backgroundImage: NetworkImage(
+                                      widget.allCourses.courseImage.first.path),
                                 ),
                                 Padding(
                                   padding: const EdgeInsets.all(8.0),
@@ -413,8 +415,9 @@ class _CourseDetailsPageState extends State<CourseDetailsPage> {
                                               CrossAxisAlignment.start,
                                           children: [
                                             Thetext(
-                                                thetext:widget.allCourses.totalRegisteredByStudent.toString(),
-                                                  
+                                                thetext: widget.allCourses
+                                                    .totalRegisteredByStudent
+                                                    .toString(),
                                                 style: GoogleFonts.poppins()),
                                             Thetext(
                                                 thetext: "Enrolled",

@@ -4,6 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:sizer/sizer.dart';
 
 class TheFormfield extends ConsumerStatefulWidget {
+
   var prefix;
   var suffix;
   var controller;
@@ -23,11 +24,12 @@ class _TheFormfieldState extends ConsumerState<TheFormfield> {
   Widget build(BuildContext context) {
     return Center(
       child: Container(
-        height: 40.sp,
+        height: 45.sp,
         width: MediaQuery.of(context).size.width - 10.w,
         decoration: BoxDecoration(
-          color: const Color.fromARGB(255, 211, 218, 224),
+          //color: const Color.fromARGB(255, 211, 218, 224),
           borderRadius: BorderRadius.circular(15),
+          border: Border.all(width: 0.5)
         ),
         child: Center(
           child: Padding(

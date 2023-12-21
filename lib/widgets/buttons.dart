@@ -20,7 +20,7 @@ class _MybuttonsState extends State<Mybuttons> {
       onTap: widget.callback,
       child: Container(
         height: 7.h,
-        width: MediaQuery.of(context).size.width - 15.w,
+        width: MediaQuery.of(context).size.width - 13.w,
         child: Center(
             child: Text(
           "${widget.buttontxt}",

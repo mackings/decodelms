@@ -122,7 +122,7 @@ class _SignupState extends ConsumerState<Signup> {
         thebody: Column(
           children: [
             Padding(
-              padding: const EdgeInsets.fromLTRB(20.0, 0.0, 20.0, 10.0),
+              padding: const EdgeInsets.fromLTRB(20.0, 0.0, 20.0, 5.0),
               child: Row(
                 children: [
                   Column(
@@ -161,7 +161,7 @@ class _SignupState extends ConsumerState<Signup> {
                 vis: false,
                 controller: firstname,
                 value: "Enter First Name",
-                prefix: Icon(Icons.person),
+                prefix: Icon(Icons.person,color: Colors.black,),
               ),
             ),
             Padding(
@@ -170,7 +170,7 @@ class _SignupState extends ConsumerState<Signup> {
                 vis: false,
                 controller: lastname,
                 value: "Enter Last Name",
-                prefix: Icon(Icons.person),
+                prefix: Icon(Icons.person,color: Colors.black,),
               ),
             ),
             Padding(
@@ -179,7 +179,7 @@ class _SignupState extends ConsumerState<Signup> {
                 vis: false,
                 controller: email,
                 value: "Enter Email",
-                prefix: Icon(Icons.email),
+                prefix: Icon(Icons.email,color: Colors.black,),
               ),
             ),
             Padding(
@@ -188,7 +188,7 @@ class _SignupState extends ConsumerState<Signup> {
                 vis: false,
                 controller: phone,
                 value: "Enter Phone Number",
-                prefix: Icon(Icons.phone),
+                prefix: Icon(Icons.phone,color: Colors.black,),
               ),
             ),
 Padding(
@@ -197,20 +197,20 @@ Padding(
     vis: visi,
     controller: password,
     value: "Enter Password",
-    prefix: Icon(Icons.lock),
+    prefix: Icon(Icons.lock,color: Colors.black,),
     suffix: GestureDetector(
       onTap: () {
         setState(() {
           visi = !visi;
         });
       },
-      child: visi ? Icon(Icons.visibility) : Icon(Icons.visibility_off),
+      child: visi ? Icon(Icons.visibility,color: Colors.black,) : Icon(Icons.visibility_off,color: Colors.black,),
     ),
   ),
 ),
 
             SizedBox(
-              height: 4.h,
+              height: 2.h,
             ),
             loading
                 ? CircularProgressIndicator()

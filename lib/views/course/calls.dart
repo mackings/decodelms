@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:decodelms/widgets/appbar.dart';
+import 'package:decodelms/widgets/buttombar.dart';
 import 'package:decodelms/widgets/course/dialogs.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -64,6 +65,11 @@ class _CallsState extends State<Calls> {
       throw Exception('Failed to load meetings');
     }
   }
+    void _onTabTapped(int index) {
+    // setState(() {
+    //   0 = index;
+    // });
+  }
 
   Future<void> scheduleMeeting() async {
     final url = Uri.parse(
@@ -101,18 +107,22 @@ class _CallsState extends State<Calls> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
+        automaticallyImplyLeading: false,
           backgroundColor: Colors.white,
           elevation: 0,
-          title: GestureDetector(
-            onTap: () {
-              scheduleMeeting();
-            },
-            child: Thetext(
-                thetext: "Live lessons",
-                style: GoogleFonts.poppins(
-                    fontWeight: FontWeight.bold, color: Colors.black)),
-          )),
+          title: Padding(
+          padding: const EdgeInsets.only(top: 20,left: 15),
+          child: Thetext(thetext: "Live Sessions", style: GoogleFonts.poppins(
+            color: Colors.black,
+            fontWeight: FontWeight.bold,
+            fontSize: 15.sp
+            
+          )
+          ),
+        ),
+          ),
       body: FutureBuilder<List<Meeting>>(
         future: futureMeetings,
         builder: (context, snapshot) {
@@ -240,6 +250,7 @@ class _CallsState extends State<Calls> {
           }
         },
       ),
+      bottomNavigationBar: MyBottomNavigationBar(currentIndex: 0, onTabTapped:_onTabTapped ),
     );
   }
 }

@@ -25,7 +25,6 @@ class _CourseCardState extends State<CourseCard> {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-       
         setState(() {
           Id = widget.course.id;
         });
@@ -110,13 +109,13 @@ class _AllCourseCardState extends State<AllCourseCard> {
               onTap: () {
                 print(widget.allCourse.courseImage);
 
-                Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (context) => CourseDetailsPage(
-                      allCourses: widget.allCourse,
-                    ),
-                  ),
-                );
+                // Navigator.of(context).push(
+                //   MaterialPageRoute(
+                //     builder: (context) => CourseDetailsPage(
+                //       allCourses: widget.allCourse,
+                //     ),
+                //   ),
+                // );
               },
               child: Stack(
                 children: [
@@ -127,8 +126,7 @@ class _AllCourseCardState extends State<AllCourseCard> {
                     ),
                     child: FlutterWidgets.Image.network(
                       widget.allCourse.courseImage.isNotEmpty
-                          ? widget
-                              .allCourse.courseImage.first.path
+                          ? widget.allCourse.courseImage.first.path
                           : '',
                       fit: BoxFit.cover,
                       width: double.infinity,
@@ -139,7 +137,15 @@ class _AllCourseCardState extends State<AllCourseCard> {
                     padding: const EdgeInsets.only(top: 30, bottom: 30),
                     child: Center(
                       child: GestureDetector(
-                        onTap: () {},
+                        onTap: () {
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (context) => CourseDetailsPage(
+                                allCourses: widget.allCourse,
+                              ),
+                            ),
+                          );
+                        },
                         child: Icon(
                           Icons.play_circle_outline,
                           color: Colors.white,
@@ -185,8 +191,7 @@ class _AllCourseCardState extends State<AllCourseCard> {
                     child: Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: Thetext(
-                        thetext:
-                            widget.allCourse.courseDescription,
+                        thetext: widget.allCourse.courseDescription,
                         style: GoogleFonts.poppins(
                           color: Colors.black,
                         ),
@@ -213,6 +218,7 @@ class CourseEnrolledCard2 extends StatefulWidget {
 }
 
 class _CourseEnrolledCard2State extends State<CourseEnrolledCard2> {
+  final dcourse = Course;
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -244,7 +250,13 @@ class _CourseEnrolledCard2State extends State<CourseEnrolledCard2> {
                       padding: const EdgeInsets.only(top: 30, bottom: 30),
                       child: Center(
                         child: GestureDetector(
-                          onTap: () {},
+                          onTap: () {
+                        //  Navigator.push(
+                        //       context,
+                        //       MaterialPageRoute(
+                        //           builder: (context) =>
+                        //               StreamPage(courseId: dcourse.id)));
+                          },
                           child: Icon(
                             Icons.play_circle_outline,
                             color: Colors.white,

@@ -26,6 +26,8 @@ class StreamPage extends StatefulWidget {
 
 class _StreamPageState extends State<StreamPage> {
   Future<ApiResponse>? futureCourseDetail;
+  List<CourseModule> allModules = [];
+  ScrollController _scrollController = ScrollController();
 
   String? token;
   late VideoPlayerController videoPlayerController;
@@ -149,6 +151,153 @@ class _StreamPageState extends State<StreamPage> {
   dynamic vidurl;
   late Quiz _quiz;
   String? moduleID;
+  List<Map<String, dynamic>> selectedAnswers = [];
+  dynamic QID;
+  dynamic AID;
+  dynamic res;
+
+  Future SubmitQuiz() async {
+    String errorMessage = '';
+
+    try {
+      final response = await http.post(
+          Uri.parse(
+              "https://server-eight-beige.vercel.app/api/quizes/submitAnswers/$QID"),
+          headers: {
+            "Content-Type": "application/json",
+            'Authorization': 'Bearer $token',
+          },
+          body: jsonEncode({"userAnswers": selectedAnswers}));
+
+      if (response.statusCode == 200) {
+        var data = jsonDecode(response.body);
+        print(data);
+        print(selectedAnswers);
+
+        setState(() {
+          res = data['score'];
+          print('Results is $res');
+          // isEnrolling = false;
+        });
+
+        // Show a success dialog
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return EnrollmentDialog(
+              press1: () {
+                Navigator.pop(context);
+              },
+              press2: () {
+                // Navigator.pop(context, res);
+                Complete();
+              },
+              theicon: Icon(
+                Icons.check_circle,
+                color: Colors.blue,
+                size: 60,
+              ),
+              title: "Quiz Attempted",
+              message: "You Scored $res",
+              message2: 'Continue',
+            );
+          },
+        );
+      } else if (response.statusCode == 409) {
+        var data = jsonDecode(response.body);
+        print(data);
+        print(selectedAnswers);
+
+        setState(() {
+          errorMessage = data['message'];
+        });
+
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return EnrollmentDialog(
+              press1: () {
+                Navigator.pop(context);
+              },
+              press2: () {
+                Navigator.pop(context);
+              },
+              theicon: Icon(
+                Icons.error,
+                color: Colors.red,
+                size: 60,
+              ),
+              title: "Enrollment Failed",
+              message: errorMessage.isNotEmpty
+                  ? errorMessage
+                  : "Enrollment failed. Please try again later.",
+              message2: "Take me Home",
+            );
+          },
+        );
+
+        // throw Exception(response.body);
+      } else {
+        print(selectedAnswers);
+
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return EnrollmentDialog(
+              press1: () {
+                Navigator.pop(context);
+              },
+              press2: () {
+                Navigator.pop(context);
+              },
+              theicon: Icon(
+                Icons.error,
+                color: Colors.red,
+                size: 60,
+              ),
+              title: "Enrollment Failed",
+              message: errorMessage.isNotEmpty
+                  ? errorMessage
+                  : "Enrollment failed. Please try again later.",
+              message2: "Take me Home",
+            );
+          },
+        );
+        print(response.body);
+      }
+    } catch (error) {
+      print('Error is $error');
+      setState(() {
+        // isEnrolling = false;
+      });
+
+      print(res);
+
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return EnrollmentDialog(
+            press1: () {
+              Navigator.pop(context);
+            },
+            press2: () {
+              Navigator.pop(context);
+            },
+            theicon: Icon(
+              Icons.error,
+              color: Colors.red,
+              size: 60,
+            ),
+            title: "Enrollment Failed",
+            message: errorMessage.isNotEmpty
+                ? errorMessage
+                : "Enrollment failed. Please try again later.",
+            message2: "Take me Home",
+          );
+        },
+      );
+    }
+  }
 
   @override
   void initState() {
@@ -162,6 +311,7 @@ class _StreamPageState extends State<StreamPage> {
 
       futureCourseDetail!.then((courseDetail) {
         if (courseDetail.result.isNotEmpty) {
+          allModules = courseDetail.result.first.modules;
           loadModule(courseDetail, courseDetail.result.first.modules.first);
         }
       });
@@ -182,66 +332,65 @@ class _StreamPageState extends State<StreamPage> {
     }
   }
 
-void loadNextModule(ApiResponse courseDetail) {
-  if (currentModuleIndex < courseDetail.result.first.modules.length - 1) {
-    currentModuleIndex++;
-    final nextModule = courseDetail.result.first.modules[currentModuleIndex];
+  void loadNextModule(ApiResponse courseDetail) {
+    if (currentModuleIndex < courseDetail.result.first.modules.length - 1) {
+      currentModuleIndex++;
+      final nextModule = courseDetail.result.first.modules[currentModuleIndex];
 
-    if (nextModule.isCompleted) {
-      print("Next module is already completed. Loading the next one.");
-      loadNextModule(courseDetail);
-    } else if (nextModule.video.isNotEmpty) {
-      // Load video for the next module
-      loadVideo(nextModule.video.first.path);
-    } else if (nextModule.quizzes.isNotEmpty) {
-      // Check if the next module has a quiz
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => QuizPage(
-              quizId: nextModule.quizzes.first,
-              courseId: widget.courseId,
-              moduleId: nextModule.id),
-        ),
-      ).then((_) {
-        // After the quiz page is closed, load the video for the next module
-        loadNextVideo();
-      });
-    } else {
-      // Handle the case where the next module has neither a video nor a quiz
-      print('All caught up! You have completed all modules.');
-    }
-  } else {
-    // All modules are completed
-    print("All caught up! You have completed all modules.");
-
-    showDialog(
-      context: context,
-      barrierDismissible: false,
-      builder: (BuildContext context) {
-        return EnrollmentDialog(
-          title: "Congratulations",
-          message: "You just completed this Course",
-          message2: "Certify Me",
-          press1: () {
-            Navigator.pop(context);
-            Navigator.pop(context);
-          },
-          press2: () {
-            Navigator.pop(context);
-            Navigator.pop(context);
-          },
-          theicon: Icon(
-            Icons.check_circle,
-            color: Colors.blue,
-            size: 50,
+      if (nextModule.isCompleted) {
+        print("Next module is already completed. Loading the next one.");
+        loadNextModule(courseDetail);
+      } else if (nextModule.video.isNotEmpty) {
+        // Load video for the next module
+        loadVideo(nextModule.video.first.path);
+      } else if (nextModule.quizzes.isNotEmpty) {
+        // Check if the next module has a quiz
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => QuizPage(
+                quizId: nextModule.quizzes.first,
+                courseId: widget.courseId,
+                moduleId: nextModule.id),
           ),
-        );
-      },
-    );
-  }
-}
+        ).then((_) {
+          // After the quiz page is closed, load the video for the next module
+          loadNextVideo();
+        });
+      } else {
+        // Handle the case where the next module has neither a video nor a quiz
+        print('All caught up! You have completed all modules.');
+      }
+    } else {
+      // All modules are completed
+      print("All caught up! You have completed all modules.");
 
+      showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (BuildContext context) {
+          return EnrollmentDialog(
+            title: "Congratulations",
+            message: "You just completed this Course",
+            message2: "Certify Me",
+            press1: () {
+              Navigator.pop(context);
+              Navigator.pop(context);
+            },
+            press2: () {
+              Navigator.pop(context);
+              Navigator.pop(context);
+            },
+            theicon: Icon(
+              Icons.check_circle,
+              color: Colors.blue,
+              size: 50,
+            ),
+          );
+        },
+      );
+    }
+  }
 
   bool isCurrentModuleAvailable() {
     return currentModule != null;
@@ -301,22 +450,22 @@ void loadNextModule(ApiResponse courseDetail) {
     return '${twoDigits(duration.inHours)}:$twoDigitMinutes:$twoDigitSeconds';
   }
 
-void loadNextVideo() async {
-  final courseDetail = await futureCourseDetail;
+  void loadNextVideo() async {
+    final courseDetail = await futureCourseDetail;
 
-  if (courseDetail != null &&
-      currentModuleIndex < courseDetail.result.first.modules.length - 1) {
-    currentModuleIndex++;
-    final nextModule = courseDetail.result.first.modules[currentModuleIndex];
+    if (courseDetail != null &&
+        currentModuleIndex < courseDetail.result.first.modules.length - 1) {
+      currentModuleIndex++;
+      final nextModule = courseDetail.result.first.modules[currentModuleIndex];
 
-    if (nextModule.video.isNotEmpty) {
-      loadVideo(nextModule.video.first.path);
-    } else {
-      // Handle the case where the next module has no video
-      print('No video available for the next module');
+      if (nextModule.video.isNotEmpty) {
+        loadVideo(nextModule.video.first.path);
+      } else {
+        // Handle the case where the next module has no video
+        print('No video available for the next module');
+      }
     }
   }
-}
 
   Future Complete() async {
     String errorMessage = '';
@@ -343,8 +492,9 @@ void loadNextVideo() async {
                 // Navigator.pop(context);
               },
               press2: () {
-               Navigator.pop(context);
-               Navigator.pop(context);
+                Navigator.pop(context);
+                Navigator.pop(context);
+                Navigator.pop(context);
               },
               theicon: Icon(
                 Icons.check_circle,
@@ -512,16 +662,19 @@ void loadNextVideo() async {
                             ),
                           ),
                         ),
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Container(
-                            height: 7.h,
-                            width: MediaQuery.of(context).size.width - 10.w,
-                            decoration: BoxDecoration(
-                                border: Border.all(width: 0.5),
-                                borderRadius: BorderRadius.circular(10)),
-                          ),
+                        SizedBox(
+                          height: 2.h,
                         ),
+                        // Padding(
+                        //   padding: const EdgeInsets.all(8.0),
+                        //   child: Container(
+                        //     height: 7.h,
+                        //     width: MediaQuery.of(context).size.width - 10.w,
+                        //     decoration: BoxDecoration(
+                        //         border: Border.all(width: 0.5),
+                        //         borderRadius: BorderRadius.circular(10)),
+                        //   ),
+                        // ),
                         GestureDetector(
                           onTap: () async {
                             if (futureCourseDetail != null) {
@@ -550,18 +703,18 @@ void loadNextVideo() async {
                                     context,
                                     MaterialPageRoute(
                                       builder: (context) => QuizPage(
-                                          quizId:
-                                              currentModule?.quizzes.first ??
-                                                  '',
-                                          courseId: widget.courseId,
-                                          moduleId: currentModule.id),
+                                        quizId:
+                                            currentModule?.quizzes.first ?? '',
+                                        courseId: widget.courseId,
+                                        moduleId: currentModule.id,
+                                        //  onSubmitQuiz: SubmitQuiz,
+                                      ),
                                     ),
                                   );
                                   // print("Passed Course ID ${widget.courseId}");
 
                                   print('Quiz Score: $quizScore');
                                   if (quizScore >= 3) {
-
                                     if (courseDetail
                                             .result
                                             .first
@@ -581,10 +734,12 @@ void loadNextVideo() async {
                                       context,
                                       MaterialPageRoute(
                                         builder: (context) => QuizPage(
-                                            quizId:
-                                                nextModule?.quizzes.first ?? '',
-                                            courseId: nextModule?.id ?? '',
-                                            moduleId: currentModule.id),
+                                          quizId:
+                                              nextModule?.quizzes.first ?? '',
+                                          courseId: nextModule?.id ?? '',
+                                          moduleId: currentModule.id,
+                                          // onSubmitQuiz: SubmitQuiz,
+                                        ),
                                       ),
                                     );
                                   } else if (nextModule.video.isNotEmpty ==
@@ -631,8 +786,8 @@ void loadNextVideo() async {
                                     context: context,
                                     builder: (BuildContext context) {
                                       return EnrollmentDialog(
-                                          title: "Well Done",
-                                          message: "Decode has Something for you..",
+                                          title: "Done?",
+                                          message: "Proceed to the next module",
                                           message2: "Continue",
                                           press1: () {
                                             Navigator.pop(context);
@@ -640,7 +795,7 @@ void loadNextVideo() async {
                                           },
                                           press2: () {
                                             Complete();
-                                           // Navigator.pop(context);
+                                            // Navigator.pop(context);
                                           },
                                           theicon: Icon(
                                             Icons.check_circle,
@@ -651,7 +806,7 @@ void loadNextVideo() async {
                                   );
                                   //Last Action
                                 }
-                              } 
+                              }
                             }
                           },
                           child: Container(
@@ -670,7 +825,70 @@ void loadNextVideo() async {
                               ),
                             ),
                           ),
-                        )
+                        ),
+
+                        Expanded(
+                          child: ListView.builder(
+                            controller: _scrollController,
+                            itemCount: allModules.length,
+                            itemBuilder: (context, index) {
+                              CourseModule module = allModules[index];
+
+                              return GestureDetector(
+                                onTap: () {
+                                  //loadVideo(module.video.first.path);
+                                },
+                                child: Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: ListTile(
+                                    title: Thetext(
+                                      thetext: module.moduleTitle,
+                                      style: GoogleFonts.poppins(
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                    subtitle: Thetext(
+                                        thetext:
+                                            "${module.isCompleted == false ? "Not Completed" : "Module Completed"}",
+                                        style: GoogleFonts.poppins()),
+                                    leading: Thetext(
+                                      thetext:
+                                          '${index + 1}', // Display module number
+                                      style: GoogleFonts.poppins(),
+                                    ),
+                                    trailing: GestureDetector(
+                                        onTap: () {
+                                          if (module.isCompleted == true) {
+                                            loadVideo(module.video.first.path);
+                                          } else {
+                                            showDialog(
+                                                context: context,
+                                                builder: ((context) {
+                                                  return EnrollmentDialog(
+                                                      title: "Error Playing Video",
+                                                      message:
+                                                          "Complete Previous Modules",
+                                                      message2: "Close",
+                                                      press1: () {},
+                                                      press2: () {
+                                                        Navigator.pop(context);
+                                                      },
+                                                      theicon: Icon(
+                                                          Icons.play_disabled_rounded,size: 50,
+                                                          color: Colors.blue,));
+                                                }));
+                                          }
+                                        },
+                                        child: Icon(
+                                          Icons.play_circle,
+                                          color: Colors.blue,
+                                          size: 40,
+                                        )),
+                                  ),
+                                ),
+                              );
+                            },
+                          ),
+                        ),
                       ],
                     );
                   }
