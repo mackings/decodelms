@@ -350,100 +350,106 @@ class _CourseDetailsBottomSheetState extends State<CourseDetailsBottomSheet> {
                   child: TabBarView(
                     children: [
                       // Description tab content
-                      Padding(
-                        padding: const EdgeInsets.only(
-                            left: 10, right: 10, top: 15, bottom: 15),
-                        child: SingleChildScrollView(
-                          physics: BouncingScrollPhysics(),
-                          child: Column(
-                            children: [
-                              Thetext(
-                                  thetext: widget.description,
-                                  style: GoogleFonts.poppins()),
-                              Padding(
-                                padding: const EdgeInsets.only(top: 20),
-                                child: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Container(
-                                      width: 25.w,
-                                      height: 8.h,
-                                      decoration: BoxDecoration(
-                                          border: Border.all(width: 1.0),
-                                          borderRadius:
-                                              BorderRadius.circular(8)),
-                                      child: Padding(
-                                        padding: const EdgeInsets.all(8.0),
-                                        child: Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            Thetext(
-                                                thetext: "Price",
-                                                style: GoogleFonts.poppins()),
-                                            Thetext(
-                                                thetext:
-                                                    "N ${widget.amount.toString()}",
-                                                style: GoogleFonts.poppins()),
-                                          ],
-                                        ),
-                                      ),
-                                    ),
-                                    Container(
-                                      width: 25.w,
-                                      height: 8.h,
-                                      decoration: BoxDecoration(
-                                          border: Border.all(width: 1.0),
-                                          borderRadius:
-                                              BorderRadius.circular(8)),
-                                      child: Padding(
-                                        padding: const EdgeInsets.all(8.0),
-                                        child: Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            Thetext(
-                                                thetext: "Live",
-                                                style: GoogleFonts.poppins()),
-                                            Thetext(
-                                                thetext: "Lessons",
-                                                style: GoogleFonts.poppins()),
-                                          ],
-                                        ),
-                                      ),
-                                    ),
-                                    Container(
-                                      width: 25.w,
-                                      height: 8.h,
-                                      decoration: BoxDecoration(
-                                          border: Border.all(width: 1.0),
-                                          borderRadius:
-                                              BorderRadius.circular(8)),
-                                      child: Padding(
-                                        padding: const EdgeInsets.all(8.0),
-                                        child: Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            Thetext(
-                                                thetext: widget.theenrolled
-                                                    .toString(),
-                                                style: GoogleFonts.poppins()),
-                                            Thetext(
-                                                thetext: "Enrolled",
-                                                style: GoogleFonts.poppins()),
-                                          ],
-                                        ),
-                                      ),
-                                    )
-                                  ],
-                                ),
-                              )
-                            ],
-                          ),
-                        ),
+Padding(
+  padding: const EdgeInsets.only(left: 10, right: 10, top: 15, bottom: 0),
+  child: SingleChildScrollView(
+    physics: BouncingScrollPhysics(),
+    child: Column(
+      children: [
+        Thetext(
+          thetext: widget.description,
+          style: GoogleFonts.poppins(),
+        ),
+        Padding(
+          padding: const EdgeInsets.only(top: 20),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              // Price container
+              Container(
+                width: MediaQuery.of(context).size.width * 0.25,
+                height: 8.h,
+                decoration: BoxDecoration(
+                  border: Border.all(width: 1.0),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Thetext(
+                        thetext: "Price",
+                        style: GoogleFonts.poppins(),
                       ),
+                      Thetext(
+                        thetext: "N ${widget.amount.toString()}",
+                        style: GoogleFonts.poppins(),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+
+              // Live Lessons container
+              Container(
+                width: MediaQuery.of(context).size.width * 0.25,
+                height: 8.h,
+                decoration: BoxDecoration(
+                  border: Border.all(width: 1.0),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Thetext(
+                        thetext: "Live",
+                        style: GoogleFonts.poppins(),
+                      ),
+                      Thetext(
+                        thetext: "Lessons",
+                        style: GoogleFonts.poppins(),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+
+              // Enrolled container
+              Container(
+                width: MediaQuery.of(context).size.width * 0.25,
+                height: 8.h,
+                decoration: BoxDecoration(
+                  border: Border.all(width: 1.0),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Thetext(
+                        thetext: widget.theenrolled.toString(),
+                        style: GoogleFonts.poppins(),
+                      ),
+                      Thetext(
+                        thetext: "Enrolled",
+                        style: GoogleFonts.poppins(),
+                      ),
+                    ],
+                  ),
+                ),
+              )
+            ],
+          ),
+        )
+      ],
+    ),
+  ),
+),
+
 
                       //Modules tab content
 ListView.builder(
@@ -451,7 +457,7 @@ ListView.builder(
   itemBuilder: (context, index) {
     final module = widget.themodules[index];
     return Padding(
-      padding: const EdgeInsets.only(left: 30, right: 30),
+      padding: const EdgeInsets.symmetric(horizontal: 16),
       child: GestureDetector(
         onTap: () {
           print(module);
@@ -460,15 +466,13 @@ ListView.builder(
         child: Padding(
           padding: const EdgeInsets.all(8.0),
           child: Container(
-            height: 100,
-            // Adjust the height as needed
             decoration: BoxDecoration(
               border: Border.all(width: 0.5, color: Colors.black),
               borderRadius: BorderRadius.circular(10),
             ),
             child: ListTile(
               title: Text(
-                module.moduleTitle, // Assuming 'moduleTitle' is the property holding the title
+                module.moduleTitle,
                 style: GoogleFonts.poppins(),
               ),
               leading: Icon(Icons.play_circle, color: Colors.blue),
@@ -481,6 +485,7 @@ ListView.builder(
 ),
 
 
+
                       // Reviews tab content
                       Center(
                         child: Text('Reviews will be displayed here'),
@@ -488,34 +493,31 @@ ListView.builder(
                     ],
                   ),
                 ),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: GestureDetector(
-                    onTap: isEnrolling
-                        ? null
-                        : enroll, // Disable the button when enrolling
-                    child: Padding(
-                      padding: const EdgeInsets.only(
-                          left: 20, right: 20, bottom: 10),
-                      child: Container(
-                        height: 7.h,
-                        width: MediaQuery.of(context).size.width - 20,
-                        decoration: BoxDecoration(
-                          color: isEnrolling ? Colors.grey : Colors.blue,
-                          borderRadius: BorderRadius.circular(25),
-                        ),
-                        child: Center(
-                          child: isEnrolling
-                              ? CircularProgressIndicator(
-                                  valueColor: AlwaysStoppedAnimation<Color>(
-                                      Colors.white))
-                              : Thetext(
-                                  thetext: "Enroll",
-                                  style: GoogleFonts.poppins(
-                                    color: Colors.white,
-                                  ),
+                GestureDetector(
+                  onTap: isEnrolling
+                      ? null
+                      : enroll, // Disable the button when enrolling
+                  child: Padding(
+                    padding: const EdgeInsets.only(
+                        left: 20, right: 20, bottom: 10),
+                    child: Container(
+                      height: 7.h,
+                      width: MediaQuery.of(context).size.width - 20,
+                      decoration: BoxDecoration(
+                        color: isEnrolling ? Colors.grey : Colors.blue,
+                        borderRadius: BorderRadius.circular(25),
+                      ),
+                      child: Center(
+                        child: isEnrolling
+                            ? CircularProgressIndicator(
+                                valueColor: AlwaysStoppedAnimation<Color>(
+                                    Colors.white))
+                            : Thetext(
+                                thetext: "Enroll",
+                                style: GoogleFonts.poppins(
+                                  color: Colors.white,
                                 ),
-                        ),
+                              ),
                       ),
                     ),
                   ),

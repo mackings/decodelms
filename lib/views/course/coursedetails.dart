@@ -209,312 +209,337 @@ class _CourseDetailsPageState extends State<CourseDetailsPage> {
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
-      length: 3,
-      child: Scaffold(
-        body: Padding(
-          padding: const EdgeInsets.only(left: 5, right: 5, top: 10),
-          child: SingleChildScrollView(
-            physics: BouncingScrollPhysics(),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.only(
-                    top: 40,
+  length: 3,
+  child: Scaffold(
+    body: Padding(
+      padding: EdgeInsets.symmetric(horizontal: 5, vertical: 10),
+      child: SingleChildScrollView(
+        physics: BouncingScrollPhysics(),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Padding(
+              padding: const EdgeInsets.only(
+                top: 40,
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.pop(context);
+                    },
+                    child: Icon(Icons.arrow_back),
                   ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      GestureDetector(
-                          onTap: () {
-                            Navigator.pop(context);
-                          },
-                          child: Icon(Icons.arrow_back)),
-                      Thetext(
-                          thetext: "About Course",
-                          style: GoogleFonts.poppins(
-                              fontWeight: FontWeight.bold, fontSize: 14.sp)),
-                      Text("")
-                    ],
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(
-                      top: 20, left: 20, right: 20, bottom: 10),
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(8),
-                    child: Column(
-                      children: [
-                        Container(
-                          height: 25.h,
-                          decoration: BoxDecoration(
-                            image: DecorationImage(
-                              image: NetworkImage(
-                                  widget.allCourses.courseImage.first.path),
-                              fit: BoxFit.cover,
-                            ),
-                          ),
-                        ),
-                      ],
+                  Thetext(
+                    thetext: "About Course",
+                    style: GoogleFonts.poppins(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 14.sp,
                     ),
                   ),
+                  Text(""),
+                ],
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(
+                top: 20,
+                left: 20,
+                right: 20,
+                bottom: 10,
+              ),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(8),
+                child: Column(
+                  children: [
+                    Container(
+                      height: 25.h,
+                      decoration: BoxDecoration(
+                        image: DecorationImage(
+                          image: NetworkImage(
+                              widget.allCourses.courseImage.first.path),
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
-                Padding(
-                  padding: const EdgeInsets.only(left: 20),
-                  child: Row(
-                    children: [
-                      Thetext(
-                          thetext: widget.allCourses.courseTitle,
-                          style: GoogleFonts.poppins(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 15.sp,
-                          )),
-                    ],
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(left: 20),
+              child: Row(
+                children: [
+                  Thetext(
+                    thetext: widget.allCourses.courseTitle,
+                    style: GoogleFonts.poppins(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 15.sp,
+                    ),
                   ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Row(
-                    children: [
-                      IntrinsicWidth(
-                        child: Container(
-                          constraints: BoxConstraints(minWidth: 30.w),
-                          decoration: BoxDecoration(
-                            border: Border.all(width: 1.0),
-                            borderRadius: BorderRadius.circular(25),
+                ],
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Row(
+                children: [
+                  IntrinsicWidth(
+                    child: Container(
+                      constraints: BoxConstraints(minWidth: 30.w),
+                      decoration: BoxDecoration(
+                        border: Border.all(width: 1.0),
+                        borderRadius: BorderRadius.circular(25),
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            CircleAvatar(
+                              backgroundImage: NetworkImage(
+                                  widget.allCourses.courseImage.first.path),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Thetext(
+                                thetext: "Decode Analytical",
+                                style: GoogleFonts.poppins(),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(left: 20, right: 20),
+              child: TabBar(
+                indicatorColor: Colors.black,
+                tabs: [
+                  Tab(
+                    child: Thetext(
+                      thetext: "About",
+                      style: GoogleFonts.poppins(
+                        color: Colors.black,
+                      ),
+                    ),
+                  ),
+                  Tab(
+                    child: Thetext(
+                      thetext: "Lessons",
+                      style: GoogleFonts.poppins(
+                        color: Colors.black,
+                      ),
+                    ),
+                  ),
+                  Tab(
+                    child: Thetext(
+                      thetext: "Reviews",
+                      style: GoogleFonts.poppins(
+                        color: Colors.black,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Container(
+              height: 30.h,
+              child: TabBarView(
+                children: [
+                  // Description tab content
+                  Padding(
+                    padding: EdgeInsets.symmetric(
+                      horizontal: 20,
+                      vertical: 30,
+                    ),
+                    child: SingleChildScrollView(
+                      physics: BouncingScrollPhysics(),
+                      child: Column(
+                        children: [
+                          Thetext(
+                            thetext: widget.allCourses.courseDescription,
+                            style: GoogleFonts.poppins(),
                           ),
-                          child: Padding(
-                            padding: const EdgeInsets.all(8.0),
+                          Padding(
+                            padding: const EdgeInsets.only(
+                              top: 30,
+                              bottom: 10,
+                            ),
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                CircleAvatar(
-                                  backgroundImage: NetworkImage(
-                                      widget.allCourses.courseImage.first.path),
+                                // Price container
+                                Container(
+                                  width: MediaQuery.of(context).size.width * 0.25,
+                                  height: 8.h,
+                                  decoration: BoxDecoration(
+                                    border: Border.all(width: 1.0),
+                                    borderRadius: BorderRadius.circular(8),
+                                  ),
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Thetext(
+                                          thetext: "Price",
+                                          style: GoogleFonts.poppins(),
+                                        ),
+                                        Thetext(
+                                          thetext: '0.0',
+                                          style: GoogleFonts.poppins(),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
                                 ),
-                                Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: Thetext(
-                                    thetext: "Decode Analytical",
-                                    style: GoogleFonts.poppins(),
+
+                                // Live Lessons container
+                                Container(
+                                  width: MediaQuery.of(context).size.width * 0.25,
+                                  height: 8.h,
+                                  decoration: BoxDecoration(
+                                    border: Border.all(width: 1.0),
+                                    borderRadius: BorderRadius.circular(8),
+                                  ),
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Thetext(
+                                          thetext: "Live",
+                                          style: GoogleFonts.poppins(),
+                                        ),
+                                        Thetext(
+                                          thetext: "Lessons",
+                                          style: GoogleFonts.poppins(),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+
+                                // Enrolled container
+                                Container(
+                                  width: MediaQuery.of(context).size.width * 0.25,
+                                  height: 8.h,
+                                  decoration: BoxDecoration(
+                                    border: Border.all(width: 1.0),
+                                    borderRadius: BorderRadius.circular(8),
+                                  ),
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Thetext(
+                                          thetext: widget.allCourses.totalRegisteredByStudent.toString(),
+                                          style: GoogleFonts.poppins(),
+                                        ),
+                                        Thetext(
+                                          thetext: "Enrolled",
+                                          style: GoogleFonts.poppins(),
+                                        ),
+                                      ],
+                                    ),
                                   ),
                                 ),
                               ],
                             ),
                           ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(left: 20, right: 20),
-                  child: TabBar(
-                    indicatorColor: Colors.black,
-                    tabs: [
-                      Tab(
-                          child: Thetext(
-                              thetext: "About",
-                              style: GoogleFonts.poppins(
-                                color: Colors.black,
-                              ))),
-                      Tab(
-                          child: Thetext(
-                              thetext: "Lessons",
-                              style: GoogleFonts.poppins(
-                                color: Colors.black,
-                              ))),
-                      Tab(
-                          child: Thetext(
-                              thetext: "Reviews",
-                              style: GoogleFonts.poppins(
-                                color: Colors.black,
-                              ))),
-                    ],
-                  ),
-                ),
-                Container(
-                  height: 30.h,
-                  child: TabBarView(
-                    children: [
-                      // Description tab content
-                      Padding(
-                        padding:
-                            const EdgeInsets.only(left: 20, right: 20, top: 30),
-                        child: SingleChildScrollView(
-                          physics: BouncingScrollPhysics(),
-                          child: Column(
-                            children: [
-                              Thetext(
-                                  thetext: widget.allCourses.courseDescription,
-                                  style: GoogleFonts.poppins()),
-                              Padding(
-                                padding:
-                                    const EdgeInsets.only(top: 30, bottom: 10),
-                                child: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Container(
-                                      width: 25.w,
-                                      height: 8.h,
-                                      decoration: BoxDecoration(
-                                          border: Border.all(width: 1.0),
-                                          borderRadius:
-                                              BorderRadius.circular(8)),
-                                      child: Padding(
-                                        padding: const EdgeInsets.all(8.0),
-                                        child: Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            Thetext(
-                                                thetext: "Price",
-                                                style: GoogleFonts.poppins()),
-                                            Thetext(
-                                                thetext: '0.0',
-                                                style: GoogleFonts.poppins()),
-                                          ],
-                                        ),
-                                      ),
-                                    ),
-                                    
-                                    Container(
-                                      width: 25.w,
-                                      height: 8.h,
-                                      decoration: BoxDecoration(
-                                          border: Border.all(width: 1.0),
-                                          borderRadius:
-                                              BorderRadius.circular(8)),
-                                      child: Padding(
-                                        padding: const EdgeInsets.all(8.0),
-                                        child: Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            Thetext(
-                                                thetext: "Live",
-                                                style: GoogleFonts.poppins()),
-                                            Thetext(
-                                                thetext: "Lessons",
-                                                style: GoogleFonts.poppins()),
-                                          ],
-                                        ),
-                                      ),
-                                    ),
-                                    Container(
-                                      width: 25.w,
-                                      height: 8.h,
-                                      decoration: BoxDecoration(
-                                          border: Border.all(width: 1.0),
-                                          borderRadius:
-                                              BorderRadius.circular(8)),
-                                      child: Padding(
-                                        padding: const EdgeInsets.all(8.0),
-                                        child: Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            Thetext(
-                                                thetext: widget.allCourses
-                                                    .totalRegisteredByStudent
-                                                    .toString(),
-                                                style: GoogleFonts.poppins()),
-                                            Thetext(
-                                                thetext: "Enrolled",
-                                                style: GoogleFonts.poppins()),
-                                          ],
-                                        ),
-                                      ),
-                                    )
-                                  ],
-                                ),
-                              )
-                            ],
-                          ),
-                        ),
-                      ),
-
-                      // Modules tab content
-                      ListView.builder(
-                        itemCount: widget.allCourses.modules.length,
-                        itemBuilder: (context, index) {
-                          final module = widget.allCourses.modules[index];
-                          return Padding(
-                            padding: const EdgeInsets.only(
-                                left: 30, right: 30, bottom: 10),
-                            child: GestureDetector(
-                              onTap: () {
-                                print(module.id);
-                              },
-                              child: Container(
-                                height: 10.h,
-                                width: 5.w,
-                                decoration: BoxDecoration(
-                                    border: Border.all(
-                                        width: 0.5, color: Colors.black),
-                                    borderRadius: BorderRadius.circular(10)),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: [
-                                    ListTile(
-                                      title: Thetext(
-                                          thetext: module.moduleTitle,
-                                          style: GoogleFonts.poppins()),
-                                      leading: Icon(
-                                        Icons.play_circle,
-                                        color: Colors.blue,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                          );
-                        },
-                      ),
-
-                      // Reviews tab content
-                      Center(
-                        child: Text('Reviews will be displayed here'),
-                      ),
-                    ],
-                  ),
-                ),
-                GestureDetector(
-                  onTap: isEnrolling
-                      ? null
-                      : enroll, // Disable the button when enrolling
-                  child: Padding(
-                    padding:
-                        const EdgeInsets.only(left: 20, right: 20, bottom: 10),
-                    child: Container(
-                      height: 7.h,
-                      width: MediaQuery.of(context).size.width - 20,
-                      decoration: BoxDecoration(
-                        color: isEnrolling ? Colors.grey : Colors.blue,
-                        borderRadius: BorderRadius.circular(25),
-                      ),
-                      child: Center(
-                        child: isEnrolling
-                            ? CircularProgressIndicator(
-                                valueColor:
-                                    AlwaysStoppedAnimation<Color>(Colors.white))
-                            : Thetext(
-                                thetext: "Enroll",
-                                style: GoogleFonts.poppins(
-                                  color: Colors.white,
-                                ),
-                              ),
+                        ],
                       ),
                     ),
                   ),
-                )
-              ],
+
+                  // Modules tab content
+ListView.builder(
+  itemCount: widget.allCourses.modules.length,
+  itemBuilder: (context, index) {
+    final module = widget.allCourses.modules[index];
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+      child: GestureDetector(
+        onTap: () {
+          print(module.id);
+        },
+        child: Container(
+          height: MediaQuery.of(context).size.width * 0.2, // Adjust the height as needed
+          width: double.infinity,
+          decoration: BoxDecoration(
+            border: Border.all(width: 0.5, color: Colors.black),
+            borderRadius: BorderRadius.circular(10),
+          ),
+          child: ListTile(
+            title: Thetext(
+              thetext: module.moduleTitle,
+              style: GoogleFonts.poppins(),
+            ),
+            leading: Icon(
+              Icons.play_circle,
+              color: Colors.blue,
             ),
           ),
         ),
       ),
     );
+  },
+),
+
+
+                  // Reviews tab content
+                  Center(
+                    child: Text('Reviews will be displayed here'),
+                  ),
+                ],
+              ),
+            ),
+            GestureDetector(
+              onTap: isEnrolling
+                  ? null
+                  : enroll, // Disable the button when enrolling
+              child: Padding(
+                padding: const EdgeInsets.only(
+                  left: 20,
+                  right: 20,
+                  bottom: 10,
+                ),
+                child: Container(
+                  height: 7.h,
+                  width: MediaQuery.of(context).size.width - 20,
+                  decoration: BoxDecoration(
+                    color: isEnrolling ? Colors.grey : Colors.blue,
+                    borderRadius: BorderRadius.circular(25),
+                  ),
+                  child: Center(
+                    child: isEnrolling
+                        ? CircularProgressIndicator(
+                            valueColor:
+                                AlwaysStoppedAnimation<Color>(Colors.white),
+                          )
+                        : Thetext(
+                            thetext: "Enroll",
+                            style: GoogleFonts.poppins(
+                              color: Colors.white,
+                            ),
+                          ),
+                  ),
+                ),
+              ),
+            )
+          ],
+        ),
+      ),
+    ),
+  ),
+);
+
   }
 }

@@ -655,17 +655,18 @@ class _StreamPageState extends State<StreamPage> {
                               style: GoogleFonts.poppins()),
                         )),
                         Padding(
-                          padding: const EdgeInsets.all(8.0),
+                          padding: const EdgeInsets.all(5.0),
                           child: SafeArea(
                             child: CustomVideoPlayer(
                               customVideoPlayerController:
                                   _customVideoPlayerController,
+                                
                             ),
                           ),
                         ),
-                        SizedBox(
-                          height: 2.h,
-                        ),
+                        // SizedBox(
+                        //   height: 1.h,
+                        // ),
                         GestureDetector(
                           onTap: () async {
                             if (futureCourseDetail != null) {
