@@ -31,6 +31,7 @@ class _StreamPageState extends State<StreamPage> {
 
   String? token;
   late VideoPlayerController videoPlayerController;
+
   late CustomVideoPlayerController _customVideoPlayerController;
   int currentModuleIndex = 0;
   bool isVideoPlaying = false;
@@ -665,16 +666,6 @@ class _StreamPageState extends State<StreamPage> {
                         SizedBox(
                           height: 2.h,
                         ),
-                        // Padding(
-                        //   padding: const EdgeInsets.all(8.0),
-                        //   child: Container(
-                        //     height: 7.h,
-                        //     width: MediaQuery.of(context).size.width - 10.w,
-                        //     decoration: BoxDecoration(
-                        //         border: Border.all(width: 0.5),
-                        //         borderRadius: BorderRadius.circular(10)),
-                        //   ),
-                        // ),
                         GestureDetector(
                           onTap: () async {
                             if (futureCourseDetail != null) {
@@ -738,7 +729,6 @@ class _StreamPageState extends State<StreamPage> {
                                               nextModule?.quizzes.first ?? '',
                                           courseId: nextModule?.id ?? '',
                                           moduleId: currentModule.id,
-                                          // onSubmitQuiz: SubmitQuiz,
                                         ),
                                       ),
                                     );
@@ -826,7 +816,6 @@ class _StreamPageState extends State<StreamPage> {
                             ),
                           ),
                         ),
-
                         Expanded(
                           child: ListView.builder(
                             controller: _scrollController,
@@ -856,33 +845,55 @@ class _StreamPageState extends State<StreamPage> {
                                       style: GoogleFonts.poppins(),
                                     ),
                                     trailing: GestureDetector(
-                                        onTap: () {
-                                          if (module.isCompleted == true) {
-                                            loadVideo(module.video.first.path);
-                                          } else {
-                                            showDialog(
-                                                context: context,
-                                                builder: ((context) {
-                                                  return EnrollmentDialog(
-                                                      title: "Error Playing Video",
-                                                      message:
-                                                          "Complete Previous Modules",
-                                                      message2: "Close",
-                                                      press1: () {},
-                                                      press2: () {
-                                                        Navigator.pop(context);
-                                                      },
-                                                      theicon: Icon(
-                                                          Icons.play_disabled_rounded,size: 50,
-                                                          color: Colors.blue,));
-                                                }));
-                                          }
-                                        },
-                                        child: Icon(
-                                          Icons.play_circle,
-                                          color: Colors.blue,
-                                          size: 40,
-                                        )),
+                                      onTap: () {
+                                        if (module.isCompleted == true) {
+showDialog(
+  context: context,
+  builder: (BuildContext context) {
+    return Dialog(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(10),
+      ),
+      child: Container(
+        width: MediaQuery.of(context).size.width - 50,
+        height: 300,
+        child: CompletedVideoPlayer(
+          videoPath: module.video.first.path.toString(),
+        ),
+      ),
+    );
+  },
+);
+
+                                        } else {
+                                          showDialog(
+                                            context: context,
+                                            builder: ((context) {
+                                              return EnrollmentDialog(
+                                                title: "Error Playing Video",
+                                                message:
+                                                    "Complete Previous Modules",
+                                                message2: "Close",
+                                                press1: () {},
+                                                press2: () {
+                                                  Navigator.pop(context);
+                                                },
+                                                theicon: Icon(
+                                                  Icons.play_disabled_rounded,
+                                                  size: 50,
+                                                  color: Colors.blue,
+                                                ),
+                                              );
+                                            }),
+                                          );
+                                        }
+                                      },
+                                      child: Icon(
+                                        Icons.play_circle,
+                                        color: Colors.blue,
+                                        size: 40,
+                                      ),
+                                    ),
                                   ),
                                 ),
                               );
@@ -894,5 +905,50 @@ class _StreamPageState extends State<StreamPage> {
                   }
                 },
               ));
+  }
+}
+
+class CompletedVideoPlayer extends StatefulWidget {
+  final String videoPath;
+
+  CompletedVideoPlayer({required this.videoPath});
+
+  @override
+  _CompletedVideoPlayerState createState() => _CompletedVideoPlayerState();
+}
+
+class _CompletedVideoPlayerState extends State<CompletedVideoPlayer> {
+  late VideoPlayerController _videoPlayerController;
+  CustomVideoPlayerController? _customVideoPlayerController;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _videoPlayerController = VideoPlayerController.network(widget.videoPath)
+      ..initialize().then((_) {
+        // Initialize and play the video
+        _videoPlayerController.play();
+        _customVideoPlayerController = CustomVideoPlayerController(
+          context: context,
+          videoPlayerController: _videoPlayerController,
+        );
+        setState(() {});
+      });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return _customVideoPlayerController != null
+        ? CustomVideoPlayer(
+            customVideoPlayerController: _customVideoPlayerController!,
+          )
+        : Center(child: CircularProgressIndicator()); // You can replace Container() with any other loading indicator or placeholder
+  }
+
+  @override
+  void dispose() {
+    _videoPlayerController.dispose();
+    super.dispose();
   }
 }

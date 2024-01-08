@@ -376,6 +376,7 @@ class _SearchDetailsPageState extends State<SearchDetailsPage> {
                                         ),
                                       ),
                                     ),
+                                    
                                     Container(
                                       width: 25.w,
                                       height: 8.h,

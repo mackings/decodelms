@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:decodelms/models/searchcourse.dart';
 import 'package:decodelms/views/course/enrolledcourses.dart';
 import 'package:decodelms/widgets/appbar.dart';
 import 'package:decodelms/widgets/course/dialogs.dart';
@@ -15,7 +16,7 @@ class CourseDetailsBottomSheet extends StatefulWidget {
   final String description;
   final double amount;
   final VoidCallback onEnrollPressed;
-  final String themodules;
+  final List<Module> themodules;
   final String theid;
   final String theenrolled;
 
@@ -350,12 +351,12 @@ class _CourseDetailsBottomSheetState extends State<CourseDetailsBottomSheet> {
                     children: [
                       // Description tab content
                       Padding(
-                        padding:
-                            const EdgeInsets.only(left: 10, right: 10, top: 15,bottom: 15),
+                        padding: const EdgeInsets.only(
+                            left: 10, right: 10, top: 15, bottom: 15),
                         child: SingleChildScrollView(
                           physics: BouncingScrollPhysics(),
                           child: Column(
-                            children: [ 
+                            children: [
                               Thetext(
                                   thetext: widget.description,
                                   style: GoogleFonts.poppins()),
@@ -382,7 +383,8 @@ class _CourseDetailsBottomSheetState extends State<CourseDetailsBottomSheet> {
                                                 thetext: "Price",
                                                 style: GoogleFonts.poppins()),
                                             Thetext(
-                                                thetext: "N ${widget.amount.toString()}",
+                                                thetext:
+                                                    "N ${widget.amount.toString()}",
                                                 style: GoogleFonts.poppins()),
                                           ],
                                         ),
@@ -425,11 +427,9 @@ class _CourseDetailsBottomSheetState extends State<CourseDetailsBottomSheet> {
                                               CrossAxisAlignment.start,
                                           children: [
                                             Thetext(
-                                                thetext: widget
-                                                    .theenrolled
+                                                thetext: widget.theenrolled
                                                     .toString(),
                                                 style: GoogleFonts.poppins()),
-
                                             Thetext(
                                                 thetext: "Enrolled",
                                                 style: GoogleFonts.poppins()),
@@ -446,42 +446,40 @@ class _CourseDetailsBottomSheetState extends State<CourseDetailsBottomSheet> {
                       ),
 
                       //Modules tab content
-                      ListView.builder(
-                        itemCount: widget.themodules.length,
-                        itemBuilder: (context, index) {
-                          final module = widget.themodules;
-                          return Padding(
-                            padding: const EdgeInsets.only(left: 30, right: 30),
-                            child: GestureDetector(
-                              onTap: () {
-                                print(module.toString());
-                              },
-                              child: Container(
-                                height: 10.h,
-                                width: 5.w,
-                                decoration: BoxDecoration(
-                                   // color: Colors.blue,
-                                    border: Border.all(width: 0.5,color: Colors.black),
-                                    borderRadius: BorderRadius.circular(10)),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: [
-                                    ListTile(
-                                      title: Thetext(
-                                          thetext: widget.themodules,
-                                          style: GoogleFonts.poppins()),
-                                      leading: Icon(Icons.play_circle,color: Colors.blue,),
-                                      subtitle: Thetext(
-                                          thetext: 'Learning Resources',
-                                          style: GoogleFonts.poppins()),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                          );
-                        },
-                      ),
+ListView.builder(
+  itemCount: widget.themodules.length,
+  itemBuilder: (context, index) {
+    final module = widget.themodules[index];
+    return Padding(
+      padding: const EdgeInsets.only(left: 30, right: 30),
+      child: GestureDetector(
+        onTap: () {
+          print(module);
+          print(widget.themodules);
+        },
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Container(
+            height: 100,
+            // Adjust the height as needed
+            decoration: BoxDecoration(
+              border: Border.all(width: 0.5, color: Colors.black),
+              borderRadius: BorderRadius.circular(10),
+            ),
+            child: ListTile(
+              title: Text(
+                module.moduleTitle, // Assuming 'moduleTitle' is the property holding the title
+                style: GoogleFonts.poppins(),
+              ),
+              leading: Icon(Icons.play_circle, color: Colors.blue),
+            ),
+          ),
+        ),
+      ),
+    );
+  },
+),
+
 
                       // Reviews tab content
                       Center(
@@ -497,8 +495,8 @@ class _CourseDetailsBottomSheetState extends State<CourseDetailsBottomSheet> {
                         ? null
                         : enroll, // Disable the button when enrolling
                     child: Padding(
-                      padding:
-                          const EdgeInsets.only(left: 20, right: 20, bottom: 10),
+                      padding: const EdgeInsets.only(
+                          left: 20, right: 20, bottom: 10),
                       child: Container(
                         height: 7.h,
                         width: MediaQuery.of(context).size.width - 20,
@@ -509,8 +507,8 @@ class _CourseDetailsBottomSheetState extends State<CourseDetailsBottomSheet> {
                         child: Center(
                           child: isEnrolling
                               ? CircularProgressIndicator(
-                                  valueColor:
-                                      AlwaysStoppedAnimation<Color>(Colors.white))
+                                  valueColor: AlwaysStoppedAnimation<Color>(
+                                      Colors.white))
                               : Thetext(
                                   thetext: "Enroll",
                                   style: GoogleFonts.poppins(

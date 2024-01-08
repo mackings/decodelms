@@ -378,6 +378,7 @@ class _CourseDetailsPageState extends State<CourseDetailsPage> {
                                         ),
                                       ),
                                     ),
+                                    
                                     Container(
                                       width: 25.w,
                                       height: 8.h,

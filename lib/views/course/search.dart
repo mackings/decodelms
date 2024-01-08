@@ -43,7 +43,7 @@ class _SearchScreenState extends State<SearchScreen> {
     //   0 = index;
     // });
   }
-void call(){}
+  void call() {}
 
   TextEditingController searchController = TextEditingController();
   List<Courseresults> searchResults = [];
@@ -54,17 +54,17 @@ void call(){}
     });
 
     final response = await http.get(
-        Uri.parse('https://server-eight-beige.vercel.app/api/course/search/$query'),
+        Uri.parse(
+            'https://server-eight-beige.vercel.app/api/course/search/$query'),
         headers: {
           "Content-Type": "application/json",
           'Authorization': 'Bearer $Token',
-        }
-        );
+        });
 
     if (response.statusCode == 200) {
-    setState(() {
-      isSearching = false;
-    });
+      setState(() {
+        isSearching = false;
+      });
       final jsonResponse = json.decode(response.body);
       print(jsonResponse);
       CourseResponse courseResponse = CourseResponse.fromJson(jsonResponse);
@@ -101,11 +101,12 @@ void call(){}
                           onTap: () {
                             Navigator.pop(context);
                           },
-                          child: Thetext(thetext: "Search", style:GoogleFonts.poppins(
-                            fontWeight: FontWeight.bold,
-                            color: Colors.black,
-                            fontSize: 15.sp
-                          ))),
+                          child: Thetext(
+                              thetext: "Search",
+                              style: GoogleFonts.poppins(
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.black,
+                                  fontSize: 15.sp))),
                     ],
                   ),
                 ),
@@ -113,7 +114,6 @@ void call(){}
                   padding: const EdgeInsets.only(top: 30, left: 10, right: 10),
                   child: Container(
                     height: 40.sp,
-
                     width: MediaQuery.of(context).size.width - 1.w,
                     decoration: BoxDecoration(
                       color: const Color.fromARGB(255, 211, 218, 224),
@@ -140,13 +140,14 @@ void call(){}
                               width: 40.sp,
                               child: isSearching
                                   ? Padding(
-                                    padding: const EdgeInsets.all(15.0),
-                                    child: CircularProgressIndicator(
-                                      color: Colors.white,
-                                    ),
-                                  ) // Show CircularProgressIndicator when searching
+                                      padding: const EdgeInsets.all(15.0),
+                                      child: CircularProgressIndicator(
+                                        color: Colors.white,
+                                      ),
+                                    ) // Show CircularProgressIndicator when searching
                                   : IconButton(
-                                      icon: Icon(Icons.search, color: Colors.black),
+                                      icon: Icon(Icons.search,
+                                          color: Colors.black),
                                       onPressed: () {
                                         searchCourses(searchController.text);
                                       },
@@ -164,82 +165,91 @@ void call(){}
                     ),
                   ),
                 ),
-Expanded(
-  child: searchResults.isEmpty
-      ? Center(
-          child: Thetext(thetext: "Search A New Course", style: GoogleFonts.poppins()),
-        )
-      : ListView.builder(
-          itemCount: searchResults.length,
-          itemBuilder: (context, index) {
-            return Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Container(
-                decoration: BoxDecoration(
-                  border: Border.all(width: 0.5, color: Colors.black),
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.all(10.0),
-                  child: ListTile(
-                    title: Thetext(
-                        thetext: searchResults[index].courseTitle,
-                        style: GoogleFonts.poppins(
-                          fontWeight: FontWeight.bold,
-                        )),
-                    trailing: Icon(Icons.check_circle, color: Colors.blue),
-                    subtitle: GestureDetector(
-                      onTap: () {
-                        print(searchResults[index].id);
-                        print(searchResults[index].modules.length);
+                Expanded(
+                  child: searchResults.isEmpty
+                      ? Center(
+                          child: Thetext(
+                              thetext: "Search A New Course",
+                              style: GoogleFonts.poppins()),
+                        )
+                      : ListView.builder(
+                          itemCount: searchResults.length,
+                          itemBuilder: (context, index) {
+                            return Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  border: Border.all(
+                                      width: 0.5, color: Colors.black),
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                                child: Padding(
+                                  padding: const EdgeInsets.all(10.0),
+                                  child: ListTile(
+                                    title: Thetext(
+                                        thetext:
+                                            searchResults[index].courseTitle,
+                                        style: GoogleFonts.poppins(
+                                          fontWeight: FontWeight.bold,
+                                        )),
+                                    trailing: Icon(Icons.check_circle,
+                                        color: Colors.blue),
+                                    subtitle: GestureDetector(
+                                      onTap: () {
+                                        print(searchResults[index].id);
+                                                  print(
+                                                  searchResults[index].modules.length);
 
-                        showMaterialModalBottomSheet(
-                          enableDrag: true,
-                          context: context,
-                          builder: (context) => CourseDetailsBottomSheet(
-                            courseImage: searchResults[index]
-                                .courseImages[index]
-                                .path,
-                            title: searchResults[index].courseTitle,
-                            description:
-                                searchResults[index].courseDescription,
-                            amount: searchResults[index]
-                                .isPriceCourse
-                                .toDouble(),
-                            themodules:
-                                searchResults[index].modules.length.toString(),
-                            theid: searchResults[index].id.toString(),
-                            theenrolled:
-                                searchResults[index].totalRegisteredByStudent.toString(),
-                            onEnrollPressed: () {},
-                          ),
-                        );
-                      },
-                      child: Thetext(
-                          thetext: searchResults[index].courseDescription,
-                          style: GoogleFonts.poppins()),
-                    ),
-                  ),
-                ),
-              ),
-            );
-          },
-        ),
-)
-
+                                        showMaterialModalBottomSheet(
+                                          enableDrag: true,
+                                          context: context,
+                                          builder: (context) =>
+                                              CourseDetailsBottomSheet(
+                                            courseImage: searchResults[index]
+                                                .courseImages[index]
+                                                .path,
+                                            title: searchResults[index]
+                                                .courseTitle,
+                                            description: searchResults[index]
+                                                .courseDescription,
+                                            amount: searchResults[index]
+                                                .isPriceCourse
+                                                .toDouble(),
+                                            themodules:
+                                                searchResults[index].modules,
+                                            
+                                            theid: searchResults[index]
+                                                .id
+                                                .toString(),
+                                            theenrolled: searchResults[index]
+                                                .totalRegisteredByStudent
+                                                .toString(),
+                                            onEnrollPressed: () {
+                                              print(
+                                                  searchResults[index].modules);
+                                            },
+                                          ),
+                                        );
+                                      },
+                                      child: Thetext(
+                                          thetext: searchResults[index]
+                                              .courseDescription,
+                                          style: GoogleFonts.poppins()),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            );
+                          },
+                        ),
+                )
               ],
             ),
           ),
-
-          bottomNavigationBar: MyBottomNavigationBar(currentIndex: 0, onTabTapped:_onTabTapped ),
+          bottomNavigationBar:
+              MyBottomNavigationBar(currentIndex: 0, onTabTapped: _onTabTapped),
         );
-
-        
       },
     );
-
-    
   }
 }
-
-

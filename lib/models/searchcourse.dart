@@ -216,8 +216,8 @@ factory Module.fromJson(Map<String, dynamic> json) {
   return Module(
     userId: json['userId'] ?? '',
     courseId: json['courseId'] ?? '',
-    moduleTitle: json['moduleTitle'] ?? '',
-    moduleDescription: json['moduleDescription'] ?? '',
+    moduleTitle: json["module_title"] ?? '',
+    moduleDescription: json['module_description'] ?? '',
     image: imageList ?? [],
     video: videoList ?? [],
     moduleDuration: json['moduleDuration'] ?? '',

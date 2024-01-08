@@ -121,160 +121,167 @@ class _SigninState extends ConsumerState<Signin> {
   @override
   Widget build(BuildContext context) {
     final thetheme = ref.watch(api.themeprovider.notifier);
+    return LayoutBuilder(
+  builder: (BuildContext context, BoxConstraints constraints) {
     return TheBars(
-        callback: () {},
-        thebody: Column(
-          children: [
-            Padding(
-              padding: const EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
-              child: Row(
-                children: [
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Thetext(
-                        thetext: "Login to your account",
-                        style: GoogleFonts.poppins(
-                            fontSize: 20.sp, fontWeight: FontWeight.bold),
-                      ),
-                      Thetext(
-                        thetext:
-                            "Welcome back! login to your account to\ncontinue learning",
-                        style: GoogleFonts.poppins(
-                          fontSize: 10.sp,
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            ),
-            SizedBox(
-              height: 6.h,
-            ),
-            TheFormfield(
-              vis: false,
-              controller: email,
-              value: "Enter Email",
-              prefix: Icon(Icons.email,color: Colors.black,),
-            ),
-            SizedBox(
-              height: 5.h,
-            ),
-            TheFormfield(
-              vis: visi,
-              controller: password,
-              value: "Enter Password",
-              prefix: GestureDetector(
-                  onTap: () {
-                    // _togglePasswordVisibility;
-                  },
-                  child: Icon(Icons.lock,color: Colors.black,)),
-              suffix: GestureDetector(
-                onTap: () {
-                  setState(() {
-                    visi = !visi;
-                  });
-                },
-                child:
-                    visi ? Icon(Icons.visibility,color: Colors.black,) : Icon(Icons.visibility_off,color: Colors.black,),
-              ),
-            ),
-            SizedBox(
-              height: 2.h,
-            ),
-            Row(
+      callback: () {},
+      thebody: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
+            child: Row(
               children: [
-            Checkbox(
-              focusColor: Colors.black,
-              value: isuncheked,
-              onChanged: (value) {
-                setState(() {
-                  isuncheked = value ?? false;
-                  if (isuncheked) {
-                    _saveCredentials(); // Save credentials if "Remember Me" is checked
-                  } else {
-                    _clearCredentials(); // Clear credentials if unchecked
-                  }
-                });
-              },
-            ),
-                Thetext(
-                  thetext: "Remember Me",
-                  style: GoogleFonts.poppins(),
-                )
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Thetext(
+                      thetext: "Login to your account",
+                      style: GoogleFonts.poppins(
+                          fontSize: 20.sp, fontWeight: FontWeight.bold),
+                    ),
+                    Thetext(
+                      thetext:
+                          "Welcome back! login to your account to\ncontinue learning",
+                      style: GoogleFonts.poppins(
+                        fontSize: 10.sp,
+                      ),
+                    ),
+                  ],
+                ),
               ],
             ),
-            SizedBox(
-              height: 2.h,
+          ),
+          SizedBox(
+            height: constraints.maxHeight * 0.06,
+          ),
+          TheFormfield(
+            vis: false,
+            controller: email,
+            value: "Enter Email",
+            prefix: Icon(Icons.email, color: Colors.black),
+          ),
+          SizedBox(
+            height: constraints.maxHeight * 0.05,
+          ),
+          TheFormfield(
+            vis: visi,
+            controller: password,
+            value: "Enter Password",
+            prefix: GestureDetector(
+                onTap: () {
+                  // _togglePasswordVisibility;
+                },
+                child: Icon(Icons.lock, color: Colors.black)),
+            suffix: GestureDetector(
+              onTap: () {
+                setState(() {
+                  visi = !visi;
+                });
+              },
+              child: visi
+                  ? Icon(Icons.visibility, color: Colors.black)
+                  : Icon(Icons.visibility_off, color: Colors.black),
             ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: loading
-                  ? CircularProgressIndicator()
-                  : Mybuttons(
-                      callback: () async {
-                        setState(() {
-                          loading = true;
-                        });
+          ),
+          SizedBox(
+            height: constraints.maxHeight * 0.02,
+          ),
+          Row(
+            children: [
+              Checkbox(
+                focusColor: Colors.black,
+                value: isuncheked,
+                onChanged: (value) {
+                  setState(() {
+                    isuncheked = value ?? false;
+                    if (isuncheked) {
+                      _saveCredentials(); // Save credentials if "Remember Me" is checked
+                    } else {
+                      _clearCredentials(); // Clear credentials if unchecked
+                    }
+                  });
+                },
+              ),
+              Thetext(
+                thetext: "Remember Me",
+                style: GoogleFonts.poppins(),
+              )
+            ],
+          ),
+          SizedBox(
+            height: constraints.maxHeight * 0.02,
+          ),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: loading
+                ? CircularProgressIndicator()
+                : Mybuttons(
+                    callback: () async {
+                      setState(() {
+                        loading = true;
+                      });
 
-                        try {
-                          dynamic response = await signin(Userlogin());
+                      try {
+                        dynamic response = await signin(Userlogin());
 
-                          if (response != null) {
-                            Navigator.pushReplacement(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => Homepage()));
-                          } else {
-                            setState(() {
-                              loading = false;
-                            });
-                          }
-                        } catch (e) {
-                          print(e);
+                        if (response != null) {
+                          Navigator.pushReplacement(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => Homepage()));
+                        } else {
                           setState(() {
                             loading = false;
                           });
-                          showDialog(
-                              context: context,
-                              builder: (context) {
-                                return EnrollmentDialog(
-                                    title: "Error Logging in",
-                                    message: "$err",
-                                    message2: 'Close',
-                                    press1: () {
-                                      Navigator.pop(context);
-                                    },
-                                    press2: () {
-                                      Navigator.pop(context);
-                                    },
-                                    theicon: Icon(
-                                      Icons.error,
-                                      size: 60,
-                                      color: Colors.red,
-                                    ));
-                              });
                         }
-                      },
-                      buttontxt: "Login",
-                      btncolor: Colors.blue,
-                    ),
+                      } catch (e) {
+                        print(e);
+                        setState(() {
+                          loading = false;
+                        });
+                        showDialog(
+                            context: context,
+                            builder: (context) {
+                              return EnrollmentDialog(
+                                  title: "Error Logging in",
+                                  message: "$err",
+                                  message2: 'Close',
+                                  press1: () {
+                                    Navigator.pop(context);
+                                  },
+                                  press2: () {
+                                    Navigator.pop(context);
+                                  },
+                                  theicon: Icon(
+                                    Icons.error,
+                                    size: 60,
+                                    color: Colors.red,
+                                  ));
+                            });
+                      }
+                    },
+                    buttontxt: "Login",
+                    btncolor: Colors.blue,
+                  ),
+          ),
+          SizedBox(
+            height: constraints.maxHeight * 0.02,
+          ),
+          GestureDetector(
+            onTap: () {
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => Requestreset()));
+            },
+            child: Thetext(
+              thetext: "Forgot password?",
+              style: GoogleFonts.poppins(color: Colors.blue),
             ),
-            SizedBox(
-              height: 2.h,
-            ),
-            GestureDetector(
-              onTap: () {
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => Requestreset()));
-              },
-              child: Thetext(
-                thetext: "Forgot password?",
-                style: GoogleFonts.poppins(color: Colors.blue),
-              ),
-            )
-          ],
-        ));
+          )
+        ],
+      ),
+    );
+  },
+);
+ 
   }
 }
