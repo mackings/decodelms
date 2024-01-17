@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:decodelms/models/coursemodel.dart';
 import 'package:decodelms/widgets/appbar.dart';
 import 'package:decodelms/widgets/buttombar.dart';
+import 'package:decodelms/widgets/colors.dart';
 import 'package:decodelms/widgets/course/coursecard.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -104,9 +105,9 @@ Future<List<Coursem>?> fetchAllCourses() async {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: appcolor,
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: appcolor,
         
         elevation: 0,
         titleSpacing: 0.0,
@@ -142,7 +143,7 @@ Future<List<Coursem>?> fetchAllCourses() async {
               print(allCourses);
 
               return Container(
-                color: Colors.white,
+                color: appcolor,
                 child: Padding(
                   padding: const EdgeInsets.only(top: 30),
                   child: ListView.builder(

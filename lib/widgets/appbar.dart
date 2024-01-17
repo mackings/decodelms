@@ -1,4 +1,5 @@
 import 'package:decodelms/widgets/buttombar.dart';
+import 'package:decodelms/widgets/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sizer/sizer.dart';
@@ -34,7 +35,7 @@ class _TheBarState extends ConsumerState<TheBar> {
     return Sizer(
       builder: (context, orientation, deviceType) {
         return Scaffold(
-          backgroundColor: Colors.white,
+          backgroundColor: appcolor,
           body: Padding(
             padding: const EdgeInsets.fromLTRB(12.0,40.0,12.0,0.0),
             child: SingleChildScrollView(child: widget.thebody),
@@ -93,6 +94,7 @@ class _TheBarsState extends State<TheBars> {
     return Sizer(
       builder: (context, orientation, deviceType) {
         return Scaffold(
+          backgroundColor: appcolor,
           body: Padding(
             padding: const EdgeInsets.fromLTRB(12.0, 60.0, 12.0, 0.0),
             child: SingleChildScrollView(

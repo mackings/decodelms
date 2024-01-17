@@ -1,10 +1,10 @@
+import 'package:decodelms/widgets/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:sizer/sizer.dart';
 
 class TheFormfield extends ConsumerStatefulWidget {
-
   var prefix;
   var suffix;
   var controller;
@@ -12,30 +12,43 @@ class TheFormfield extends ConsumerStatefulWidget {
   var input;
   bool vis;
 
-  TheFormfield(
-      {this.controller, this.prefix, this.suffix, this.value, this.input,required this.vis});
+  TheFormfield({
+    this.controller,
+    this.prefix,
+    this.suffix,
+    this.value,
+    this.input,
+    required this.vis,
+  });
 
   @override
-  ConsumerState<ConsumerStatefulWidget> createState() => _TheFormfieldState();
+  ConsumerState<ConsumerStatefulWidget> createState() =>
+      _TheFormfieldState();
 }
 
 class _TheFormfieldState extends ConsumerState<TheFormfield> {
+  String? validateInput(String? value) {
+    // You can add your own validation logic here
+    if (value == null || value.isEmpty) {
+      return 'This field cannot be empty';
+    }
+    // Additional validation checks can be added as needed
+    return null;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Center(
       child: Container(
-        height: 45.sp,
+        height: 8.h,
         width: MediaQuery.of(context).size.width - 10.w,
         decoration: BoxDecoration(
-          //color: const Color.fromARGB(255, 211, 218, 224),
+          color: formfieldcolor,
           borderRadius: BorderRadius.circular(15),
-          border: Border.all(width: 0.5)
         ),
         child: Center(
           child: Padding(
-            padding: const EdgeInsets.only(
-              left: 20,
-            ),
+            padding: EdgeInsets.symmetric(horizontal: 2.w),
             child: TextFormField(
               controller: widget.controller,
               obscureText: widget.vis,
@@ -45,14 +58,18 @@ class _TheFormfieldState extends ConsumerState<TheFormfield> {
                   print(value);
                 });
               },
+              validator: validateInput, // Validation function
               decoration: InputDecoration(
-                hintStyle: GoogleFonts.poppins(color: Colors.black),
+                hintStyle: GoogleFonts.poppins(color: hintcolor),
                 hintText: widget.value,
                 prefixIcon: widget.prefix,
                 suffixIcon: widget.suffix,
+                suffixIconColor: hintcolor,
+                prefixIconColor: hintcolor,
                 border: InputBorder.none,
+                prefixStyle: GoogleFonts.poppins(color: hintcolor),
               ),
-              style: GoogleFonts.poppins(color: Colors.black),
+              style: GoogleFonts.poppins(color: hintcolor),
             ),
           ),
         ),

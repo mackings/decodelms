@@ -7,6 +7,7 @@ import 'package:decodelms/views/auth/signin.dart';
 import 'package:decodelms/widgets/appbar.dart';
 import 'package:decodelms/widgets/authdialog.dart';
 import 'package:decodelms/widgets/buttons.dart';
+import 'package:decodelms/widgets/colors.dart';
 import 'package:decodelms/widgets/course/dialogs.dart';
 import 'package:decodelms/widgets/formfields.dart';
 import 'package:flutter/material.dart';
@@ -116,172 +117,179 @@ class _SignupState extends ConsumerState<Signup> {
   @override
   Widget build(BuildContext context) {
     final thetheme = ref.watch(api.themeprovider.notifier);
+    final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
     return TheBars(
         callback: () {},
-        thebody: Column(
-          children: [
-            Padding(
-              padding: const EdgeInsets.fromLTRB(20.0, 0.0, 20.0, 5.0),
-              child: Row(
-                children: [
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      GestureDetector(
-                        onTap: () {
-                          setState(() {
-                            loading = false;
-                          });
-                        },
-                        child: Thetext(
-                          thetext: "Create your account",
+        thebody: Form(
+          key: _formKey,
+          child: Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.fromLTRB(20.0, 0.0, 20.0, 5.0),
+                child: Row(
+                  children: [
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        GestureDetector(
+                          onTap: () {
+                            setState(() {
+                              loading = false;
+                            });
+                          },
+                          child: Thetext(
+                            thetext: "Create your account",
+                            style: GoogleFonts.poppins(
+                                fontSize: 20.sp, fontWeight: FontWeight.bold),
+                          ),
+                        ),
+                        Thetext(
+                          thetext:
+                              "Get started by creating an account or\nsigning in as an exisiting user  ",
                           style: GoogleFonts.poppins(
-                              fontSize: 20.sp, fontWeight: FontWeight.bold),
+                            fontSize: 10.sp,
+                          ),
                         ),
-                      ),
-                      Thetext(
-                        thetext:
-                            "Get started by creating an account or\nsigning in as an exisiting user  ",
-                        style: GoogleFonts.poppins(
-                          fontSize: 10.sp,
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
+                      ],
+                    ),
+                  ],
+                ),
               ),
-            ),
-            SizedBox(
-              height: 2.h,
-            ),
-            Padding(
-              padding: const EdgeInsets.only(bottom: 20, top: 5),
-              child: TheFormfield(
-                vis: false,
-                controller: firstname,
-                value: "Enter First Name",
-                prefix: Icon(Icons.person,color: Colors.black,),
+              SizedBox(
+                height: 2.h,
               ),
-            ),
-            Padding(
-              padding: const EdgeInsets.only(bottom: 20, top: 5),
-              child: TheFormfield(
-                vis: false,
-                controller: lastname,
-                value: "Enter Last Name",
-                prefix: Icon(Icons.person,color: Colors.black,),
+              Padding(
+                padding: const EdgeInsets.only(bottom: 20, top: 5),
+                child: TheFormfield(
+                  vis: false,
+                  controller: firstname,
+                  value: "Enter First Name",
+                  prefix: Icon(Icons.person,color: hintcolor,),
+                ),
               ),
-            ),
-            Padding(
-              padding: const EdgeInsets.only(bottom: 20, top: 5),
-              child: TheFormfield(
-                vis: false,
-                controller: email,
-                value: "Enter Email",
-                prefix: Icon(Icons.email,color: Colors.black,),
+              Padding(
+                padding: const EdgeInsets.only(bottom: 20, top: 5),
+                child: TheFormfield(
+                  vis: false,
+                  controller: lastname,
+                  value: "Enter Last Name",
+                  prefix: Icon(Icons.person,color: hintcolor,),
+                ),
               ),
-            ),
-            Padding(
-              padding: const EdgeInsets.only(bottom: 20, top: 5),
-              child: TheFormfield(
-                vis: false,
-                controller: phone,
-                value: "Enter Phone Number",
-                prefix: Icon(Icons.phone,color: Colors.black,),
+              Padding(
+                padding: const EdgeInsets.only(bottom: 20, top: 5),
+                child: TheFormfield(
+                  vis: false,
+                  controller: email,
+                  value: "Enter Email",
+                  prefix: Icon(Icons.email,color: hintcolor,),
+                ),
               ),
+              Padding(
+                padding: const EdgeInsets.only(bottom: 20, top: 5),
+                child: TheFormfield(
+                  vis: false,
+                  controller: phone,
+                  value: "Enter Phone Number",
+                  prefix: Icon(Icons.phone,color: hintcolor,),
+                ),
+              ),
+        Padding(
+          padding: const EdgeInsets.only(bottom: 20, top: 5),
+          child: TheFormfield(
+            vis: visi,
+            controller: password,
+            value: "Enter Password",
+            prefix: Icon(Icons.lock,color: hintcolor,),
+            suffix: GestureDetector(
+              onTap: () {
+          setState(() {
+            visi = !visi;
+          });
+              },
+              child: visi ? Icon(Icons.visibility,color: hintcolor,) : Icon(Icons.visibility_off,color: hintcolor,),
             ),
-Padding(
-  padding: const EdgeInsets.only(bottom: 20, top: 5),
-  child: TheFormfield(
-    vis: visi,
-    controller: password,
-    value: "Enter Password",
-    prefix: Icon(Icons.lock,color: Colors.black,),
-    suffix: GestureDetector(
-      onTap: () {
-        setState(() {
-          visi = !visi;
-        });
-      },
-      child: visi ? Icon(Icons.visibility,color: Colors.black,) : Icon(Icons.visibility_off,color: Colors.black,),
-    ),
-  ),
-),
-
-            SizedBox(
-              height: 2.h,
-            ),
+          ),
+        ),
+        
+              SizedBox(
+                height: 2.h,
+              ),
             loading
                 ? CircularProgressIndicator()
                 : Mybuttons(
                     callback: () async {
-                      setState(() {
-                        loading = true;
-                      });
-
-                      try {
-                        dynamic response = await signup(UserRegister());
-
-                        if (response != null) {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => Signin()));
-                        } else {}
-                      } catch (e) {
-                        print(e);
+                      // Check if the form is valid
+                      if (_formKey.currentState!.validate()) {
                         setState(() {
-                          loading = false;
+                          loading = true;
                         });
-                        showDialog(
-                            context: context,
-                            builder: (context) {
-                              return EnrollmentDialog(
-                                  title: "Error Registering User",
-                                  message: "$err",
-                                  message2: 'Close',
-                                  press1: () {
-                                    Navigator.pop(context);
-                                  },
-                                  press2: () {
-                                    Navigator.pop(context);
-                                  },
-                                  theicon: Icon(
-                                    Icons.error,
-                                    size: 60,
-                                    color: Colors.red,
-                                  ));
-                            });
+
+                        try {
+                          dynamic response = await signup(UserRegister());
+
+                          if (response != null) {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => Signin()));
+                          } else {}
+                        } catch (e) {
+                          print(e);
+                          setState(() {
+                            loading = false;
+                          });
+                          showDialog(
+                              context: context,
+                              builder: (context) {
+                                return EnrollmentDialog(
+                                    title: "Error Registering User",
+                                    message: "$err",
+                                    message2: 'Close',
+                                    press1: () {
+                                      Navigator.pop(context);
+                                    },
+                                    press2: () {
+                                      Navigator.pop(context);
+                                    },
+                                    theicon: Icon(
+                                      Icons.error,
+                                      size: 60,
+                                      color: Colors.red,
+                                    ));
+                              });
+                        }
                       }
                     },
                     buttontxt: "Create Account",
                     btncolor: Colors.blue,
                   ),
-            Padding(
-              padding: const EdgeInsets.only(left: 30, right: 30, top: 30),
-              child: Row(
-                //mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Thetext(
-                      thetext: "Existing User?", style: GoogleFonts.poppins()),
-                  SizedBox(
-                    width: 3.w,
-                  ),
-                  GestureDetector(
-                    onTap: () {
-                      Navigator.push(context,
-                          MaterialPageRoute(builder: (context) => Signin()));
-                    },
-                    child: Thetext(
-                        thetext: "Sign In",
-                        style: GoogleFonts.poppins(
-                            fontWeight: FontWeight.bold, color: Colors.blue)),
-                  )
-                ],
-              ),
-            )
-          ],
+              Padding(
+                padding: const EdgeInsets.only(left: 30, right: 30, top: 30),
+                child: Row(
+                  //mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Thetext(
+                        thetext: "Existing User?", style: GoogleFonts.poppins()),
+                    SizedBox(
+                      width: 3.w,
+                    ),
+                    GestureDetector(
+                      onTap: () {
+                        Navigator.push(context,
+                            MaterialPageRoute(builder: (context) => Signin()));
+                      },
+                      child: Thetext(
+                          thetext: "Sign In",
+                          style: GoogleFonts.poppins(
+                              fontWeight: FontWeight.bold, color: Colors.blue)),
+                    )
+                  ],
+                ),
+              )
+            ],
+          ),
         ));
   }
 }

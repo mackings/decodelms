@@ -5,6 +5,7 @@ import 'package:decodelms/models/firstmodel.dart';
 import 'package:decodelms/views/course/coursedetails.dart';
 import 'package:decodelms/views/course/stream.dart';
 import 'package:decodelms/widgets/appbar.dart';
+import 'package:decodelms/widgets/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:sizer/sizer.dart';
@@ -161,7 +162,7 @@ class _AllCourseCardState extends State<AllCourseCard> {
               padding: EdgeInsets.all(8.0),
               decoration: BoxDecoration(
                 border: Border.all(width: 0.5, color: Colors.black),
-                color: Colors.white,
+                color: appcolor,
                 borderRadius: BorderRadius.only(
                   bottomLeft: Radius.circular(10),
                   bottomRight: Radius.circular(10),

@@ -4,6 +4,7 @@ import 'package:decodelms/models/coursemodel.dart';
 import 'package:decodelms/models/searchcourse.dart' as searchcourse;
 import 'package:decodelms/views/course/enrolledcourses.dart';
 import 'package:decodelms/widgets/appbar.dart';
+import 'package:decodelms/widgets/colors.dart';
 import 'package:decodelms/widgets/course/dialogs.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -207,6 +208,7 @@ class _SearchDetailsPageState extends State<SearchDetailsPage> {
     return DefaultTabController(
       length: 3,
       child: Scaffold(
+        backgroundColor: appcolor,
         body: Padding(
           padding: const EdgeInsets.only(left: 5, right: 5, top: 10),
           child: SingleChildScrollView(

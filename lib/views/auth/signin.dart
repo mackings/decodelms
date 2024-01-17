@@ -8,6 +8,7 @@ import 'package:decodelms/views/videocalls/joincall.dart';
 import 'package:decodelms/widgets/appbar.dart';
 import 'package:decodelms/widgets/authdialog.dart';
 import 'package:decodelms/widgets/buttons.dart';
+import 'package:decodelms/widgets/colors.dart';
 import 'package:decodelms/widgets/course/dialogs.dart';
 import 'package:decodelms/widgets/formfields.dart';
 import 'package:flutter/material.dart';
@@ -158,7 +159,7 @@ class _SigninState extends ConsumerState<Signin> {
             vis: false,
             controller: email,
             value: "Enter Email",
-            prefix: Icon(Icons.email, color: Colors.black),
+            prefix: Icon(Icons.email, color: hintcolor),
           ),
           SizedBox(
             height: constraints.maxHeight * 0.05,
@@ -171,7 +172,7 @@ class _SigninState extends ConsumerState<Signin> {
                 onTap: () {
                   // _togglePasswordVisibility;
                 },
-                child: Icon(Icons.lock, color: Colors.black)),
+                child: Icon(Icons.lock, color: hintcolor)),
             suffix: GestureDetector(
               onTap: () {
                 setState(() {
@@ -179,8 +180,8 @@ class _SigninState extends ConsumerState<Signin> {
                 });
               },
               child: visi
-                  ? Icon(Icons.visibility, color: Colors.black)
-                  : Icon(Icons.visibility_off, color: Colors.black),
+                  ? Icon(Icons.visibility, color: hintcolor)
+                  : Icon(Icons.visibility_off, color: hintcolor),
             ),
           ),
           SizedBox(

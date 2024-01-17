@@ -7,6 +7,7 @@ import 'package:decodelms/models/streammodel.dart';
 import 'package:decodelms/views/quiz/quiz.dart';
 import 'package:decodelms/widgets/appbar.dart';
 import 'package:decodelms/widgets/buttons.dart';
+import 'package:decodelms/widgets/colors.dart';
 import 'package:decodelms/widgets/course/courseslider.dart';
 import 'package:decodelms/widgets/course/dialogs.dart';
 import 'package:flutter/material.dart';
@@ -612,10 +613,9 @@ class _StreamPageState extends State<StreamPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: Colors.white,
+        backgroundColor: appcolor,
         appBar: AppBar(
-          title: Text('Course Detail'),
-          backgroundColor: Colors.white,
+          backgroundColor: appcolor,
           elevation: 0,
           leading: GestureDetector(
             onTap: () {
@@ -664,9 +664,9 @@ class _StreamPageState extends State<StreamPage> {
                             ),
                           ),
                         ),
-                        // SizedBox(
-                        //   height: 1.h,
-                        // ),
+                        SizedBox(
+                          height: 2.h,
+                        ),
                         GestureDetector(
                           onTap: () async {
                             if (futureCourseDetail != null) {

@@ -6,6 +6,7 @@ import 'package:decodelms/views/course/results.dart';
 import 'package:decodelms/views/course/searchresults.dart';
 import 'package:decodelms/widgets/appbar.dart';
 import 'package:decodelms/widgets/buttombar.dart';
+import 'package:decodelms/widgets/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
@@ -89,6 +90,7 @@ class _SearchScreenState extends State<SearchScreen> {
     return Sizer(
       builder: (context, orientation, deviceType) {
         return Scaffold(
+          backgroundColor: appcolor,
           body: Padding(
             padding: const EdgeInsets.all(8.0),
             child: Column(
@@ -147,7 +149,7 @@ class _SearchScreenState extends State<SearchScreen> {
                                     ) // Show CircularProgressIndicator when searching
                                   : IconButton(
                                       icon: Icon(Icons.search,
-                                          color: Colors.black),
+                                          color: Colors.white),
                                       onPressed: () {
                                         searchCourses(searchController.text);
                                       },

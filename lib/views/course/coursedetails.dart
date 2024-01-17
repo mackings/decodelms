@@ -6,6 +6,7 @@ import 'package:decodelms/views/Homepage/home.dart';
 import 'package:decodelms/views/course/coursestream.dart';
 import 'package:decodelms/views/course/enrolledcourses.dart';
 import 'package:decodelms/widgets/appbar.dart';
+import 'package:decodelms/widgets/colors.dart';
 import 'package:decodelms/widgets/course/coursenav.dart';
 import 'package:decodelms/widgets/course/dialogs.dart';
 import 'package:flutter/material.dart';
@@ -211,6 +212,7 @@ class _CourseDetailsPageState extends State<CourseDetailsPage> {
     return DefaultTabController(
   length: 3,
   child: Scaffold(
+    backgroundColor: appcolor,
     body: Padding(
       padding: EdgeInsets.symmetric(horizontal: 5, vertical: 10),
       child: SingleChildScrollView(

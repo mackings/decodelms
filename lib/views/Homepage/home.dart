@@ -7,6 +7,7 @@ import 'package:decodelms/views/course/search.dart';
 import 'package:decodelms/views/course/stream.dart';
 import 'package:decodelms/views/videocalls/joincall.dart';
 import 'package:decodelms/widgets/appbar.dart';
+import 'package:decodelms/widgets/colors.dart';
 import 'package:decodelms/widgets/course/courseslider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -175,7 +176,7 @@ class _HomepageState extends ConsumerState<Homepage> {
                       ),
                       border: InputBorder.none,
                     ),
-                    style: GoogleFonts.poppins(color: Colors.black),
+                    style: GoogleFonts.poppins(color: Colors.white),
                   ),
                 ),
               ),
@@ -305,7 +306,7 @@ class _HomepageState extends ConsumerState<Homepage> {
                       padding: EdgeInsets.all(8.0),
                       decoration: BoxDecoration(
                         border: Border.all(width: 0.5, color: Colors.black),
-                        color: Colors.white,
+                        color: appcolor,
                         borderRadius: BorderRadius.only(
                           bottomLeft: Radius.circular(10),
                           bottomRight: Radius.circular(10),

@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:decodelms/models/quizquestions.dart';
 import 'package:decodelms/widgets/appbar.dart';
+import 'package:decodelms/widgets/colors.dart';
 import 'package:decodelms/widgets/course/dialogs.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -375,10 +376,10 @@ class _QuizPageState extends State<QuizPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: appcolor,
       appBar: AppBar(
         automaticallyImplyLeading: false,
-        backgroundColor: Colors.white,
+        backgroundColor: appcolor,
         elevation: 0,
         title: Padding(
           padding: const EdgeInsets.only(top: 20, left: 15),
@@ -487,7 +488,7 @@ class _QuizQuestionViewState extends State<QuizQuestionView> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: Colors.white,
+      color: appcolor,
       child: Column(
         children: [
           Padding(
@@ -512,7 +513,7 @@ class _QuizQuestionViewState extends State<QuizQuestionView> {
                   decoration: BoxDecoration(
                     color: isSelected ? Colors.blue : Colors.white,
                     borderRadius: BorderRadius.circular(15),
-                    border: Border.all(width: 0.5),
+                   // border: Border.all(width: 0.5),
                   ),
                   child: Padding(
                     padding: const EdgeInsets.all(8.0),
