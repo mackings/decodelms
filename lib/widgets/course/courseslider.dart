@@ -235,7 +235,6 @@ Future<List<Coursem>?> fetchAllCourses() async {
           return AllCourseCardShimmer();
         } else if (snapshot.hasData) {
           final allCourses = snapshot.data;
-          print('Snapshot has data $allCourses');
           return Padding(
             padding: const EdgeInsets.all(8.0),
             child: CarouselSlider(

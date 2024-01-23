@@ -238,12 +238,14 @@ class _HomepageState extends ConsumerState<Homepage> {
               ],
             ),
           ),
+
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: AllCourseCarouselSlider(),
           ),
+
           SizedBox(
-            height: 2.h,
+            height: 5.h,
           ),
           Padding(
             padding: const EdgeInsets.all(8.0),

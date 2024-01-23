@@ -48,6 +48,8 @@ class _SearchScreenState extends State<SearchScreen> {
 
   TextEditingController searchController = TextEditingController();
   List<Courseresults> searchResults = [];
+  List<String> tags = ["Figma", "Java", "kubernetes","Aws","Finace","Business Management","Exercise"];
+   String selectedTag = '';
 
   Future<void> searchCourses(String query) async {
     setState(() {
@@ -167,6 +169,44 @@ class _SearchScreenState extends State<SearchScreen> {
                     ),
                   ),
                 ),
+
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 10),
+                child: SingleChildScrollView( // Allow scrolling if tags exceed screen width
+                  scrollDirection: Axis.horizontal,
+                  child: Row(
+                    children: tags.map((tag) {
+                      return Padding(
+                        padding: const EdgeInsets.only(right: 10,top: 10,bottom: 10), // Adjust spacing between tags
+                        child: GestureDetector(
+                          onTap: () {
+                              setState(() {
+                                selectedTag = tag;
+                              });
+                              // searchController.text = tag;
+                              searchCourses(tag);
+                          },
+                          child: Chip(
+                              label: Text(
+                                tag,
+                                style: GoogleFonts.poppins(
+                                      color: selectedTag == tag
+                                      ? Colors.black
+                                      : Colors.white,
+
+                                ),
+
+                              ),
+                              backgroundColor: selectedTag == tag
+                                  ? Colors.blue // Change color when selected
+                                  : Colors.black,
+                            ),
+                        ),
+                      );
+                    }).toList(),
+                  ),
+                ),
+              ),
                 Expanded(
                   child: searchResults.isEmpty
                       ? Center(
@@ -207,9 +247,7 @@ class _SearchScreenState extends State<SearchScreen> {
                                           context: context,
                                           builder: (context) =>
                                               CourseDetailsBottomSheet(
-                                            courseImage: searchResults[index]
-                                                .courseImages[index]
-                                                .path,
+                                            courseImage: searchResults[index].courseImages.first.path,
                                             title: searchResults[index]
                                                 .courseTitle,
                                             description: searchResults[index]
