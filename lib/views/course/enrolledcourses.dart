@@ -1,6 +1,5 @@
-import 'package:carousel_slider/carousel_slider.dart';
+
 import 'package:decodelms/widgets/appbar.dart';
-import 'package:decodelms/widgets/course/coursenav.dart';
 import 'package:flutter/material.dart';
 import 'package:decodelms/widgets/course/courseslider.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -31,7 +30,7 @@ class _EnrolledcoursesState extends State<Enrolledcourses> {
           title: Padding(
             padding: const EdgeInsets.only(left: 5, right: 5, top: 10),
             child: Thetext(
-              thetext: "My Courses",
+              thetext: "Enrolled Courses",
               style: GoogleFonts.poppins(
                   color: Colors.black, fontWeight: FontWeight.bold),
             ),
@@ -62,11 +61,11 @@ class _EnrolledcoursesState extends State<Enrolledcourses> {
                       child: GestureDetector(child: CourseCarouselSlider2()))
                 ],
               ),
-              Center(child: Text('Other Tab Content')),
+              Center(child: Text('No Completed Courses Yet')),
             ],
           ),
         ),
       ),
     );
-  }
+  } 
 }

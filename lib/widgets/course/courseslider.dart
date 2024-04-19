@@ -135,73 +135,73 @@ class _AllCourseCarouselSliderState extends State<AllCourseCarouselSlider> {
     super.initState();
   }
 
-Future<List<Coursem>?> fetchAllCourses() async {
-  try {
-    final response = await http.get(
-      Uri.parse('https://server-eight-beige.vercel.app/api/course/viewAllCourses'),
-      headers: {
-        'Authorization': 'Bearer $Token',
-        'Content-Type': 'application/json',
-      },
-    );
+  Future<List<Coursem>?> fetchAllCourses() async {
+    try {
+      final response = await http.get(
+        Uri.parse(
+            'https://server-eight-beige.vercel.app/api/course/viewAllCourses'),
+        headers: {
+          'Authorization': 'Bearer $Token',
+          'Content-Type': 'application/json',
+        },
+      );
 
-    if (response.statusCode == 200) {
-      final dynamic responseData = json.decode(response.body);
+      if (response.statusCode == 200) {
+        final dynamic responseData = json.decode(response.body);
 
-      if (responseData != null &&
-          responseData is Map<String, dynamic> &&
-          responseData.containsKey('courses')) {
-        final coursesData = responseData['courses'];
+        if (responseData != null &&
+            responseData is Map<String, dynamic> &&
+            responseData.containsKey('courses')) {
+          final coursesData = responseData['courses'];
 
-        if (coursesData is List) {
-          List<Coursem>? allCourses = (coursesData as List?)
-              ?.map<Coursem>((courseData) {
-                if (courseData is Map<String, dynamic>) {
-                  return Coursem.fromJson(courseData);
-                } else {
-                  return Coursem(
-                    id: 'Invalid Course Data',
-                    userId: '',
-                    courseTitle: '',
-                    courseDescription: '',
-                    courseLanguage: '',
-                    reviews: [],
-                    courseImage: [],
-                    isPaidCourse: '',
-                    isPriceCourse: 0,
-                    modules: [],
-                    totalRegisteredByStudent: 0,
-                    createdAt: '',
-                    updatedAt: '',
-                  );
-                }
-              })
-              .toList();
+          if (coursesData is List) {
+            List<Coursem>? allCourses =
+                (coursesData as List?)?.map<Coursem>((courseData) {
+              if (courseData is Map<String, dynamic>) {
+                return Coursem.fromJson(courseData);
+              } else {
+                return Coursem(
+                  id: 'Invalid Course Data',
+                  userId: '',
+                  courseTitle: '',
+                  courseDescription: '',
+                  courseLanguage: '',
+                  reviews: [],
+                  courseImage: [],
+                  isPaidCourse: '',
+                  isPriceCourse: 0,
+                  modules: [],
+                  totalRegisteredByStudent: 0,
+                  createdAt: '',
+                  updatedAt: '',
+                  isUploadedCompleted: false,
+                );
+              }
+            }).toList();
 
-          print("All Courses $allCourses");
-          return allCourses;
+            print("All Courses $allCourses");
+            return allCourses;
+          } else {
+            throw Exception('Invalid data format for courses');
+          }
         } else {
-          throw Exception('Invalid data format for courses');
+          throw Exception('No courses data found in the response');
         }
       } else {
-        throw Exception('No courses data found in the response');
+        throw Exception('Failed to load courses: ${response.statusCode}');
       }
-    } else {
-      throw Exception('Failed to load courses: ${response.statusCode}');
+    } catch (e) {
+      print('Error fetching courses: ${e}');
+      return null; // Return null on error
     }
-  } catch (e) {
-    print('Error fetching courses: ${e}');
-    return null; // Return null on error
   }
-}
-
 
 //AllCourse
 
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<List<Coursem>?>(
-      future: fetchAllCourses(), // Pass the bearer token
+      future: fetchAllCourses(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return Shimmer.fromColors(
@@ -214,14 +214,14 @@ Future<List<Coursem>?> fetchAllCourses() async {
                   return AllCourseCardShimmer(); // Create a shimmer placeholder widget
                 }),
                 options: CarouselOptions(
-                  height: 180.0,
+                  height: 190.0,
                   aspectRatio: 16 / 9,
-                  viewportFraction: 0.8,
+                  viewportFraction: 1.0,
                   initialPage: 0,
                   enableInfiniteScroll: true,
                   reverse: false,
                   autoPlay: true,
-                  autoPlayInterval: Duration(seconds: 3),
+                  autoPlayInterval: Duration(seconds: 1),
                   autoPlayAnimationDuration: Duration(milliseconds: 800),
                   autoPlayCurve: Curves.fastOutSlowIn,
                   enlargeCenterPage: true,
@@ -242,9 +242,9 @@ Future<List<Coursem>?> fetchAllCourses() async {
                 return AllCourseCard(allCourse: allCourse);
               }).toList(),
               options: CarouselOptions(
-                height: 180.0,
+                height: 250.0, // Adjust height as needed
                 aspectRatio: 16 / 9,
-                viewportFraction: 0.8,
+                viewportFraction: 0.9, // Ensure full visibility of the card
                 initialPage: 0,
                 enableInfiniteScroll: true,
                 reverse: false,
@@ -311,6 +311,7 @@ class _CourseCarouselSlider2State extends State<CourseCarouselSlider2> {
       List<Course> courses = courseDataList
           .map((courseData) => Course.fromJson(courseData))
           .toList();
+     // print(courseDataList);
 
       return courses;
     } else {
@@ -340,15 +341,16 @@ class _CourseCarouselSlider2State extends State<CourseCarouselSlider2> {
                   final course = courses[index];
                   return Padding(
                     padding: EdgeInsets.only(bottom: 20), // Adjust this spacing
-                    child: GestureDetector(
-                        onTap: () {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) =>
-                                      StreamPage(courseId: course.id)));
-                        },
-                        child: CourseEnrolledCard2(course: course)),
+                    child: CourseEnrolledCard2(
+                      course: course,
+                      onTapFunction: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) =>
+                                    StreamPage(courseId: course.id)));
+                      },
+                    ),
                     // child: AllCourseCard(allCourse: null),
                   );
                 },

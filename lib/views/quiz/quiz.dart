@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:decodelms/models/quizquestions.dart';
+import 'package:decodelms/views/Homepage/home.dart';
 import 'package:decodelms/widgets/appbar.dart';
 import 'package:decodelms/widgets/colors.dart';
 import 'package:decodelms/widgets/course/dialogs.dart';
@@ -86,12 +87,10 @@ class _QuizPageState extends State<QuizPage> {
       print('Error loading quiz: $e');
     }
   }
-  
 
   dynamic QID;
   dynamic AID;
 
-  
   Future SubmitQuiz() async {
     String errorMessage = '';
 
@@ -116,27 +115,33 @@ class _QuizPageState extends State<QuizPage> {
           // isEnrolling = false;
         });
 
-        // Show a success dialog
         showDialog(
           context: context,
           builder: (BuildContext context) {
             return EnrollmentDialog(
-              press1: () {
-                Navigator.pop(context);
-              },
-              press2: () {
-               Navigator.pop(context);
-                Complete();
-              },
-              theicon: Icon(
-                Icons.check_circle,
-                color: Colors.blue,
-                size: 60,
-              ),
-              title: "Quiz Attempted",
-              message: "You Scored $res",
-              message2: 'Continue',
-            );
+                press1: () {
+                  Navigator.pop(context);
+                },
+                press2: () {
+                  //Navigator.pop(context);
+
+                  //Complete();
+                  if (res >= 8) {
+                    Navigator.pop(context);
+                    Complete();
+                  } else {
+                    Navigator.pop(context);
+                    Navigator.pop(context);
+                  }
+                },
+                theicon: Icon(
+                  Icons.check_circle,
+                  color: Colors.blue,
+                  size: 60,
+                ),
+                title: "Quiz Attempted",
+                message: "You Scored $res",
+                message2: "${res < 8 ? "Retry" : "Continue"}");
           },
         );
       } else if (response.statusCode == 409) {
@@ -254,12 +259,13 @@ class _QuizPageState extends State<QuizPage> {
 
         showDialog(
           context: context,
+          barrierDismissible: false,
           builder: (BuildContext context) {
             return EnrollmentDialog(
               press1: () {},
               press2: () {
-                Navigator.pop(context);
-                Navigator.pop(context);
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => Homepage()));
               },
               theicon: Icon(
                 Icons.check_circle,
@@ -392,16 +398,18 @@ class _QuizPageState extends State<QuizPage> {
         ),
       ),
       body: _quiz == null
-          ? Center(child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              CircularProgressIndicator(),
-              Padding(
-                padding: const EdgeInsets.all(10.0),
-                child: Thetext(thetext: "Loading Questions", style: GoogleFonts.poppins()),
-              )
-            ],
-          ))
+          ? Center(
+              child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                CircularProgressIndicator(),
+                Padding(
+                  padding: const EdgeInsets.all(10.0),
+                  child: Thetext(
+                      thetext: "Loading Quiz", style: GoogleFonts.poppins()),
+                )
+              ],
+            ))
           : PageView.builder(
               controller: PageController(initialPage: currentPage),
               itemCount: _quiz!.questions.length,
@@ -513,7 +521,7 @@ class _QuizQuestionViewState extends State<QuizQuestionView> {
                   decoration: BoxDecoration(
                     color: isSelected ? Colors.blue : Colors.white,
                     borderRadius: BorderRadius.circular(15),
-                   // border: Border.all(width: 0.5),
+                    // border: Border.all(width: 0.5),
                   ),
                   child: Padding(
                     padding: const EdgeInsets.all(8.0),

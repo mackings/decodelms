@@ -40,6 +40,7 @@ class Coursem {
   int totalRegisteredByStudent;
   String createdAt;
   String updatedAt;
+  bool isUploadedCompleted;
 
   Coursem({
     required this.id,
@@ -55,6 +56,7 @@ class Coursem {
     required this.totalRegisteredByStudent,
     required this.createdAt,
     required this.updatedAt,
+    required this.isUploadedCompleted,
   });
 
   factory Coursem.fromJson(Map<String, dynamic> json) {
@@ -76,6 +78,7 @@ class Coursem {
       totalRegisteredByStudent: json['totalRegisteredByStudent'],
       createdAt: json['createdAt'],
       updatedAt: json['updatedAt'],
+      isUploadedCompleted: json['isUploadedCompleted']
     );
   }
 }

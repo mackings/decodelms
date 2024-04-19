@@ -166,7 +166,7 @@ class _HomepageState extends ConsumerState<Homepage> {
                         child: IconButton(
                           icon: Icon(Icons.search, color: Colors.black),
                           onPressed: () {
-                            // Handle the search icon tap here
+                          
                           },
                         ),
                         decoration: BoxDecoration(
@@ -219,10 +219,12 @@ class _HomepageState extends ConsumerState<Homepage> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
+                
                 Thetext(
                   thetext: "Most browsed through",
                   style: GoogleFonts.poppins(),
                 ),
+
                 GestureDetector(
                   onTap: () {
                     Navigator.push(
@@ -235,18 +237,18 @@ class _HomepageState extends ConsumerState<Homepage> {
                     style: GoogleFonts.poppins(color: Colors.blue),
                   ),
                 ),
+
               ],
             ),
           ),
 
+          SizedBox(height: 4.h,),
+
           Padding(
-            padding: const EdgeInsets.all(8.0),
+            padding: const EdgeInsets.only(bottom: 40),
             child: AllCourseCarouselSlider(),
           ),
 
-          SizedBox(
-            height: 5.h,
-          ),
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: Row(
@@ -263,6 +265,7 @@ class _HomepageState extends ConsumerState<Homepage> {
               ],
             ),
           ),
+          
           Padding(
             padding: const EdgeInsets.only(
                 top: 20, left: 20, right: 20, bottom: 20),

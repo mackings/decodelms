@@ -10,7 +10,10 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sizer/sizer.dart';
 import 'package:http/http.dart' as http;
 
+
+
 class CourseDetailsBottomSheet extends StatefulWidget {
+
   final String courseImage;
   final String title;
   final String description;
@@ -19,6 +22,7 @@ class CourseDetailsBottomSheet extends StatefulWidget {
   final List<Module> themodules;
   final String theid;
   final String theenrolled;
+  final bool status;
 
   CourseDetailsBottomSheet({
     required this.courseImage,
@@ -28,7 +32,8 @@ class CourseDetailsBottomSheet extends StatefulWidget {
     required this.onEnrollPressed,
     required this.themodules,
     required this.theid,
-    required this.theenrolled,
+    required this.theenrolled, 
+    required this.status,
   });
 
   @override
@@ -143,6 +148,14 @@ class _CourseDetailsBottomSheetState extends State<CourseDetailsBottomSheet> {
 
         // throw Exception(response.body);
       } else {
+        var data = jsonDecode(response.body);
+
+        setState(() {
+          res = data['message'];
+          print('res is $res');
+          isEnrolling = false;
+        });
+
         setState(() {
           isEnrolling = false;
         });
@@ -165,7 +178,7 @@ class _CourseDetailsBottomSheetState extends State<CourseDetailsBottomSheet> {
               title: "Enrollment Failed",
               message: errorMessage.isNotEmpty
                   ? errorMessage
-                  : "Enrollment failed. Please try again later.",
+                  : res,
               message2: "Take me Home",
             );
           },
@@ -284,41 +297,108 @@ class _CourseDetailsBottomSheetState extends State<CourseDetailsBottomSheet> {
                     ],
                   ),
                 ),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Row(
-                    children: [
-                      IntrinsicWidth(
-                        child: Container(
-                          constraints: BoxConstraints(minWidth: 30.w),
-                          decoration: BoxDecoration(
-                            border: Border.all(width: 1.0),
-                            borderRadius: BorderRadius.circular(25),
-                          ),
-                          child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                CircleAvatar(
+
+                // Padding(
+                //   padding: const EdgeInsets.all(8.0),
+                //   child: Row(
+                //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                //     children: [
+                //       IntrinsicWidth(
+                //         child: Container(
+                //           constraints: BoxConstraints(minWidth: 30.w),
+                //           decoration: BoxDecoration(
+                //             border: Border.all(width: 1.0),
+                //             borderRadius: BorderRadius.circular(25),
+                //           ),
+                //           child: Padding(
+                //             padding: const EdgeInsets.all(8.0),
+                //             child: Row(
+                //               mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                //               children: [
+                //                 CircleAvatar(
+                //                   backgroundImage:
+                //                       NetworkImage(widget.courseImage),
+                //                 ),
+                //                 Padding(
+                //                   padding: const EdgeInsets.all(8.0),
+                //                   child: Thetext(
+                //                     thetext: "Decode Analytical",
+                //                     style: GoogleFonts.poppins(),
+                //                   ),
+                //                 ),
+
+                              
+                //               ],
+                //             ),
+                //           ),
+                //         ),
+                //       ),
+                //       // Container(
+                //       //   decoration: BoxDecoration(
+                //       //     color: widget
+                //       //   ),
+                //       //   child: Thetext(thetext: "Not Published", style: GoogleFonts.poppins()))
+                //     ],
+                //   ),
+                // ),
+
+  Padding(
+  padding: EdgeInsets.all(15.0),
+  child: Row(
+    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    children: [
+      Expanded(
+        child: Container(
+          constraints: BoxConstraints(minWidth: 30.w), // Adjust according to your needs
+          decoration: BoxDecoration(
+            border: Border.all(width: 1.0),
+            borderRadius: BorderRadius.circular(25),
+          ),
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                           CircleAvatar(
                                   backgroundImage:
                                       NetworkImage(widget.courseImage),
                                 ),
-                                Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: Thetext(
-                                    thetext: "Decode Analytical",
-                                    style: GoogleFonts.poppins(),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
+                SizedBox(width: 8.0), // Add some space between the avatar and text
+                Expanded(
+                  child: Thetext(
+                    thetext: "Decode Analytical",
+                    style: GoogleFonts.poppins(),
                   ),
                 ),
+              ],
+            ),
+          ),
+        ),
+      ),
+
+      SizedBox(width: 10.0), 
+
+      Container(
+        decoration: BoxDecoration(
+          color: widget.status == false
+              ? Colors.black
+              : Colors.blue,
+          borderRadius: BorderRadius.circular(10),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(10.0),
+          child: Thetext(
+            thetext: widget.status == false
+                ? "Pending"
+                : "Available",
+            style: GoogleFonts.poppins(color: Colors.white),
+          ),
+        ),
+      )
+    ],
+  ),
+),
+
                 Padding(
                   padding: const EdgeInsets.only(left: 10, right: 10),
                   child: TabBar(

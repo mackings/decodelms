@@ -78,7 +78,7 @@ Future<List<Coursem>?> fetchAllCourses() async {
                     modules: [],
                     totalRegisteredByStudent: 0,
                     createdAt: '',
-                    updatedAt: '',
+                    updatedAt: '', isUploadedCompleted: false,
                   );
                 }
               })
@@ -140,8 +140,7 @@ Future<List<Coursem>?> fetchAllCourses() async {
                 snapshot.data != null && 
                 snapshot.data!.isNotEmpty) {
               final allCourses = snapshot.data;
-              print(allCourses);
-
+              
               return Container(
                 color: appcolor,
                 child: Padding(

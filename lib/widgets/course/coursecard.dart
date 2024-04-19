@@ -209,17 +209,14 @@ class _AllCourseCardState extends State<AllCourseCard> {
   }
 }
 
-class CourseEnrolledCard2 extends StatefulWidget {
+class CourseEnrolledCard2 extends StatelessWidget {
   final Course course;
+  final VoidCallback onTapFunction;
 
-  CourseEnrolledCard2({required this.course});
+  CourseEnrolledCard2({required this.course, required this.onTapFunction});
 
-  @override
-  State<CourseEnrolledCard2> createState() => _CourseEnrolledCard2State();
-}
-
-class _CourseEnrolledCard2State extends State<CourseEnrolledCard2> {
   final dcourse = Course;
+
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -239,8 +236,8 @@ class _CourseEnrolledCard2State extends State<CourseEnrolledCard2> {
                         topRight: Radius.circular(10),
                       ),
                       child: FlutterWidgets.Image.network(
-                        widget.course.imageUrl.isNotEmpty
-                            ? widget.course.imageUrl
+                        course.imageUrl.isNotEmpty
+                            ? course.imageUrl
                             : '',
                         fit: BoxFit.cover,
                         width: double.infinity,
@@ -251,13 +248,7 @@ class _CourseEnrolledCard2State extends State<CourseEnrolledCard2> {
                       padding: const EdgeInsets.only(top: 30, bottom: 30),
                       child: Center(
                         child: GestureDetector(
-                          onTap: () {
-                        //  Navigator.push(
-                        //       context,
-                        //       MaterialPageRoute(
-                        //           builder: (context) =>
-                        //               StreamPage(courseId: dcourse.id)));
-                          },
+                          onTap: onTapFunction,
                           child: Icon(
                             Icons.play_circle_outline,
                             color: Colors.white,
@@ -285,7 +276,7 @@ class _CourseEnrolledCard2State extends State<CourseEnrolledCard2> {
                     Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: Thetext(
-                        thetext: widget.course.title,
+                        thetext: course.title,
                         style: GoogleFonts.poppins(
                           fontWeight: FontWeight.bold,
                         ),
@@ -296,7 +287,7 @@ class _CourseEnrolledCard2State extends State<CourseEnrolledCard2> {
                       child: Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: Thetext(
-                          thetext: widget.course.description,
+                          thetext: course.description,
                           style: GoogleFonts.poppins(
                             color: Colors.black,
                           ),

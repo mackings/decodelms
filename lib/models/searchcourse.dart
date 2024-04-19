@@ -34,6 +34,7 @@ class Courseresults {
   final List<Module> modules;
   final String createdAt;
   final String updatedAt;
+  final bool isUploadedCompleted;
 
   Courseresults({
     required this.id,
@@ -49,23 +50,22 @@ class Courseresults {
     required this.modules,
     required this.createdAt,
     required this.updatedAt,
+    required this.isUploadedCompleted
   });
 
   factory Courseresults.fromJson(Map<String, dynamic> json) {
     final List<dynamic> reviewsData = json['reviews'] ?? [];
-    final List<Review> reviews = reviewsData
-        .map((reviewData) => Review.fromJson(reviewData))
-        .toList();
+    final List<Review> reviews =
+        reviewsData.map((reviewData) => Review.fromJson(reviewData)).toList();
 
-    final List<dynamic> courseImagesData = json['course_image']?? [];
+    final List<dynamic> courseImagesData = json['course_image'] ?? [];
     final List<CourseImage> courseImages = courseImagesData
         .map((courseImageData) => CourseImage.fromJson(courseImageData))
         .toList();
 
-    final List<dynamic> modulesData = json['modules']?? [];
-    final List<Module> modules = modulesData
-        .map((moduleData) => Module.fromJson(moduleData))
-        .toList();
+    final List<dynamic> modulesData = json['modules'] ?? [];
+    final List<Module> modules =
+        modulesData.map((moduleData) => Module.fromJson(moduleData)).toList();
 
     return Courseresults(
       id: json['_id'],
@@ -81,6 +81,7 @@ class Courseresults {
       modules: modules,
       createdAt: json['createdAt'],
       updatedAt: json['updatedAt'],
+      isUploadedCompleted: json['isUploadedCompleted'],
     );
   }
 }
@@ -110,7 +111,6 @@ class Review {
     );
   }
 }
-
 
 class CourseImage {
   final String fieldname;
@@ -143,7 +143,6 @@ class CourseImage {
     );
   }
 }
-
 
 class Module {
   final String userId;
@@ -186,66 +185,67 @@ class Module {
     required this.questions,
   });
 
-factory Module.fromJson(Map<String, dynamic> json) {
-  List<Map<String, String>?>? imageList = (json['image'] as List<dynamic>?)
-      ?.map((imageJson) {
-        if (imageJson is Map<String, String>) {
-          return Map<String, String>.from(imageJson);
-        } else if (imageJson is String) {
-          return {'path': imageJson};
-        } else {
-          return null;
-        }
-      })
-      .where((image) => image != null)
-      .toList();
+  factory Module.fromJson(Map<String, dynamic> json) {
+    List<Map<String, String>?>? imageList = (json['image'] as List<dynamic>?)
+        ?.map((imageJson) {
+          if (imageJson is Map<String, String>) {
+            return Map<String, String>.from(imageJson);
+          } else if (imageJson is String) {
+            return {'path': imageJson};
+          } else {
+            return null;
+          }
+        })
+        .where((image) => image != null)
+        .toList();
 
-  List<Map<String, String>?>? videoList = (json['video'] as List<dynamic>?)
-      ?.map((videoJson) {
-        if (videoJson is Map<String, String>) {
-          return Map<String, String>.from(videoJson);
-        } else if (videoJson is String) {
-          return {'path': videoJson};
-        } else {
-          return null;
-        }
-      })
-      .where((video) => video != null)
-      .toList();
+    List<Map<String, String>?>? videoList = (json['video'] as List<dynamic>?)
+        ?.map((videoJson) {
+          if (videoJson is Map<String, String>) {
+            return Map<String, String>.from(videoJson);
+          } else if (videoJson is String) {
+            return {'path': videoJson};
+          } else {
+            return null;
+          }
+        })
+        .where((video) => video != null)
+        .toList();
 
-  return Module(
-    userId: json['userId'] ?? '',
-    courseId: json['courseId'] ?? '',
-    moduleTitle: json["module_title"] ?? '',
-    moduleDescription: json['module_description'] ?? '',
-    image: imageList ?? [],
-    video: videoList ?? [],
-    moduleDuration: json['moduleDuration'] ?? '',
-    quizzes: (json['quizzes'] as List<dynamic>?)
-        ?.map((quiz) => quiz.toString())
-        .toList() ?? [],
-    comments: (json['comments'] as List<dynamic>?)
-        ?.map((comment) => comment.toString())
-        .toList() ?? [],
-    likeAndDislikeUsers: (json['likeAndDislikeUsers'] as List<dynamic>?)
-        ?.map((user) => user.toString())
-        .toList() ?? [],
-    commentCount: json['commentCount'] ?? 0, // Use appropriate defaults
-    commentId: (json['commentId'] as List<dynamic>?)
-        ?.map((commentId) => commentId.toString())
-        .toList() ?? [],
-    likeCount: json['likeCount'] ?? 0, // Use appropriate defaults
-    dislikeCount: json['dislikeCount'] ?? 0, // Use appropriate defaults
-    id: json['_id'] ?? '',
-    createdAt: json['createdAt'] ?? '',
-    updatedAt: json['updatedAt'] ?? '',
-    questions: (json['questions'] as List<dynamic>?)
-        ?.map((question) => question.toString())
-        .toList() ?? [],
-  );
+    return Module(
+      userId: json['userId'] ?? '',
+      courseId: json['courseId'] ?? '',
+      moduleTitle: json["module_title"] ?? '',
+      moduleDescription: json['module_description'] ?? '',
+      image: imageList ?? [],
+      video: videoList ?? [],
+      moduleDuration: json['moduleDuration'] ?? '',
+      quizzes: (json['quizzes'] as List<dynamic>?)
+              ?.map((quiz) => quiz.toString())
+              .toList() ??
+          [],
+      comments: (json['comments'] as List<dynamic>?)
+              ?.map((comment) => comment.toString())
+              .toList() ??
+          [],
+      likeAndDislikeUsers: (json['likeAndDislikeUsers'] as List<dynamic>?)
+              ?.map((user) => user.toString())
+              .toList() ??
+          [],
+      commentCount: json['commentCount'] ?? 0, // Use appropriate defaults
+      commentId: (json['commentId'] as List<dynamic>?)
+              ?.map((commentId) => commentId.toString())
+              .toList() ??
+          [],
+      likeCount: json['likeCount'] ?? 0, // Use appropriate defaults
+      dislikeCount: json['dislikeCount'] ?? 0, // Use appropriate defaults
+      id: json['_id'] ?? '',
+      createdAt: json['createdAt'] ?? '',
+      updatedAt: json['updatedAt'] ?? '',
+      questions: (json['questions'] as List<dynamic>?)
+              ?.map((question) => question.toString())
+              .toList() ??
+          [],
+    );
+  }
 }
-
-
-}
-
-

@@ -65,7 +65,8 @@ class _CallsState extends State<Calls> {
       throw Exception('Failed to load meetings');
     }
   }
-    void _onTabTapped(int index) {
+
+  void _onTabTapped(int index) {
     // setState(() {
     //   0 = index;
     // });
@@ -81,14 +82,14 @@ class _CallsState extends State<Calls> {
     };
 
     final body = json.encode({
-    "email": "ebisedi@yahoo.com",
-    "description": "Introduction to Go",
-    "date": "23/12/2023",
-    "time": "1:30pm",
-    "courseName": "Go",
-    "isPaid": "free",
-    "amount": 0
-});
+      "email": "ebisedi@yahoo.com",
+      "description": "NginX",
+      "date": "23/12/2023",
+      "time": "1:30pm",
+      "courseName": "NginX",
+      "isPaid": "free",
+      "amount": 0
+    });
 
     final response = await http.post(
       url,
@@ -97,9 +98,8 @@ class _CallsState extends State<Calls> {
     );
 
     if (response.statusCode == 201) {
-           print(response.body);
+      print(response.body);
     } else {
-      // Meeting scheduling failed
       print(response.body);
     }
   }
@@ -110,19 +110,23 @@ class _CallsState extends State<Calls> {
       backgroundColor: Colors.white,
       appBar: AppBar(
         automaticallyImplyLeading: false,
-          backgroundColor: Colors.white,
-          elevation: 0,
-          title: Padding(
-          padding: const EdgeInsets.only(top: 20,left: 15),
-          child: Thetext(thetext: "Live Sessions", style: GoogleFonts.poppins(
-            color: Colors.black,
-            fontWeight: FontWeight.bold,
-            fontSize: 15.sp
-            
-          )
+        backgroundColor: Colors.white,
+        elevation: 0,
+        title: Padding(
+          padding: const EdgeInsets.only(top: 20, left: 15),
+          child: GestureDetector(
+            onTap: () {
+              scheduleMeeting();
+            },
+            child: Thetext(
+                thetext: "Live Sessions",
+                style: GoogleFonts.poppins(
+                    color: Colors.black,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 15.sp)),
           ),
         ),
-          ),
+      ),
       body: FutureBuilder<List<Meeting>>(
         future: futureMeetings,
         builder: (context, snapshot) {
@@ -153,8 +157,7 @@ class _CallsState extends State<Calls> {
                             borderRadius: BorderRadius.circular(8),
                             border:
                                 Border.all(width: 0.5, color: Colors.black)),
-                        padding: EdgeInsets.all(
-                            16.0), 
+                        padding: EdgeInsets.all(16.0),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
@@ -164,51 +167,56 @@ class _CallsState extends State<Calls> {
                                 Thetext(
                                     thetext: meeting.courseName,
                                     style: GoogleFonts.poppins(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 13.sp
-                                    )),
-
-                                    Row(
-                                      children: [
-                                        Icon(Icons.access_time,color: Colors.blue,),
-                                        Padding(
-                                          padding: const EdgeInsets.all(8.0),
-                                          child: Row(
-                                            children: [
-                                              Thetext(thetext: meeting.time, style: GoogleFonts.poppins()),
-                                              SizedBox(width: 2.w,),
-                                              Thetext(thetext: meeting.date, style: GoogleFonts.poppins()),
-
-                                            ],
-                                          ),
-                                        ),
-                                      ],
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 13.sp)),
+                                Row(
+                                  children: [
+                                    Icon(
+                                      Icons.access_time,
+                                      color: Colors.blue,
                                     ),
-
-
-                                         Row(
-                                      children: [
-                                        Icon(Icons.person,color: Colors.blue,),
-                                        Padding(
-                                          padding: const EdgeInsets.all(8.0),
-                                          child: Row(
-                                            children: [
-                                              //Thetext(thetext: meeting.time, style: GoogleFonts.poppins()),
-                                             // SizedBox(width: 2.w,),
-                                              Thetext(thetext: meeting.instructor, style: GoogleFonts.poppins()),
-
-                                            ],
+                                    Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Row(
+                                        children: [
+                                          Thetext(
+                                              thetext: meeting.time,
+                                              style: GoogleFonts.poppins()),
+                                          SizedBox(
+                                            width: 2.w,
                                           ),
-                                        ),
-                                      ],
+                                          Thetext(
+                                              thetext: meeting.date,
+                                              style: GoogleFonts.poppins()),
+                                        ],
+                                      ),
                                     ),
-
+                                  ],
+                                ),
+                                Row(
+                                  children: [
+                                    Icon(
+                                      Icons.person,
+                                      color: Colors.blue,
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Row(
+                                        children: [
+                                          //Thetext(thetext: meeting.time, style: GoogleFonts.poppins()),
+                                          // SizedBox(width: 2.w,),
+                                          Thetext(
+                                              thetext: meeting.instructor,
+                                              style: GoogleFonts.poppins()),
+                                        ],
+                                      ),
+                                    ),
+                                  ],
+                                ),
                               ],
                             ),
-
-                            
                             IconButton(
-                              icon: Icon(Icons.copy),  
+                              icon: Icon(Icons.copy),
                               onPressed: () {
                                 FlutterClipboard.copy(
                                         "https://decode-lms.netlify.app/lecture/${meeting.room}")
@@ -250,7 +258,8 @@ class _CallsState extends State<Calls> {
           }
         },
       ),
-      bottomNavigationBar: MyBottomNavigationBar(currentIndex: 0, onTabTapped:_onTabTapped ),
+      bottomNavigationBar:
+          MyBottomNavigationBar(currentIndex: 0, onTabTapped: _onTabTapped),
     );
   }
 }
